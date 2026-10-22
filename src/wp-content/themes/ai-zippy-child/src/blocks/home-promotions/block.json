@@ -1,0 +1,74 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/home-promotions",
+	"version": "1.0.0",
+	"title": "Today's Promotions",
+	"category": "sm-sections",
+	"icon": "megaphone",
+	"description": "Horizontal snap-scroll scroller of promo cards; a card can show a live HH:MM:SS countdown to midnight. Every card links to /shop/.",
+	"keywords": ["promotions", "deals", "flash sale", "countdown", "home"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Today's promotions"
+		},
+		"cards": {
+			"type": "array",
+			"default": [
+				{
+					"bg": "#FF1A1A",
+					"fg": "#FFFFFF",
+					"badge": "1-for-1 Deals",
+					"badgeBg": "#FFFFFF",
+					"badgeFg": "#FF1A1A",
+					"title": "Buy one, get one on chips",
+					"sub": "All 150g packs this week",
+					"image": "product-chips.jpg",
+					"imageUrl": "",
+					"imageId": 0,
+					"countdown": false
+				},
+				{
+					"bg": "#FF9900",
+					"fg": "#111827",
+					"badge": "Flash Sale",
+					"badgeBg": "#111827",
+					"badgeFg": "#FFFFFF",
+					"title": "25% off ice cream tubs",
+					"sub": "Ends in 00:00:00",
+					"image": "product-icecream.jpg",
+					"imageUrl": "",
+					"imageId": 0,
+					"countdown": true
+				},
+				{
+					"bg": "#39FF14",
+					"fg": "#111827",
+					"badge": "Daily Discounts",
+					"badgeBg": "#FF1A1A",
+					"badgeFg": "#FFFFFF",
+					"title": "Fresh bakery from $2.80",
+					"sub": "New markdowns every morning",
+					"image": "product-croissants.jpg",
+					"imageUrl": "",
+					"imageId": 0,
+					"countdown": false
+				}
+			]
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

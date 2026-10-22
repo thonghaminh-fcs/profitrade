@@ -1,0 +1,70 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/home-hero",
+	"version": "1.0.0",
+	"title": "Home Hero",
+	"category": "sm-sections",
+	"icon": "cover-image",
+	"description": "S.Mart home hero: eyebrow pill, headline with red highlight, lead paragraph, two CTAs and the blob image composition with the floating Next-slot card.",
+	"keywords": ["hero", "home", "banner", "slot"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"eyebrow": {
+			"type": "string",
+			"default": "Delivery in as fast as 1 hour"
+		},
+		"heading": {
+			"type": "string",
+			"default": "Daily Quick-Stop Groceries at"
+		},
+		"highlightText": {
+			"type": "string",
+			"default": "Your Convenience"
+		},
+		"paragraph": {
+			"type": "string",
+			"default": "Snacks, chilled drinks, frozen favourites and household basics from your neighbourhood S.Mart. Pick a 3-hour slot, go express, or walk in and collect."
+		},
+		"primaryLabel": {
+			"type": "string",
+			"default": "Shop Now"
+		},
+		"primaryUrl": {
+			"type": "string",
+			"default": "/shop/"
+		},
+		"secondaryLabel": {
+			"type": "string",
+			"default": "How it works"
+		},
+		"secondaryUrl": {
+			"type": "string",
+			"default": "/about/"
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"nextSlotLabel": {
+			"type": "string",
+			"default": "Next slot"
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

@@ -1,1 +1,184 @@
-// Home Hero block (ai-zippy/home-hero) — slim.html:98-132; filled by its block step.
+// =============================================================================
+// Home Hero block (ai-zippy/home-hero) — markup quoted from
+// .mockup/slim.html:98-132, values from docs/build/blocks/home-hero.md and
+// docs/build/ui-spec.md. The floating Next-slot card is server-rendered in its
+// default state and rewritten by the block's view.js from the delivery state
+// owned by child.js ([data-sm-hero-slot]).
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+@use "@parent-scss/variables" as parent;
+
+.sm-hero {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 40px 20px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 40px;
+  align-items: center;
+}
+
+// ---- Text column ----
+.sm-hero__text {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.sm-hero__eyebrow {
+  align-self: flex-start;
+  background: var(--sm-green);
+  color: var(--sm-ink);
+  font: 700 12px var(--sm-font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: var(--sm-radius-pill);
+}
+
+.sm-hero__title {
+  margin: 0;
+  font: 800 clamp(38px, 5.4vw, 66px) / 1.04 var(--sm-font);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.sm-hero__highlight {
+  color: var(--sm-red);
+}
+
+.sm-hero__lead {
+  margin: 0;
+  font: 400 17px/1.6 var(--sm-font);
+  color: var(--sm-text-body);
+  max-width: 480px;
+  text-wrap: pretty;
+}
+
+// ---- CTAs ----
+.sm-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.sm-hero__cta {
+  display: inline-block;
+  font: 700 16px var(--sm-font);
+  border-radius: var(--sm-radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--sm-transition), color var(--sm-transition);
+}
+
+.sm-hero__cta--primary {
+  border: 0;
+  background: var(--sm-red);
+  color: #fff;
+  padding: 16px 30px;
+  box-shadow: var(--sm-shadow-cta);
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+}
+
+.sm-hero__cta--secondary {
+  border: 2px solid var(--sm-ink);
+  background: transparent;
+  color: var(--sm-ink);
+  padding: 14px 26px;
+
+  &:hover {
+    background: var(--sm-ink);
+    color: #fff;
+  }
+}
+
+// ---- Image composition (right column) ----
+.sm-hero__media {
+  position: relative;
+  aspect-ratio: 1 / 0.86;
+  max-width: 600px;
+  width: 100%;
+  justify-self: center;
+}
+
+.sm-hero__blob {
+  position: absolute;
+}
+
+.sm-hero__blob--green {
+  inset: 2% 18% 12% 2%;
+  background: var(--sm-green);
+  border-radius: var(--sm-blob-a);
+}
+
+.sm-hero__blob--orange {
+  inset: 14% 0 0 22%;
+  background: var(--sm-orange);
+  border-radius: var(--sm-blob-b);
+}
+
+.sm-hero__photo {
+  position: absolute;
+  inset: 6% 8%;
+  border-radius: var(--sm-blob-c);
+  overflow: hidden;
+  background: var(--sm-red);
+  box-shadow: var(--sm-shadow-hero-img);
+}
+
+.sm-hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sm-hero__dot {
+  position: absolute;
+  top: 4%;
+  left: 0;
+  width: 9%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--sm-green);
+}
+
+// ---- Floating Next-slot card ----
+.sm-hero__slot-card {
+  position: absolute;
+  bottom: 4%;
+  left: 2%;
+  background: var(--sm-card-bg);
+  border-radius: 18px;
+  padding: 12px 16px;
+  box-shadow: var(--sm-shadow-hero-card);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-hero__slot-eyebrow {
+  font: 600 11px var(--sm-font);
+  color: var(--sm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sm-hero__slot-value {
+  font: 700 15px var(--sm-font);
+  color: var(--sm-ink);
+}
+
+// ---- Mobile: tighten the grid gap (docs/build/blocks/home-hero.md) ----
+@include parent.until(767px) {
+  .sm-hero {
+    gap: 24px;
+  }
+}
