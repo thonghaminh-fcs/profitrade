@@ -115,7 +115,7 @@ wpautop, non-blocking).
 - My Account: classic Woo login form (`#username`/`#password` + `woocommerce-login-nonce`);
   admin login succeeds → logged-in account (logout present).
 
-## Defects (open — not fixed within the time box)
+## Defects (fixed in the 2026-10-22 rework pass below)
 
 1. **Contact form never sends (medium).** Spec (block-map) = "AJAX → admin-ajax → wp_mail → success
    pane". `contact-form/view.js` only `preventDefault()`s and swaps to the success pane;
@@ -148,3 +148,85 @@ wpautop, non-blocking).
 Core commerce (shop → cart → COD order → login) works end to end. `functional: fail` because two
 specified behaviors do not work (contact-form email, checkout fulfilment order-meta). Both are
 documented above with root cause and the exact fix path.
+
+---
+
+# QA report — rework pass (2026-10-22)
+
+Rework brief: implement the two missing behaviours (contact-form email, checkout-fulfilment
+order persistence), fix the `/my-account/` SyntaxError if cheap, then a short regression pass of
+the 7 block-map pages at 1440 and 375. All three defects above are now FIXED.
+
+## 1. Contact form — real submission
+
+- New `inc/contact-form.php` (required from `functions.php`): admin-ajax handler
+  `wp_ajax[_nopriv]_sm_contact_submit` verifying a nonce, rejecting silently when the honeypot
+  `company` field is filled, validating name/email/message server-side, `wp_mail()` to
+  `get_option('admin_email')` with `Reply-To`, JSON responses (`success`, or per-field errors).
+- `contact-form/render.php` prints `data-ajax-url` + `data-nonce` on the wrapper; `view.js` posts
+  the form with `fetch`, shows the success pane only on a real success response, renders
+  per-field errors (`role=alert`, `aria-invalid`) otherwise; submit disabled while in flight.
+- Evidence (PHP filter test via `pre_wp_mail` capture, run in the container):
+  `valid` → `{"success":true}` + mail to `dev@zippy.sg`, subject `[S.Mart] Contact inquiry from QA Bot`,
+  Reply-To header, message body present; `honeypot` → `{"success":true}` with **no mail**;
+  `bademail` (empty name + bad email) → per-field errors, no mail; `badnonce` → 403-style error;
+  `mailfail` (wp_mail false) → friendly form error.
+- Evidence (real HTTP): POST to `/wp-admin/admin-ajax.php` with the nonce scraped from `/contact/`
+  → `{"success":true}` HTTP 200; site mail log (`/tmp/mail.log`, dev-only mu-plugin logger, see
+  Notes) records `to=dev@zippy.sg | subject=[S.Mart] Contact inquiry from QA End2End`.
+- Evidence (browser): Playwright fill + submit on `/contact/` → ajax 200/success, success pane
+  visible, form hidden, "Send another" resets to the form; console clean.
+
+## 2. Checkout fulfilment — persisted on Store-API orders
+
+- New `inc/checkout-fulfilment.php` (required from `functions.php`), hooks removed from the
+  block's `render.php` (they never ran for the React checkout):
+  - `woocommerce_store_api_register_endpoint_data` declares `extensions["sm-fulfilment"]`
+    (`fulfilment` / `express` / `slot`) on the checkout endpoint;
+  - `woocommerce_store_api_checkout_update_order_from_request` saves `_sm_fulfilment`,
+    `_sm_express`, `_sm_slot` — request extensions first, then posted fields, then the `sm_*`
+    cookies `view.js` keeps in sync (the parent React app does not forward the hidden inputs);
+  - `woocommerce_checkout_create_order` kept for the classic checkout;
+  - `woocommerce_cart_calculate_fees` now registered on **every** request, so the +$20 express
+    fee also lands in the Store-API checkout totals (previously only in page-rendered fragments);
+  - choice shown in wp-admin (`woocommerce_admin_order_data_after_shipping_address`) and in
+    order emails (`woocommerce_email_order_meta_fields`).
+- Evidence (real COD orders through `/wp-json/wc/store/v1/checkout`, cookies as the browser sets
+  them): **order #55** pickup → `status=processing total=5.50 pay=cod`, meta
+  `_sm_fulfilment=pickup, _sm_express=0, _sm_slot=8:00 – 11:00 PM`, no fee; **order #56** express →
+  `total=25.50` (5.50 + 20.00 fee line `Express delivery=20`), meta
+  `_sm_fulfilment=delivery, _sm_express=1, _sm_slot=2:00 – 5:00 PM`.
+- Evidence (emails): both orders' admin + customer emails contain `Fulfilment: Walk-in Pickup` /
+  `Fulfilment: 1-Hour Express` (mail log).
+
+## 3. /my-account/ SyntaxError
+
+- New child WooCommerce template override `woocommerce/myaccount/form-login.php`: identical
+  markup to the parent, inline `<script>` condensed to contain **no blank lines** so `wpautop`
+  cannot inject `<p>`/`<br>` inside it. Playwright on `/my-account/`: `consoleErrors: []`,
+  login card present.
+
+## Regression pass — 7 pages × 1440 / 375
+
+| Page | 1440 | 375 |
+| --- | --- | --- |
+| home (`/`) | PASS | PASS |
+| shop (`/shop/`) | PASS | PASS |
+| about (`/about/`) | PASS | PASS |
+| contact (`/contact/`) | PASS | PASS |
+| cart (`/cart/`) | PASS | PASS |
+| checkout (`/checkout/`, filled cart) | PASS | PASS |
+| my-account (`/my-account/`) | PASS | PASS |
+
+All captures: `overflowX: false`, `consoleErrors: []` (wp-shot JSON + checkout Playwright run).
+Fulfilment picker re-checked in the browser: 2 cards, pickup↔delivery clicks flip `aria-checked`
+and the hidden `sm_fulfilment` input. No white gaps, images unchanged.
+
+## Notes
+
+- The container has no MTA (`mail()` returns false), so a dev-only mu-plugin
+  (`/var/www/html/wp-content/mu-plugins/qa-mail-log.php`, outside the repo) logs every `wp_mail`
+  to `/tmp/mail.log` via `pre_wp_mail` and reports success. Without it the handler correctly
+  surfaces a "could not be sent" error — the transport, not the code, is what fails.
+- Accepted diffs from the earlier passes remain accepted (mobile drawer nav, 2-col categories at
+  375, sidebar term order, two fulfilment cards).

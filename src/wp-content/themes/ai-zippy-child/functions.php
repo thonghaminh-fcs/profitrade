@@ -12,6 +12,15 @@
 defined('ABSPATH') || exit;
 
 // =============================================================================
+// Feature includes — hooks that must run on EVERY request (Store-API checkout
+// order persistence, express fee, contact-form AJAX handler). Block render.php
+// files only run when the block renders, so they cannot own these.
+// =============================================================================
+
+require get_stylesheet_directory() . '/inc/contact-form.php';
+require get_stylesheet_directory() . '/inc/checkout-fulfilment.php';
+
+// =============================================================================
 // Vite manifest reader — child's own assets/dist/.vite/manifest.json
 // Mirrors the parent's AiZippy\Core\ViteAssets but scoped to this theme.
 // =============================================================================
