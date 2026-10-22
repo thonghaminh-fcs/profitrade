@@ -1,1 +1,59 @@
-// Store map & hours block (ai-zippy/contact-location) — slim.html:351-376; filled by its block step.
+// =============================================================================
+// Store Map & Hours block (ai-zippy/contact-location) — markup quoted from
+// .mockup/slim.html:351-376, values from docs/build/blocks/contact-location.md.
+// Static card: an OpenStreetMap iframe above a two-cell body (Address / Hours).
+// This block is column 1 of the contact page grid; the grid itself is owned by
+// the page composition, so the card carries no outer margin. No JS behaviour.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+
+.sm-contact-location {
+  background: var(--sm-card-bg);
+  border: 1px solid var(--sm-card-border);
+  border-radius: var(--sm-radius-promo); // 28px
+  overflow: hidden;
+
+  // Body ink on the frontend; the editor's wrapper does not inherit body, so
+  // the colour is set once here for parity.
+  color: var(--sm-ink);
+}
+
+// ---- Embedded store map ----
+.sm-contact-location__map {
+  display: block;
+  width: 100%;
+  height: 280px;
+  border: 0;
+}
+
+// ---- Body: address + hours cells ----
+.sm-contact-location__body {
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.sm-contact-location__cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sm-contact-location__eyebrow {
+  font: 700 12px var(--sm-font);
+  color: var(--sm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sm-contact-location__value {
+  font: 600 15px/1.5 var(--sm-font);
+}
+
+.sm-contact-location__note {
+  font-size: 13px;
+  color: var(--sm-text-muted);
+}
