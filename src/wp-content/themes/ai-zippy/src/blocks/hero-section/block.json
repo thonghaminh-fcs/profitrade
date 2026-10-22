@@ -1,0 +1,80 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/hero-section",
+	"version": "1.0.0",
+	"title": "Hero Section",
+	"category": "ai-zippy",
+	"icon": "cover-image",
+	"description": "A two-column hero with heading, CTA, phone number, and featured media card.",
+	"keywords": ["hero", "banner", "header", "cover", "video"],
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"color": {
+			"background": true,
+			"text": true,
+			"gradients": true
+		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"tagline": {
+			"type": "string",
+			"default": "Build yourself"
+		},
+		"heading": {
+			"type": "string",
+			"default": "Be master\nwith us"
+		},
+		"primaryBtnText": {
+			"type": "string",
+			"default": "Enroll Today"
+		},
+		"primaryBtnUrl": {
+			"type": "string",
+			"default": "#"
+		},
+		"phoneLabel": {
+			"type": "string",
+			"default": "Call Now"
+		},
+		"phoneNumber": {
+			"type": "string",
+			"default": "000-1234 5678"
+		},
+		"mediaId": {
+			"type": "number",
+			"default": 0
+		},
+		"mediaUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"mediaType": {
+			"type": "string",
+			"default": "image",
+			"enum": ["image", "video"]
+		},
+		"videoUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"personImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"personImageUrl": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

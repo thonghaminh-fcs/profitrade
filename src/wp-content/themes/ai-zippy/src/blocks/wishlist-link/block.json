@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/wishlist-link",
+	"version": "1.0.0",
+	"title": "Wishlist Link",
+	"category": "ai-zippy",
+	"icon": "heart",
+	"description": "Header link to the wishlist with a live saved-item count.",
+	"keywords": ["wishlist", "heart", "header"],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
+}

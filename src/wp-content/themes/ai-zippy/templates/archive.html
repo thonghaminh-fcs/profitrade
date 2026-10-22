@@ -1,0 +1,49 @@
+<!-- wp:template-part {"slug":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"2rem","bottom":"4rem","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","contentSize":"1200px"}} -->
+<main class="wp-block-group" style="padding-top:2rem;padding-right:2rem;padding-bottom:4rem;padding-left:2rem">
+
+	<!-- wp:query-title {"type":"archive","fontSize":"x-large","className":"az-blog-title","style":{"spacing":{"margin":{"bottom":"0.5rem"}}}} /-->
+
+	<!-- wp:term-description {"fontSize":"medium","className":"az-blog-term-desc","style":{"spacing":{"margin":{"bottom":"2rem"}}}} /-->
+
+	<!-- wp:query {"queryId":1,"query":{"perPage":12,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"className":"az-blog"} -->
+	<div class="wp-block-query az-blog">
+
+		<!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
+
+		<!-- wp:group {"className":"az-blog-card","layout":{"type":"constrained"}} -->
+		<div class="wp-block-group az-blog-card">
+			<!-- wp:post-featured-image {"isLink":true} /-->
+
+			<!-- wp:group {"className":"az-blog-card-content","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group az-blog-card-content">
+				<!-- wp:post-title {"isLink":true,"fontSize":"medium","style":{"typography":{"fontStyle":"normal","fontWeight":"600"}}} /-->
+				<!-- wp:post-date {"fontSize":"small"} /-->
+				<!-- wp:post-excerpt {"excerptLength":15} /-->
+			</div>
+			<!-- /wp:group -->
+		</div>
+		<!-- /wp:group -->
+
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"},"style":{"spacing":{"margin":{"top":"2rem"}}}} -->
+		<!-- wp:query-pagination-previous /-->
+		<!-- wp:query-pagination-numbers /-->
+		<!-- wp:query-pagination-next /-->
+		<!-- /wp:query-pagination -->
+
+		<!-- wp:query-no-results -->
+		<!-- wp:paragraph {"align":"center","fontSize":"medium"} -->
+		<p class="has-text-align-center has-medium-font-size">No posts found.</p>
+		<!-- /wp:paragraph -->
+		<!-- /wp:query-no-results -->
+
+	</div>
+	<!-- /wp:query -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer"} /-->

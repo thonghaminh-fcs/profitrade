@@ -1,0 +1,138 @@
+@use "variables" as *;
+
+// ---- ADD TO CART BUTTON STATES ----
+// .az-add-to-cart is the opt-in class the AJAX handler matches on, so it's the
+// reliable hook for these states. The two attribute selectors only cover
+// buttons that carry a product id or a legacy ?add-to-cart= href — the grouped
+// form's submit button has neither, since its ids live on the child rows.
+.az-add-to-cart,
+[data-product-id],
+a[href*="add-to-cart"] {
+	&.is-loading {
+		opacity: 0.8;
+		pointer-events: none;
+	}
+
+	&.is-added {
+		background: $c-success !important;
+		pointer-events: none;
+	}
+}
+
+// Spinner animation
+.az-spinner {
+	animation: azSpin 0.6s linear infinite;
+}
+
+@keyframes azSpin {
+	to { transform: rotate(360deg); }
+}
+
+// ---- TOAST NOTIFICATIONS ----
+.az-toast {
+	position: fixed;
+	bottom: 1.25rem;
+	right: 1.25rem;
+	z-index: 99999;
+	max-width: 380px;
+	width: calc(100% - 2.5rem);
+	padding: 0.85rem 1.25rem;
+	border-radius: $border-radius;
+	background: $c-white;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	font-size: 0.85rem;
+	font-weight: 500;
+	animation: azToastIn 0.3s $transition-ease;
+
+	// Keeps the countdown bar inside the rounded corners.
+	overflow: hidden;
+
+	&--success {
+		border-left: 4px solid $c-success;
+
+		.az-toast__bar {
+			background: $c-success;
+		}
+	}
+
+	&--error {
+		border-left: 4px solid $c-danger;
+
+		.az-toast__bar {
+			background: $c-danger;
+		}
+	}
+
+	&.is-closing {
+		animation: azToastOut 0.3s ease forwards;
+	}
+}
+
+// Counts down the auto-dismiss window. --az-toast-duration is set by showToast()
+// from the same value that schedules the dismiss, so the bar empties exactly as
+// the toast leaves. The fallback matches the toastDuration default in Runtime.
+.az-toast__bar {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 3px;
+
+	// scaleX rather than width: it animates on the compositor.
+	transform-origin: left;
+	animation: azToastBar var(--az-toast-duration, 4000ms) linear forwards;
+}
+
+@keyframes azToastBar {
+	to {
+		transform: scaleX(0);
+	}
+}
+
+.az-toast__close {
+	background: none;
+	border: none;
+	font-size: 1.2rem;
+	color: #aaa;
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
+	flex-shrink: 0;
+
+	&:hover {
+		color: #666;
+	}
+}
+
+// Slides up a short distance and fades in, rather than sliding in from
+// off-screen — reads as the toast settling into place instead of flying
+// across the viewport.
+@keyframes azToastIn {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes azToastOut {
+	to {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+}
+
+@include until(sm) {
+	.az-toast {
+		bottom: 0.75rem;
+		right: 0.75rem;
+		max-width: calc(100% - 1.5rem);
+	}
+}

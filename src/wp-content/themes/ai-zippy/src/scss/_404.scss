@@ -1,0 +1,162 @@
+@use "variables" as *;
+
+// =============================================================================
+// 404 page
+// =============================================================================
+
+.error404 .az-404 {
+	min-height: 60vh;
+	background: $c-secondary;
+
+	@include until(sm) {
+		padding: 1.5rem 1rem 3rem !important;
+	}
+}
+
+.az-404__title {
+	width: 100%;
+	max-width: 1100px;
+	margin: 0 auto 1.5rem !important;
+	color: $c-primary;
+	font-family: $font-heading;
+	font-size: clamp(1.5rem, 3vw, 2rem) !important;
+	font-weight: 700;
+	line-height: 1.25;
+	text-align: center;
+}
+
+.az-404__code,
+.az-404__title-text {
+	display: block;
+}
+
+.az-404__code {
+	color: $c-accent;
+	font-size: clamp(3.5rem, 9vw, 6rem);
+	font-weight: 800;
+	letter-spacing: -0.05em;
+	line-height: 0.95;
+}
+
+.az-404__title-text {
+	margin-top: 0.5rem;
+}
+
+.az-404__panel {
+	width: 100%;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 2rem 1.5rem;
+	border-radius: $border-radius-lg;
+	background: $c-white;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.az-404__message {
+	max-width: 680px;
+	margin: 0;
+	color: #666;
+	font-size: 0.95rem;
+	line-height: 1.65;
+}
+
+.az-404 .wp-block-search {
+	width: min(100%, 560px);
+	margin: 1.5rem 0 0;
+
+	.wp-block-search__inside-wrapper {
+		display: flex;
+		gap: 0.65rem;
+		padding: 0;
+		border: 0;
+	}
+
+	.wp-block-search__input {
+		min-width: 0;
+		height: 48px;
+		padding: 0 1.25rem;
+		border: 1px solid $c-border;
+		border-radius: 100px;
+		background: $c-white;
+		color: $c-primary;
+		font-family: inherit;
+		font-size: 0.875rem;
+		line-height: 1.4;
+		outline: none;
+		@include transition((border-color, box-shadow));
+
+		&:focus {
+			border-color: $c-accent;
+			box-shadow: 0 0 0 3px rgba(200, 169, 126, 0.16);
+		}
+	}
+
+	.wp-block-search__button {
+		min-height: 48px;
+		margin: 0;
+		padding: 0 1.4rem;
+		border: 1px solid $c-primary;
+		border-radius: 100px;
+		background: $c-primary;
+		color: $c-white;
+		font-size: 0.85rem;
+		font-weight: 700;
+		cursor: pointer;
+		@include transition((background, border-color, transform));
+
+		&:hover {
+			border-color: $c-accent;
+			background: $c-accent;
+			transform: translateY(-1px);
+		}
+
+		&:focus-visible {
+			outline: 2px solid $c-accent;
+			outline-offset: 3px;
+		}
+	}
+
+	@include until(sm) {
+		.wp-block-search__inside-wrapper {
+			flex-direction: column;
+		}
+
+		.wp-block-search__button {
+			width: 100%;
+		}
+	}
+}
+
+.az-404__actions {
+	justify-content: center;
+	margin-top: 1.25rem;
+
+	.wp-block-button__link {
+		min-height: 44px;
+		padding: 0.7rem 1.3rem;
+		border: 1px solid $c-primary;
+		border-radius: 100px;
+		background: transparent;
+		color: $c-primary;
+		font-size: 0.85rem;
+		font-weight: 700;
+		@include transition((border-color, color));
+
+		&:hover {
+			border-color: $c-accent;
+			color: $c-accent;
+		}
+
+		&:focus-visible {
+			outline: 2px solid $c-accent;
+			outline-offset: 3px;
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.az-404 .wp-block-search__button,
+	.az-404__actions .wp-block-button__link {
+		transition: none;
+	}
+}

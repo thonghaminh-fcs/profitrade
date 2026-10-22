@@ -1,0 +1,600 @@
+/**
+ * Mini cart — structure plus a neutral default skin.
+ *
+ * Two jobs. First, make the drawer *work*: fixed positioning, the slide
+ * transform, the scroll lock, hidden states, and the scroll area that keeps the
+ * footer reachable with a long cart.
+ *
+ * Second, make it usable without any further CSS. This block replaced
+ * woocommerce/mini-cart, whose 470-line override sheet targeted
+ * `wc-block-mini-cart__*` class names that are no longer on the page. Shipping
+ * structure alone left the drawer as unstyled default HTML — blue links, no
+ * spacing, buttons running together — so the feature was not actually usable.
+ *
+ * The skin is deliberately plain: neutral greys, one accent for the badge, no
+ * brand voice. Colours resolve from theme.json presets with hard-coded
+ * fallbacks, so a site that defines its palette gets it for free. A child theme
+ * restyles any `az-mc__*` rule to suit the client, which is where per-project
+ * design belongs.
+ *
+ * No @use — wp-scripts compiles block SCSS without the Vite aliases, so only
+ * global custom properties are available. That is why the theme.json presets
+ * appear as raw var() calls rather than the parent's SCSS tokens.
+ */
+
+.az-mc {
+	position: relative;
+}
+
+/* Toggle -------------------------------------------------------------- */
+
+.az-mc__toggle {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	min-width: 40px;
+	height: 40px;
+	padding: 0 8px;
+	border: 1px solid var(--wp--preset--color--border, #e5e5e5);
+	border-radius: 100px;
+	background: var(--wp--preset--color--white, #fff);
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	cursor: pointer;
+	font: inherit;
+	text-decoration: none;
+	transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+
+	&:hover {
+		border-color: var(--wp--preset--color--accent, #c8a97e);
+		background: var(--wp--preset--color--secondary, #f5f5f5);
+		color: var(--wp--preset--color--accent, #c8a97e);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wp--preset--color--accent, #c8a97e);
+		outline-offset: 3px;
+	}
+}
+
+.az-mc__icon {
+	display: block;
+	flex-shrink: 0;
+	width: 22px;
+	height: 22px;
+}
+
+.az-mc__count {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	border: 2px solid var(--wp--preset--color--white, #fff);
+	border-radius: 100px;
+	background: var(--wp--preset--color--accent, #c8a97e);
+	color: var(--wp--preset--color--white, #fff);
+	font-size: 0.65rem;
+	font-weight: 700;
+	line-height: 1;
+}
+
+/* The badge overlays the icon, so it must not affect the toggle's box. */
+.az-mc__toggle[data-badge="top-right"] .az-mc__count,
+.az-mc__toggle[data-badge="top-left"] .az-mc__count {
+	position: absolute;
+	top: -5px;
+	pointer-events: none;
+}
+
+.az-mc__toggle[data-badge="top-right"] .az-mc__count {
+	right: -6px;
+}
+
+.az-mc__toggle[data-badge="top-left"] .az-mc__count {
+	left: -6px;
+}
+
+/* An empty cart still needs the element in the DOM for JS to update. Restated
+   after the rule above, which sets display. */
+.az-mc__count[data-empty="true"] {
+	display: none;
+}
+
+.az-mc__subtotal {
+	font-size: 0.8rem;
+	font-weight: 600;
+}
+
+/* Drawer -------------------------------------------------------------- */
+
+.az-mc__drawer {
+	position: fixed;
+	inset: 0;
+	z-index: 999;
+}
+
+/* Keep the drawer and its backdrop below WordPress's logged-in admin bar.
+   Desktop: 32px fixed bar. Tablet (≤782px): 46px fixed bar.
+   Mobile (≤600px): WP makes #wpadminbar absolute (non-sticky), so the bar
+   scrolls away — mini-cart.js sets --az-mc-top dynamically on open(). */
+body.admin-bar .az-mc__drawer {
+	top: 32px;
+}
+
+@media (max-width: 782px) {
+	body.admin-bar .az-mc__drawer {
+		top: 46px;
+	}
+}
+
+@media (max-width: 600px) {
+	body.admin-bar .az-mc__drawer {
+		top: var(--az-mc-top, 0px);
+	}
+}
+
+/* [hidden] alone loses to `display: flex` and friends, so restate it. */
+.az-mc__drawer[hidden] {
+	display: none;
+}
+
+.az-mc__backdrop {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	background-color: rgb(0 0 0 / 50%);
+	transition: opacity 240ms ease;
+}
+
+.az-mc__panel {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	width: min(90vw, 400px);
+	max-width: 100%;
+	overflow: hidden;
+
+	/* Fallback covers themes with no `base` colour in theme.json. */
+	background-color: var(--wp--preset--color--base, #fff);
+	box-shadow: -8px 0 32px rgb(0 0 0 / 15%);
+	transition: transform 240ms ease;
+	will-change: transform;
+}
+
+.az-mc[data-side="right"] .az-mc__panel {
+	right: 0;
+	transform: translateX(100%);
+}
+
+.az-mc[data-side="left"] .az-mc__panel {
+	left: 0;
+	transform: translateX(-100%);
+}
+
+/* Open state — toggled by modules/mini-cart.js. */
+
+/* Doubled `.az-mc` on purpose. The closed rules above are qualified by
+   [data-side], so a single class here loses the specificity contest and the
+   panel stays parked off-screen while every other open-state signal says it is
+   visible. Keep this selector at least as specific as those two. */
+.az-mc.az-mc--open .az-mc__panel {
+	transform: translateX(0);
+}
+
+.az-mc--open .az-mc__backdrop {
+	opacity: 1;
+}
+
+/* Header -------------------------------------------------------------- */
+
+.az-mc__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	padding: 1.25rem 1.25rem 1rem;
+	border-bottom: 1px solid var(--wp--preset--color--border, #f0f0f0);
+}
+
+.az-mc__title {
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.az-mc__close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 34px;
+	height: 34px;
+	border: 1px solid var(--wp--preset--color--border, #d4d4d4);
+	border-radius: 50%;
+	background: var(--wp--preset--color--secondary, #f2f2f2);
+	font-size: 1.1rem;
+	line-height: 1;
+	transition: background 0.2s ease;
+
+	&:hover {
+		background: var(--wp--preset--color--border, #e0e0e0);
+		border-color: var(--wp--preset--color--muted, #b8b8b8);
+	}
+}
+
+/* Free shipping progress ---------------------------------------------- */
+
+.az-mc__shipping {
+	padding: 0.85rem 1.25rem;
+	border-bottom: 1px solid var(--wp--preset--color--border, #f0f0f0);
+}
+
+.az-mc__shipping-text {
+	margin: 0 0 0.5rem;
+	font-size: 0.75rem;
+	color: var(--wp--preset--color--muted, #999);
+}
+
+.az-mc__shipping-track {
+	position: relative;
+	overflow: hidden;
+	height: 4px;
+	border-radius: 100px;
+	background: var(--wp--preset--color--secondary, #f5f5f5);
+}
+
+.az-mc__shipping-bar {
+	display: block;
+	height: 100%;
+	border-radius: 100px;
+	background: var(--wp--preset--color--accent, #c8a97e);
+	transition: width 300ms ease;
+}
+
+.az-mc__shipping[data-reached="true"] .az-mc__shipping-bar {
+	background: var(--wp--preset--color--success, #4caf50);
+}
+
+/* Items --------------------------------------------------------------- */
+
+/* The item list is the only part allowed to grow, so the header stays visible
+   and the footer stays reachable however long the cart is. */
+.az-mc__items {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	-webkit-overflow-scrolling: touch;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+
+	&::-webkit-scrollbar {
+		width: 3px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		border-radius: 2px;
+		background: var(--wp--preset--color--border, #ddd);
+	}
+}
+
+.az-mc__item {
+	display: grid;
+	grid-template-columns: 72px 1fr auto;
+	gap: 0.85rem;
+	align-items: start;
+	padding: 0.85rem 1.25rem;
+	border-bottom: 1px solid var(--wp--preset--color--border, #e5e5e5);
+
+	&:last-child {
+		border-bottom: none;
+	}
+}
+
+.az-mc__item-image {
+	flex-shrink: 0;
+	width: 72px;
+	height: 72px;
+	border-radius: 10px;
+	background: var(--wp--preset--color--secondary, #f5f5f5);
+	object-fit: cover;
+}
+
+.az-mc__item-body {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.15rem;
+	min-width: 0;
+}
+
+.az-mc__item-name {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	font-size: 0.85rem;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	text-decoration: none;
+
+	&:hover {
+		color: var(--wp--preset--color--accent, #c8a97e);
+	}
+}
+
+/* The line total, not the unit price — see renderItem() in mini-cart.js. */
+.az-mc__item-price {
+	font-size: 0.9rem;
+	font-weight: 700;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	white-space: nowrap;
+}
+
+.az-mc__close,
+.az-mc__remove,
+.az-mc__qty-up,
+.az-mc__qty-down {
+	background: none;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
+	color: inherit;
+	font: inherit;
+}
+
+.az-mc__qty {
+	display: flex;
+	align-items: center;
+	margin-top: 0.4rem;
+	height: 30px;
+	border: 1px solid var(--wp--preset--color--border, #e5e5e5);
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+.az-mc__qty-down,
+.az-mc__qty-up {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	background: var(--wp--preset--color--secondary, #fafafa);
+	font-size: 0.9rem;
+	color: var(--wp--preset--color--muted, #666);
+	transition: background 0.2s ease;
+
+	&:hover {
+		background: var(--wp--preset--color--border, #eee);
+	}
+}
+
+/* Strip the spinner: the +/- buttons are the intended control. */
+.az-mc__qty-input {
+	appearance: textfield;
+	-moz-appearance: textfield;
+	width: 32px;
+	min-width: 0;
+	height: 28px;
+	border: 0;
+	border-right: 1px solid var(--wp--preset--color--border, #e5e5e5);
+	border-left: 1px solid var(--wp--preset--color--border, #e5e5e5);
+	text-align: center;
+	font-size: 0.7rem;
+	font-weight: 600;
+
+	&:focus {
+		box-shadow: none;
+	}
+}
+
+.az-mc__qty-input::-webkit-outer-spin-button,
+.az-mc__qty-input::-webkit-inner-spin-button {
+	appearance: none;
+	margin: 0;
+}
+
+.az-mc__remove {
+	font-size: 1rem;
+	line-height: 1;
+	color: var(--wp--preset--color--muted, #999);
+	transition: color 0.2s ease;
+
+	&:hover {
+		color: var(--wp--preset--color--danger, #e53935);
+	}
+}
+
+/* Empty state --------------------------------------------------------- */
+
+.az-mc__empty {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1.5rem;
+	margin: 0;
+	padding: 4rem 2rem;
+	text-align: center;
+	font-size: 0.9rem;
+	color: var(--wp--preset--color--muted, #999);
+}
+
+/* Same reason as the drawer: the display above would otherwise beat [hidden],
+   leaving the empty message on screen next to a full cart. */
+.az-mc__empty[hidden] {
+	display: none;
+}
+
+.az-mc__keep-shopping {
+	padding: 0.7rem 1.5rem;
+	border-radius: 8px;
+	background: var(--wp--preset--color--primary, #1a1a1a);
+	color: var(--wp--preset--color--white, #fff);
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background 0.2s ease;
+
+	&:hover {
+		opacity: 0.85;
+	}
+}
+
+/* Cross-sells --------------------------------------------------------- */
+
+.az-mc__cross-sell {
+	padding: 1rem 1.25rem;
+	border-top: 1px solid var(--wp--preset--color--border, #f0f0f0);
+}
+
+.az-mc__cross-sell-title {
+	display: block;
+	margin-bottom: 0.65rem;
+	font-size: 0.8rem;
+	font-weight: 700;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.az-mc__cross-sell-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.az-mc__cross-sell-item a {
+	display: grid;
+	grid-template-columns: 40px 1fr auto;
+	gap: 0.65rem;
+	align-items: center;
+	padding: 0.35rem 0;
+	font-size: 0.8rem;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	text-decoration: none;
+
+	img {
+		width: 40px;
+		height: 40px;
+		border-radius: 6px;
+		object-fit: cover;
+	}
+
+	&:hover .az-mc__cross-sell-name {
+		color: var(--wp--preset--color--accent, #c8a97e);
+	}
+}
+
+.az-mc__cross-sell-price {
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+/* Footer -------------------------------------------------------------- */
+
+.az-mc__header,
+.az-mc__footer,
+.az-mc__shipping,
+.az-mc__cross-sell {
+	flex: 0 0 auto;
+}
+
+.az-mc__footer {
+	padding: 1rem 1.25rem 1.25rem;
+	border-top: 1px solid var(--wp--preset--color--border, #eee);
+}
+
+.az-mc__totals {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.az-mc__totals-label {
+	font-size: 0.95rem;
+	font-weight: 700;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.az-mc__totals-value {
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.az-mc__actions {
+	display: flex;
+	gap: 0.65rem;
+}
+
+.az-mc__button {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: center;
+	padding: 0.7rem 1rem;
+	border-radius: 8px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	line-height: 1.3;
+	text-align: center;
+	text-decoration: none;
+	transition: all 0.2s ease;
+}
+
+.az-mc__button--cart {
+	border: 1px solid var(--wp--preset--color--border, #ddd);
+	background: var(--wp--preset--color--white, #fff);
+	color: var(--wp--preset--color--primary, #1a1a1a);
+
+	&:hover {
+		border-color: var(--wp--preset--color--primary, #1a1a1a);
+	}
+}
+
+.az-mc__button--checkout {
+	border: 1px solid var(--wp--preset--color--primary, #1a1a1a);
+	background: var(--wp--preset--color--primary, #1a1a1a);
+	color: var(--wp--preset--color--white, #fff);
+
+	&:hover {
+		opacity: 0.85;
+	}
+}
+
+/* States -------------------------------------------------------------- */
+
+/* While a request is in flight the panel must not accept further input. */
+.az-mc--busy .az-mc__items,
+.az-mc--busy .az-mc__footer {
+	pointer-events: none;
+	opacity: 0.6;
+}
+
+/* Scroll lock — set on <body> while the drawer is open. */
+.az-mc-locked {
+	overflow: hidden;
+}
+
+@media (max-width: 480px) {
+	.az-mc__panel {
+		width: 100%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.az-mc__panel,
+	.az-mc__backdrop,
+	.az-mc__shipping-bar {
+		transition: none;
+	}
+}

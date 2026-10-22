@@ -1,0 +1,15 @@
+.az-wishlist-link-editor {
+	display: inline-flex;
+}
+
+.az-wishlist-link-editor__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border: 1px solid var(--wp--preset--color--border, #e5e5e5);
+	border-radius: 50%;
+	background: var(--wp--preset--color--white, #fff);
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}

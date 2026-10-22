@@ -1,0 +1,19 @@
+@use "variables" as *;
+
+footer.wp-block-group {
+	// Footer links
+	a {
+		color: $c-white;
+		text-decoration: none;
+		transition: opacity $transition-speed ease;
+
+		&:hover {
+			opacity: 0.8;
+		}
+	}
+
+	// Footer navigation vertical spacing
+	.wp-block-navigation a {
+		color: $c-white !important;
+	}
+}

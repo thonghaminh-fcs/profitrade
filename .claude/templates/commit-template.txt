@@ -1,0 +1,27 @@
+# <type>(<scope>): <subject>
+#
+# Types:  feat fix style refactor perf docs chore test ci revert
+# Scopes: blocks php scss checkout cart shop api templates build wc
+#
+# Subject rules:
+# - Lowercase, imperative ("add" not "added")
+# - No period at end
+# - Max 72 characters
+#
+# ─────────────────────────────────────────
+# Body (optional — explain WHY, not WHAT):
+
+
+#
+# ─────────────────────────────────────────
+# Footer (optional — ticket refs, breaking changes):
+# Closes AZ-
+# BREAKING CHANGE: 
+#
+# ─────────────────────────────────────────
+# Examples:
+#   feat(blocks): add cart-upsell block with lazy-loaded images
+#   fix(checkout): resolve nonce duplication on checkout page
+#   style(scss): add mobile breakpoints to product-filter component
+#   refactor(php): extract ShopQuery into standalone class
+#   chore(build): upgrade @wordpress/scripts to 28.x

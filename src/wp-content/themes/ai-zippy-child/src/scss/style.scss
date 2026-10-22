@@ -1,0 +1,19 @@
+// =============================================================================
+// Child theme styles — client-specific overrides.
+//
+// Parent tokens (colors, breakpoints, mixins) are available via:
+//   @use "@parent-scss/variables" as *;
+//
+// Example:
+//   @use "@parent-scss/variables" as *;
+//   .client-hero { color: $c-accent; @include from(md) { ... } }
+// =============================================================================
+
+@use "@parent-scss/variables" as *;
+
+// Add client-specific styles below.
+// body { /* custom styles */ }
+
+// The mini cart ships a neutral default skin in the parent block's style.scss.
+// Override any `az-mc__*` rule here to reskin it for this client.
+

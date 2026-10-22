@@ -1,0 +1,584 @@
+@use "variables" as *;
+
+// =============================================================================
+// Product Card (.sf__card)
+// =============================================================================
+// Single source of truth for product cards across the site:
+//   - Shop filter React app  (src/js/frontend/shop-filter/shop-filter.scss → @uses this)
+//   - Product Showcase block (src/blocks/product-showcase/style.scss → @uses this)
+//   - Server-rendered cards via AiZippy\Product\Cards::renderFull
+//
+// Uses global theme tokens (no shop-filter-local vars) so it bundles cleanly
+// into either consumer.
+// =============================================================================
+
+.sf__card {
+	border: 1px solid $c-border;
+	border-radius: $border-radius;
+	overflow: hidden;
+	background: $c-white;
+	@include transition((transform, box-shadow, border-color));
+	display: flex;
+	flex-direction: column;
+
+	.sf__grid--list & {
+		flex-direction: row;
+	}
+
+	&:hover {
+		transform: translateY(-2px);
+		border-color: $c-accent;
+		box-shadow: $box-shadow-lg;
+	}
+}
+
+// Image area
+.sf__card-image {
+	position: relative;
+	overflow: hidden;
+	background: #f8f8f8;
+
+	> a {
+		display: block;
+		overflow: hidden;
+	}
+
+	> a > img {
+		width: 100%;
+		aspect-ratio: 3 / 4;
+		object-fit: cover;
+		display: block;
+		transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.sf__grid--list & {
+		width: 220px;
+		min-width: 220px;
+
+		> a > img {
+			height: 100%;
+			aspect-ratio: auto;
+		}
+	}
+
+	.sf__card:hover & > a > img {
+		transform: scale(1.06);
+	}
+}
+
+// Badges
+.sf__badge {
+	position: absolute;
+	top: 0.6rem;
+	left: 0.6rem;
+	padding: 0.3rem 0.75rem;
+	border-radius: 999px;
+	font-size: 0.68rem;
+	font-weight: 600;
+	letter-spacing: 0.2px;
+	z-index: 2;
+
+	&--sale {
+		background: $c-danger;
+		color: $c-white;
+	}
+	&--oos {
+		background: $c-navy;
+		color: $c-white;
+	}
+	&--backorder {
+		background: $c-info;
+		color: $c-white;
+	}
+
+	// Every badge is pinned to the same corner, so a card carrying two of them
+	// (on sale *and* a stock state) needs the second to drop below the first
+	// rather than stack on top of it. A badge is 26px tall at this font size.
+	& + & {
+		top: 2.7rem;
+	}
+}
+
+// Wishlist button (top-right of image)
+.sf__card-wish {
+	position: absolute;
+	top: 0.6rem;
+	right: 0.6rem;
+	width: 34px;
+	height: 34px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: $c-white;
+	border: 1px solid $c-border;
+	border-radius: 50%;
+	cursor: pointer;
+	color: $c-muted;
+	@include transition((color, background, border-color));
+	z-index: 2;
+
+	&:hover,
+	&.is-active {
+		color: $c-danger;
+		background: rgba($c-danger, 0.08);
+		border-color: rgba($c-danger, 0.3);
+	}
+}
+
+// Gallery thumbnails (overlaid at the bottom of the image)
+//
+// Active state uses an offset outer ring (box-shadow trick) instead of a
+// border — keeps the image area uncropped and gives the thumb visual breathing
+// room. Hover gets a softer gray ring so it's distinguishable from active.
+// Absolute positioning keeps the strip out of normal flow so it no longer adds
+// a separate band beneath the product image.
+.sf__card-thumbs {
+	display: flex;
+	gap: 0.5rem;
+	padding: 0.65rem 0.85rem 0.9rem;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 2;
+}
+
+// Optional legacy placement from Zippy AI > General Settings. The body class
+// reaches both React-rendered shop cards and PHP-rendered showcase cards.
+.ai-zippy-card-thumbs-below .sf__card-thumbs {
+	position: relative;
+	left: auto;
+	right: auto;
+	bottom: auto;
+}
+
+.sf__card-thumb {
+	width: 40px;
+	height: 40px;
+	// A swatch is square by definition, so it must never absorb a shortfall in
+	// the row: without this it kept its height and lost width, which read as a
+	// column of tall pills rather than as "these don't fit". Every layout is
+	// sized to fit them below; if one ever isn't, this makes it obvious.
+	flex-shrink: 0;
+	border: none;
+	border-radius: 8px;
+	overflow: hidden;
+	cursor: pointer;
+	background: $c-white;
+	padding: 2px;
+	position: relative;
+
+	// Offset outer ring — lives in box-shadow so it doesn't shift the image.
+	// White inner ring creates the gap between thumb and outer ring.
+	@include transition(box-shadow);
+
+	&:hover {
+		// Soft gray ring on hover — visually different from active
+		box-shadow:
+			0 0 0 2px $c-white,
+			0 0 0 4px rgba(0, 0, 0, 0.12);
+	}
+
+	&.is-active {
+		box-shadow:
+			0 0 0 2px $c-white,
+			0 0 0 4px $c-accent;
+
+		// Override hover-when-active so the active state always reads as accent
+		&:hover {
+			box-shadow:
+				0 0 0 2px $c-white,
+				0 0 0 4px $c-accent;
+		}
+	}
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		display: block;
+		border-radius: 6px;
+	}
+
+	&--more {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: $c-muted;
+		text-decoration: none;
+		background: $c-secondary;
+
+		&:hover {
+			color: $c-primary;
+			box-shadow:
+				0 0 0 2px $c-white,
+				0 0 0 4px $c-border;
+		}
+	}
+}
+
+// Larger tap targets on mobile
+@include until(md) {
+	.sf__card-thumb {
+		width: 44px;
+		height: 44px;
+	}
+}
+
+// Card info
+.sf__card-info {
+	padding: 0.9rem 1rem 1.1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	flex: 1;
+}
+
+.sf__card-cat {
+	font-size: 0.68rem;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	color: $c-muted;
+	font-weight: 600;
+}
+
+.sf__card-title {
+	font-size: 0.92rem;
+	font-weight: 600;
+	color: $c-primary;
+	text-decoration: none;
+	line-height: 1.4;
+	@include transition(color);
+
+	&:hover {
+		color: $c-accent;
+	}
+}
+
+.sf__card-rating {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+// Product ratings are review data, so hide them with the site-wide comments
+// setting across React and server-rendered cards.
+.ai-zippy-comments-disabled .sf__card-rating {
+	display: none;
+}
+
+.sf__stars {
+	color: $c-orange;
+	font-size: 0.78rem;
+	letter-spacing: 1px;
+}
+
+.sf__card-rating-count {
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: $c-muted;
+}
+
+.sf__card-sku {
+	font-size: 0.7rem;
+	color: $c-muted;
+}
+
+.sf__card-desc {
+	font-size: 0.8rem;
+	color: $c-muted;
+	line-height: 1.5;
+	margin: 0.25rem 0;
+}
+
+// Price — .sf__card-price (the price itself) sits on the left, and
+// .sf__card-low-stock (when present) on the right, on the same row.
+.sf__card-pricing {
+	margin-top: 0.25rem;
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem;
+}
+
+// Shown only when in-stock quantity is tracked and under the low-stock
+// threshold (see ProductGrid.jsx) — distinct from the Sold Out badge/button,
+// which cover stock_status === 'outofstock'. The dot before the text mirrors
+// WC's own .stock indicator (a colored dot for in-stock/low-stock/out-of-stock).
+.sf__card-low-stock {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin: 0;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: $c-orange;
+	white-space: nowrap;
+
+	&::before {
+		content: "";
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: currentColor;
+		flex-shrink: 0;
+	}
+}
+
+.sf__card-price {
+	// The two card render paths disagree on whitespace: ProductGrid.jsx injects
+	// price_html from JSON and keeps the text nodes WC puts either side of a range's
+	// dash, while Cards.php echoes it server-side and arrives with none — so the same
+	// product read "$10.00 – $42.00" in the shop grid and "$10.00–$42.00" in
+	// .zp-related. Flex drops whitespace-only nodes from layout altogether, which
+	// makes the gap below the only thing spacing these children, and identical in
+	// both paths. Height is unaffected: the row measures the same as display: block.
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 0.4em;
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: $c-primary;
+
+	del {
+		color: $c-muted;
+		font-size: 0.8em;
+		font-weight: 400;
+	}
+
+	// Only present alongside <del> (a sale product) — a non-sale price is a
+	// bare .woocommerce-Price-amount with no <ins> wrapper, so this never
+	// tints a regular price. General sibling (~), not adjacent (+): WC's
+	// wc_format_sale_price() puts a .screen-reader-text span between <del>
+	// and <ins>.
+	del ~ ins {
+		color: $c-danger;
+	}
+
+	ins {
+		text-decoration: none;
+	}
+}
+
+// Actions row (add to cart + wishlist)
+.sf__card-actions {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: auto;
+	padding-top: 0.75rem;
+}
+
+.sf__card-btn {
+	flex: 1;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.65rem 1rem;
+	background: transparent;
+	color: $c-primary !important;
+	border: 1px solid $c-primary;
+	border-radius: $border-radius;
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	@include transition((background, color, border-color));
+
+	&:hover {
+		background: $c-primary;
+		color: $c-white !important;
+	}
+
+	// Out-of-stock renders this as a <button disabled> rather than an <a>, so
+	// the slot stays occupied instead of collapsing the actions row.
+	&:disabled {
+		background: $c-secondary;
+		border-color: $c-border;
+		color: $c-muted !important;
+		cursor: not-allowed;
+
+		&:hover {
+			background: $c-secondary;
+		}
+	}
+}
+
+// Responsive overrides for list-mode card (used inside shop filter only)
+//
+// These previously set grid-template-columns, which never applied to anything:
+// .sf__card is display:flex, so its row/column split comes from flex-direction
+// plus the fixed width on .sf__card-image. Same two breakpoints, same intent,
+// expressed in the terms the card actually lays out in.
+@include until(md) {
+	// 220px of image against a tablet-width card leaves the text column cramped.
+	.sf__grid--list {
+		.sf__card-image {
+			width: 140px;
+			min-width: 140px;
+		}
+
+		// The swatch row sits inside the image column, and .sf__card-thumb goes up
+		// to 44px at this breakpoint for tap targets — four of those plus gaps want
+		// 200px, which a 140px column can't give. Scaled to fit instead:
+		// 4 x 24px + 3 x 6px of gap = 114px, inside a 120.8px content box.
+		.sf__card-thumbs {
+			gap: 0.375rem;
+			padding: 0.5rem 0.6rem 0.65rem;
+		}
+
+		.sf__card-thumb {
+			width: 24px;
+			height: 24px;
+		}
+	}
+}
+
+@include until(sm) {
+	// A two-column phone grid leaves roughly 138px per card at the narrowest
+	// supported viewport. Four 44px tap targets cannot fit there, so compact the
+	// gallery row while retaining all three previews and the "+N" link.
+	.sf__grid--grid {
+		.sf__card-thumbs {
+			gap: 0.25rem;
+			padding: 0.5rem;
+		}
+
+		.sf__card-thumb {
+			width: 26px;
+			height: 26px;
+			padding: 1px;
+			border-radius: 6px;
+
+			img {
+				border-radius: 4px;
+			}
+		}
+	}
+
+	// Stacking the card here would make list mode indistinguishable from grid
+	// mode, which also drops to a single column below 480px. So the row stays —
+	// being compact and scannable is the point of a list — just at thumbnail
+	// scale rather than the desktop 220px.
+	//
+	// A 120px image keeps enough visual weight in the compact row. Longer action
+	// labels can wrap within the remaining content column when necessary.
+	.sf__grid--list {
+		.sf__card-image {
+			width: 120px;
+			min-width: 120px;
+
+			// Otherwise the image box stretches to the full row height and a
+			// square product photo floats in a tall band of grey.
+			align-self: flex-start;
+
+			> a > img {
+				// Matches the grid card's 3:4 instead of forcing a square
+				// crop — object-fit: cover (inherited from the base rule)
+				// was cutting off the top/bottom of anything not already
+				// shot square, e.g. a full sock rather than just its cuff.
+				height: auto;
+				aspect-ratio: 3 / 4;
+			}
+		}
+
+		.sf__card-info {
+			padding: 0.75rem;
+		}
+
+		.sf__card-actions {
+			// Content-width instead of the desktop row's flex: 1 stretch — a
+			// button spanning this narrow a column, at the desktop padding,
+			// read as oversized next to everything else on a 120px-thumb card.
+			justify-content: flex-start;
+		}
+
+		.sf__card-btn {
+			flex: 0 0 auto;
+			padding: 0.45rem 0.85rem;
+			font-size: 0.65rem;
+		}
+
+		// Top-left, matching the grid card's wishlist corner — sitting at
+		// the vertical middle of the thumb (this card's previous bottom-left
+		// placement) read as misplaced rather than "a corner". The sale/
+		// stock badge yields this corner and drops below instead (see
+		// .sf__badge overrides below), rather than the two competing for it.
+		.sf__card-wish {
+			top: 0.3rem;
+			left: 0.3rem;
+			right: auto;
+			bottom: auto;
+			width: 24px;
+			height: 24px;
+
+			svg {
+				width: 13px;
+				height: 13px;
+			}
+		}
+
+		// The 120px column still can't fit four 24px swatches plus their gaps and
+		// horizontal padding on one line. Shrinking them further would make them too
+		// small to be reliable tap targets, so the row is dropped instead. Picking a
+		// variation is a product-page job on a screen this narrow, and the image
+		// still swaps there.
+		//
+		// Must stay after the until(md) block: same specificity, so source order
+		// is what lets this win over the 24px sizing there.
+		.sf__card-thumbs {
+			display: none;
+		}
+
+		// Scaled to match the thumb. At full size "On Backorder" measures 90px
+		// and was clipped by the image box's overflow: hidden — max-width plus
+		// wrapping means no label can clip, whatever its length. Anchored to
+		// the bottom instead of the desktop top-left — that corner now
+		// belongs to the wishlist heart (see .sf__card-wish above).
+		.sf__badge {
+			top: auto;
+			left: 0.4rem;
+			bottom: 0.4rem;
+			padding: 0.2rem 0.4rem;
+			font-size: 0.6rem;
+			letter-spacing: 0.3px;
+			line-height: 1.3;
+			max-width: calc(100% - 0.8rem);
+			white-space: normal;
+		}
+
+		// A second badge (e.g. on sale AND out of stock) stacks upward from
+		// the first rather than colliding with it.
+		.sf__badge + .sf__badge {
+			bottom: 1.9rem;
+		}
+	}
+}
+
+// Small wishlist button (in actions row)
+.sf__card-wish-sm {
+	width: 38px;
+	height: 38px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: 1px solid #eee;
+	border-radius: $border-radius;
+	cursor: pointer;
+	color: #ccc;
+	@include transition((color, border-color));
+	flex-shrink: 0;
+
+	&:hover,
+	&.is-active {
+		color: $c-orange;
+		border-color: $c-orange;
+	}
+}

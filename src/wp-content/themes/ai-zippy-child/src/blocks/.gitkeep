@@ -1,0 +1,14 @@
+# Placeholder — keeps the directory in git before any blocks exist.
+# Child blocks go here, mirroring the parent's src/blocks structure:
+#
+#   src/blocks/my-block/
+#     block.json
+#     index.js
+#     edit.js
+#     save.js
+#     render.php
+#     style.scss
+#     editor.scss
+#
+# See parent theme's src/blocks/hero-section for a reference implementation,
+# and .claude/rules/blocks.md for conventions.

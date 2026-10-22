@@ -1,0 +1,490 @@
+// Search Bar block — shared frontend + editor styles
+// Uses global CSS custom properties only (no @use) for wp-scripts compat
+
+.zs__block {
+	position: relative;
+}
+
+// =============================================================================
+// Input wrap
+// =============================================================================
+
+.zs__input-wrap {
+	position: relative;
+	display: flex;
+	align-items: center;
+
+	svg.zs__input-icon,
+	img.zs__input-icon,
+	img.zs__custom-icon,
+	> svg:first-child,
+	> img:first-child {
+		position: absolute;
+		left: 0.875rem;
+		color: #999;
+		pointer-events: none;
+		flex-shrink: 0;
+		object-fit: contain;
+	}
+}
+
+.zs__input {
+	width: 100%;
+	height: 44px;
+	padding: 0 2.75rem 0 2.75rem;
+	border: 1px solid #e5e5e5;
+	border-radius: 100px;
+	font-size: 0.875rem;
+	background: #fff;
+	color: #1a1a1a;
+	outline: none;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	appearance: none;
+
+	// Remove native clear button (we have our own)
+	&::-webkit-search-cancel-button,
+	&::-webkit-search-decoration {
+		-webkit-appearance: none;
+	}
+
+	&:focus {
+		border-color: var(--wp--preset--color--accent, #c8a97e);
+		box-shadow: 0 0 0 3px rgba(200, 169, 126, 0.15);
+	}
+
+	&::placeholder {
+		color: #bbb;
+	}
+}
+
+// Clear button (right side of input)
+.zs__clear {
+	position: absolute;
+	right: 0.875rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	background: none;
+	border: none;
+	border-radius: 50%;
+	color: #999;
+	cursor: pointer;
+	padding: 0;
+	transition: color 0.2s ease, background 0.2s ease;
+
+	&:hover {
+		color: #1a1a1a;
+		background: #f0f0f0;
+	}
+}
+
+// =============================================================================
+// Icon-only trigger
+// =============================================================================
+
+.zs__icon-trigger img.zs__custom-icon,
+.zs__icon-trigger svg {
+	width: var(--zs-icon-size, 20px);
+	height: var(--zs-icon-size, 20px);
+	object-fit: contain;
+	display: block;
+}
+
+.zs__icon-trigger {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	background: none;
+	border: none;
+	border-radius: 50%;
+	color: #1a1a1a;
+	text-decoration: none;
+	cursor: pointer;
+	outline: none;
+	transition: background 0.2s ease, color 0.2s ease;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.06);
+		color: var(--wp--preset--color--accent, #c8a97e);
+	}
+
+	&:focus {
+		outline: none;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wp--preset--color--accent, #c8a97e);
+		outline-offset: 2px;
+	}
+}
+
+// =============================================================================
+// Dropdown results (inline mode)
+// =============================================================================
+
+.zs__results {
+	display: none; // shown by JS when results arrive
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	right: 0;
+	background: #fff;
+	border: 1px solid #e5e5e5;
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+	overflow: hidden;
+	z-index: 200;
+	max-height: 480px;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+
+	&.is-open {
+		display: block;
+	}
+}
+
+// =============================================================================
+// Result items
+// =============================================================================
+
+.zs__group-label {
+	padding: 0.6rem 1rem 0.3rem;
+	font-size: 0.65rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	color: #999;
+}
+
+.zs__item {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	padding: 0.6rem 1rem;
+	cursor: pointer;
+	transition: background 0.15s ease;
+	text-decoration: none;
+	color: inherit;
+
+	&:hover,
+	&.is-active {
+		background: #f8f6f3;
+	}
+
+	&.is-active {
+		background: #f3ede4;
+	}
+}
+
+.zs__item-thumb {
+	width: 48px;
+	height: 48px;
+	border-radius: 8px;
+	overflow: hidden;
+	flex-shrink: 0;
+	background: #f5f5f5;
+	border: 1px solid #eee;
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		display: block;
+		padding: 4px;
+	}
+
+	&--post {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #bbb;
+
+		img {
+			object-fit: cover;
+			padding: 0;
+		}
+	}
+}
+
+.zs__item-body {
+	flex: 1;
+	min-width: 0;
+}
+
+.zs__item-title {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #1a1a1a;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	mark {
+		background: rgba(200, 169, 126, 0.25);
+		color: inherit;
+		border-radius: 2px;
+		padding: 0 1px;
+	}
+}
+
+.zs__item-meta {
+	font-size: 0.72rem;
+	color: #999;
+	margin-top: 2px;
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+
+	.zs__item-cat {
+		color: var(--wp--preset--color--accent, #c8a97e);
+		font-weight: 600;
+	}
+
+	.zs__item-sku {
+		font-family: monospace;
+		font-size: 0.68rem;
+	}
+
+	.zs__item-badge {
+		display: inline-flex;
+		align-items: center;
+		padding: 1px 6px;
+		border-radius: 100px;
+		font-size: 0.62rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
+
+		&--sale {
+			background: #fff3e8;
+			color: #ff6b00;
+		}
+
+		&--oos {
+			background: #f5f5f5;
+			color: #999;
+		}
+	}
+}
+
+.zs__item-price {
+	font-size: 0.875rem;
+	font-weight: 700;
+	color: #1a1a1a;
+	white-space: nowrap;
+	margin-left: auto;
+	padding-left: 0.5rem;
+	flex-shrink: 0;
+
+	del {
+		font-size: 0.72rem;
+		color: #bbb;
+		font-weight: 400;
+	}
+
+	ins {
+		text-decoration: none;
+	}
+}
+
+// =============================================================================
+// States: loading, empty, error
+// =============================================================================
+
+.zs__state {
+	padding: 1.5rem 1rem;
+	text-align: center;
+	color: #999;
+	font-size: 0.85rem;
+
+	&--loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+	}
+}
+
+.zs__spinner {
+	width: 16px;
+	height: 16px;
+	border: 2px solid #e5e5e5;
+	border-top-color: var(--wp--preset--color--accent, #c8a97e);
+	border-radius: 50%;
+	animation: zs-spin 0.6s linear infinite;
+}
+
+@keyframes zs-spin {
+	to { transform: rotate(360deg); }
+}
+
+// View all link
+.zs__view-all {
+	display: block;
+	padding: 0.75rem 1rem;
+	text-align: center;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: var(--wp--preset--color--accent, #c8a97e);
+	text-decoration: none;
+	border-top: 1px solid #f0f0f0;
+	transition: background 0.15s ease;
+
+	&:hover {
+		background: #f8f6f3;
+	}
+}
+
+// =============================================================================
+// Modal (icon mode)
+// =============================================================================
+
+.zs__modal {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	padding-top: 80px;
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.zs__modal-backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	animation: zs-fade-in 0.2s ease;
+}
+
+.zs__modal-inner {
+	position: relative;
+	width: 100%;
+	max-width: 640px;
+	margin: 0 1rem;
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+	overflow: hidden;
+	animation: zs-slide-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+	.zs__input-wrap {
+		padding: 1rem 1.25rem;
+		border-bottom: 1px solid #f0f0f0;
+	}
+
+	.zs__input {
+		border: none;
+		border-radius: 0;
+		height: 48px;
+		padding-left: 2.75rem;
+		font-size: 1rem;
+		box-shadow: none;
+
+		&:focus {
+			border: none;
+			box-shadow: none;
+		}
+	}
+
+	.zs__results {
+		position: static;
+		border: none;
+		border-radius: 0;
+		box-shadow: none;
+		max-height: 420px;
+	}
+}
+
+.zs__modal-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.75rem 1.25rem;
+	border-bottom: 1px solid #f0f0f0;
+}
+
+.zs__modal-title {
+	font-size: 0.875rem;
+	font-weight: 700;
+	color: #1a1a1a;
+}
+
+.zs__modal-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.35rem;
+	min-height: 34px;
+	padding: 0.35rem 0.7rem;
+	border: 1px solid #e5e5e5;
+	border-radius: 100px;
+	background: #fff;
+	color: #555;
+	font: inherit;
+	font-size: 0.75rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+
+	&:hover {
+		border-color: #ccc;
+		background: #f5f5f5;
+		color: #1a1a1a;
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--wp--preset--color--accent, #c8a97e);
+		outline-offset: 2px;
+	}
+}
+
+.zs__footer {
+	padding: 0.6rem 1.25rem;
+	border-top: 1px solid #f0f0f0;
+	background: #fafafa;
+}
+
+.zs__hint {
+	font-size: 0.7rem;
+	color: #bbb;
+
+	kbd {
+		display: inline-block;
+		padding: 0 4px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #fff;
+		font-family: inherit;
+		font-size: 0.68rem;
+		color: #666;
+	}
+}
+
+@keyframes zs-fade-in {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes zs-slide-in {
+	from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+	to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+// Reduced motion
+@media (prefers-reduced-motion: reduce) {
+	.zs__modal-backdrop,
+	.zs__modal-inner {
+		animation: none;
+	}
+}

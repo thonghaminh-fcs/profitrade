@@ -1,0 +1,92 @@
+// Base styles that extend beyond theme.json capabilities
+
+@use "variables" as *;
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+// Smooth scrolling for anchor links, scrollTo() calls, etc.
+// Honor OS-level reduce-motion preference for accessibility.
+html {
+	scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+a {
+	@include transition((color, opacity));
+}
+
+// =============================================================================
+// Scroll-to-top button (created by /modules/scroll-to-top.js)
+// =============================================================================
+.az-scroll-top {
+	position: fixed;
+	right: 1.25rem;
+	bottom: 1.25rem;
+	z-index: 998; // below modals/lightbox (9999), above page content
+	width: 44px;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: $c-primary;
+	color: $c-white;
+	border: none;
+	border-radius: 50%;
+	cursor: pointer;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	opacity: 0;
+	transform: translateY(8px);
+	pointer-events: none;
+	transition:
+		opacity 0.25s $transition-ease,
+		transform 0.25s $transition-ease,
+		background 0.2s $transition-ease,
+		box-shadow 0.2s $transition-ease;
+
+	&.is-visible {
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+
+	&:hover {
+		background: #333;
+		box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+		transform: translateY(-2px);
+	}
+
+	&:active {
+		transform: translateY(0);
+	}
+
+	&:focus-visible {
+		outline: 2px solid $c-accent;
+		outline-offset: 3px;
+	}
+
+	// On mobile product pages, lift above the sticky add-to-cart bar (~70px tall).
+	@include until(md) {
+		bottom: 1rem;
+		right: 1rem;
+	}
+}
+
+@include until(md) {
+	body.single-product .az-scroll-top {
+		bottom: 90px;
+	}
+}

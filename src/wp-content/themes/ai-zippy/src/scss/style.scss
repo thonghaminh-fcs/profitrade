@@ -1,0 +1,26 @@
+// AI Zippy Theme Styles
+
+@use "variables" as *;
+@use "base";
+@use "header";
+@use "wishlist";
+@use "shop";
+@use "cart";
+// mini-cart is deliberately absent: the core-block overrides now live in
+// mini-cart-legacy-entry.scss and are enqueued only where they still apply
+// (AiZippy\Cart\MiniCart). The ai-zippy/mini-cart block styles itself.
+@use "add-to-cart";
+@use "checkout";
+@use "wc-notices";
+@use "account";
+// Base .sf__card styles. Needed globally, not just in the shop-filter and
+// product-showcase bundles: Cards::render() also outputs .sf__card markup for
+// related products on single product pages, which load neither of those.
+@use "product-card";
+@use "single-product";
+@use "search-results";
+@use "404" as error-404;
+@use "blog-archive";
+@use "single-post";
+@use "comments";
+@use "footer";

@@ -1,0 +1,169 @@
+// Product Showcase Block — Frontend + Editor styles
+//
+// Card markup (.sf__card*) lives in the shared partial. Block-specific layout
+// (header, grid wrapper, slider nav, pagination) stays in this file.
+
+@use "../../scss/product-card";
+
+$ps-primary: var(--wp--preset--color--primary, #1a1a1a);
+$ps-accent: var(--wp--preset--color--accent, #c8a97e);
+$ps-navy: #1b2a4a;
+$ps-orange: #ff6b00;
+$ps-radius: 12px;
+$ps-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+.wp-block-ai-zippy-product-showcase {
+	margin: 0 auto;
+
+	// ---- LOADING STATE (frontend only) ----
+	// Skeleton is hidden inside the block editor (body.block-editor-page or .editor-styles-wrapper).
+	// On the frontend, view.js adds .is-loaded to reveal content.
+	&:not(.is-loaded) {
+		.ps__header {
+			visibility: hidden;
+			height: 0;
+			overflow: hidden;
+		}
+
+		.ps__grid,
+		.ps__swiper {
+			visibility: hidden;
+			height: 0;
+			overflow: hidden;
+		}
+
+		// Show skeleton instead
+		&::after {
+			content: "";
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 1.25rem;
+			min-height: 380px;
+			background:
+				// Card 1
+				linear-gradient(#f0f0f0, #f0f0f0) 0 0 / 100% 100% no-repeat;
+			border-radius: $ps-radius;
+			animation: psShimmer 1.5s ease infinite;
+			background-size: 200% 100%;
+			background-image: linear-gradient(90deg, #f2f2f2 25%, #e8e8e8 50%, #f2f2f2 75%);
+		}
+	}
+
+	// Loaded — fade in content
+	&.is-loaded {
+		.ps__header,
+		.ps__grid,
+		.ps__swiper {
+			animation: psFadeIn 0.4s ease;
+		}
+	}
+}
+
+@keyframes psShimmer {
+	0% { background-position: 200% 0; }
+	100% { background-position: -200% 0; }
+}
+
+@keyframes psFadeIn {
+	from { opacity: 0; transform: translateY(8px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+// ---- HEADER (title + nav arrows) ----
+.ps__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+}
+
+.ps__heading {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 0;
+	color: $ps-primary;
+}
+
+.ps__nav {
+	display: flex;
+	gap: 0.5rem;
+}
+
+.ps__nav-btn {
+	width: 40px;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ddd;
+	border-radius: 50%;
+	background: #fff;
+	color: #666;
+	cursor: pointer;
+	transition: all $ps-transition;
+
+	&:hover {
+		border-color: $ps-navy;
+		color: $ps-navy;
+		background: #f8f8f8;
+	}
+}
+
+// ---- GRID LAYOUT ----
+.ps__grid {
+	display: grid;
+	gap: 1.25rem;
+}
+
+// ---- SLIDER ----
+.ps__swiper {
+	overflow: hidden;
+	padding-bottom: 3.5rem !important;  // Space for pagination
+
+	.swiper-slide {
+		height: auto; // Equal height slides
+	}
+}
+
+.ps__pagination {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	text-align: center;
+
+	.swiper-pagination-bullet {
+		width: 8px;
+		height: 8px;
+		background: #ccc;
+		opacity: 1;
+		transition: all $ps-transition;
+
+		&-active {
+			background: $ps-navy;
+			width: 24px;
+			border-radius: 4px;
+		}
+	}
+}
+
+// ---- PRODUCT CARD ----
+
+// ---- RESPONSIVE ----
+@media (max-width: 768px) {
+	.ps__grid {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+}
+
+@media (max-width: 480px) {
+	.ps__grid {
+		grid-template-columns: 1fr !important;
+	}
+
+	.ps__header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.75rem;
+	}
+}

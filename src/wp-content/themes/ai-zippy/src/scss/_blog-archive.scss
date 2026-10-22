@@ -1,0 +1,283 @@
+@use "variables" as *;
+
+// =============================================================================
+// Blog archive / posts listing (.az-blog / .az-blog-card)
+// =============================================================================
+// Scoped to the class hooks added in templates/index.html and
+// templates/archive.html so it never touches the WooCommerce shop archive
+// (archive-product.html) or the search results listing (body.search-results,
+// styled in _search-results.scss).
+//
+// Card visuals mirror the product card (_product-card.scss): white surface,
+// $c-border hairline, rounded corners, a resting shadow, and an accent-border
+// lift on hover. The featured image is pulled full-bleed to the card edges.
+// =============================================================================
+
+// ---- Blog hero banner (mirrors the Shop page hero) ------------------------
+.blog-hero {
+	position: relative;
+	overflow: hidden;
+
+	&::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+		background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 100%);
+	}
+
+	> * {
+		position: relative;
+		z-index: 1;
+	}
+
+	.wc-block-breadcrumbs,
+	.woocommerce-breadcrumb {
+		opacity: 0.7;
+
+		a {
+			color: $c-white !important;
+			text-decoration: none;
+
+			&:hover {
+				opacity: 0.8;
+			}
+		}
+	}
+
+	.wp-block-heading {
+		margin-top: 0;
+		line-height: 1.2;
+	}
+
+	p {
+		max-width: 620px;
+		margin-bottom: 0;
+		opacity: 0.82;
+		line-height: 1.6;
+	}
+}
+
+// ---- Archive heading + term description ----------------------------------
+.az-blog-title {
+	color: $c-primary;
+	font-weight: 700;
+	line-height: 1.2;
+	font-size: clamp(1.75rem, 3vw, 2.25rem) !important;
+}
+
+.az-blog-term-desc {
+	color: $c-muted;
+	line-height: 1.6;
+}
+
+// ---- Listing grid ---------------------------------------------------------
+.az-blog {
+	.wp-block-post-template {
+		grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+		gap: 1.5rem;
+
+		// Both the blog index and archive use three columns on desktop. Keep the
+		// explicit rule here so the layout does not depend on WordPress's generated
+		// Query block CSS; collapse responsively below.
+		@include until(lg) {
+			grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+		}
+
+		@include until(sm) {
+			grid-template-columns: 1fr !important;
+		}
+	}
+
+	// ---- Pagination (mirrors _search-results.scss) ------------------------
+	.wp-block-query-pagination {
+		gap: 0.5rem;
+		margin-top: 2.5rem !important;
+
+		.wp-block-query-pagination-numbers {
+			display: flex;
+			gap: 0.5rem;
+			margin: 0;
+		}
+
+		.page-numbers,
+		.wp-block-query-pagination-previous,
+		.wp-block-query-pagination-next {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 38px;
+			height: 38px;
+			margin: 0;
+			padding: 0 0.75rem;
+			border: 1px solid $c-border;
+			border-radius: 100px;
+			background: $c-white;
+			color: $c-primary;
+			font-size: 0.8rem;
+			font-weight: 600;
+			text-decoration: none;
+			@include transition((background, border-color, color));
+
+			&:hover,
+			&.current {
+				border-color: $c-primary;
+				background: $c-primary;
+				color: $c-white;
+			}
+		}
+	}
+
+	.wp-block-query-no-results {
+		padding: 3rem 1.5rem;
+		border-radius: $border-radius-lg;
+		background: $c-white;
+		border: 1px solid $c-border;
+		color: $c-muted;
+		text-align: center;
+	}
+}
+
+// ---- Card -----------------------------------------------------------------
+.az-blog-card {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: 0;
+	background: $c-white;
+	border: 1px solid $c-border;
+	border-radius: $border-radius-lg;
+	box-shadow: $box-shadow;
+	overflow: hidden;
+	@include transition((transform, box-shadow, border-color));
+
+	&:hover {
+		transform: translateY(-2px);
+		border-color: $c-accent;
+		box-shadow: $box-shadow-lg;
+	}
+
+	// The card itself has no padding, so the featured image fills the full card
+	// width without fighting WordPress's constrained-layout margins. Text lives
+	// in a dedicated padded wrapper below.
+	> .wp-block-post-featured-image {
+		width: 100%;
+		max-width: none;
+		margin: 0;
+		overflow: hidden;
+		background: $c-secondary;
+
+		a,
+		img {
+			display: block;
+			width: 100%;
+		}
+
+		img {
+			aspect-ratio: 16 / 9;
+			object-fit: cover;
+			transition: transform 0.5s $transition-ease;
+		}
+	}
+
+	&:hover > .wp-block-post-featured-image img {
+		transform: scale(1.05);
+	}
+
+	> .az-blog-card-content {
+		width: 100%;
+		max-width: none;
+		margin-top: 0 !important;
+		padding: 1.25rem;
+		box-sizing: border-box;
+		background: $c-white;
+	}
+
+	// Image-less cards render a dedicated placeholder panel so the missing-image
+	// state remains visible even when single-column cards shrink to their content.
+	// Check for an actual image because WordPress may output an empty block wrapper.
+	&:not(:has(> .wp-block-post-featured-image img)) {
+		&::before {
+			content: "";
+			display: block;
+			width: 100%;
+			aspect-ratio: 16 / 9;
+			flex: 0 0 auto;
+			background: #eee5d8;
+			background: linear-gradient(
+				135deg,
+				color-mix(in srgb, $c-secondary 82%, $c-accent) 0%,
+				color-mix(in srgb, $c-secondary 58%, $c-accent) 100%
+			);
+		}
+
+		> .az-blog-card-content {
+			margin-top: 0 !important;
+			border-top: 1px solid $c-border;
+		}
+	}
+
+	// Title — two-class specificity beats the .has-large-font-size preset, so
+	// the card controls its own scale on both the 2-col and 3-col layouts.
+	> .az-blog-card-content > .wp-block-post-title {
+		margin: 0 0 0.4rem;
+		font-size: 1.2rem !important;
+		font-weight: 700;
+		line-height: 1.35;
+
+		a {
+			color: $c-primary;
+			text-decoration: none;
+			@include transition(color);
+
+			&:hover {
+				color: $c-accent;
+			}
+		}
+	}
+
+	> .az-blog-card-content > .wp-block-post-date {
+		margin: 0 0 0.65rem;
+		color: $c-muted;
+		font-size: 0.75rem !important;
+	}
+
+	> .az-blog-card-content > .wp-block-post-excerpt {
+		margin: 0;
+		color: #666;
+		font-size: 0.9rem;
+		line-height: 1.6;
+
+		p {
+			margin: 0;
+
+			&:empty {
+				display: none;
+			}
+		}
+
+		// "Read more" link
+		.wp-block-post-excerpt__more-link {
+			display: inline-block;
+			margin-top: 0.6rem;
+			color: $c-accent;
+			font-weight: 600;
+			font-size: 0.8rem;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	@include until(sm) {
+		> .az-blog-card-content {
+			padding: 1rem;
+		}
+
+		> .az-blog-card-content > .wp-block-post-title {
+			font-size: 1.1rem !important;
+		}
+	}
+}

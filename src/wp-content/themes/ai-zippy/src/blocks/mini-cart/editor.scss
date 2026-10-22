@@ -1,0 +1,18 @@
+/**
+ * Mini cart — editor only.
+ *
+ * edit.js renders the toggle alone, but style.scss still ships the drawer rules.
+ * If a drawer ever reaches the canvas (a stale block, a pattern preview) its
+ * `position: fixed` would cover the whole editor, so it is neutralised here.
+ *
+ * Doubled class for specificity over style-index.css, per .claude/rules/scss-css.md.
+ */
+
+.wp-block-ai-zippy-mini-cart.wp-block-ai-zippy-mini-cart .az-mc__drawer {
+	display: none !important;
+}
+
+/* The editor preview is not interactive; a pointer cursor would imply it is. */
+.az-mc--editor .az-mc__toggle {
+	cursor: default;
+}

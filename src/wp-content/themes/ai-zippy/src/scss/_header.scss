@@ -1,0 +1,46 @@
+@use "variables" as *;
+
+// Sticky header
+header.wp-block-group {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	transition: box-shadow $transition-speed ease;
+
+	// Add shadow on scroll (via JS or native)
+	&.is-scrolled {
+		box-shadow: $box-shadow;
+	}
+}
+
+// Navigation links
+.wp-block-navigation a {
+	transition: color $transition-speed ease;
+
+	&:hover {
+		color: $c-accent !important;
+	}
+}
+
+// Mobile menu overlay
+// Core pads this with `clamp(1rem, var(--wp--style--root--padding-*), 20rem)`,
+// but this theme doesn't opt into root-padding-aware alignments, so those custom
+// properties don't exist. That makes core's declaration invalid at computed-value
+// time — and since that happens *after* the cascade, its winning declaration
+// collapses to padding: 0 rather than yielding to ours. So this has to out-specify
+// core's `.…container.is-menu-open:not(.disable-default-overlay)` (three classes);
+// the `body` prefix does that, and `:not()` is mirrored so the disable-default-
+// overlay variant keeps core's own inset behaviour.
+body .wp-block-navigation__responsive-container.is-menu-open:not(.disable-default-overlay) {
+	padding: 1.5rem 1.5rem 2rem;
+}
+
+// CTA button in header
+header .wp-block-button__link {
+	transition: transform $transition-speed ease, box-shadow $transition-speed ease;
+
+	&:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	}
+}

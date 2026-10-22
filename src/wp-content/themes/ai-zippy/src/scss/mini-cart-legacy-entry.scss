@@ -1,0 +1,16 @@
+// Deprecated: overrides for the core woocommerce/mini-cart block.
+//
+// These rules target WooCommerce's internal .wc-block-mini-cart__* class names,
+// which are not a public API — a Woo release can rename them and break every
+// site at once. The ai-zippy/mini-cart block exists so the markup and the class
+// names belong to the theme instead.
+//
+// This used to be @use'd by style.scss, so it shipped on every page of every
+// site. It is now its own entry, enqueued by AiZippy\Cart\MiniCart only while a
+// site's header still holds the core block. Existing sites therefore keep their
+// styling until they swap the block, and new sites never download it.
+//
+// Nothing new belongs in here. Delete this entry and _mini-cart.scss once no
+// site ships woocommerce/mini-cart.
+
+@use "mini-cart";

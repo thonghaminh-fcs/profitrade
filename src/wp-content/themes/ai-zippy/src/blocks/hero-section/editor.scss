@@ -1,0 +1,35 @@
+// Editor-only styles for Hero Section block
+
+.wp-block-ai-zippy-hero-section {
+	// Make RichText fields visible in editor
+	.block-editor-rich-text__editable {
+		&:focus {
+			outline: 2px solid rgba(74, 124, 89, 0.4);
+			outline-offset: 2px;
+			border-radius: 4px;
+		}
+	}
+
+	// Button placeholder in editor
+	.hero-section__btn {
+		min-width: 140px;
+
+		&:empty::before {
+			opacity: 0.4;
+		}
+	}
+
+	// Tagline placeholder
+	.hero-section__tagline {
+		min-width: 100px;
+
+		&:empty::before {
+			opacity: 0.4;
+		}
+	}
+
+	// Card placeholder visible
+	.hero-section__card-placeholder {
+		border: 2px dashed rgba(255, 255, 255, 0.3);
+	}
+}

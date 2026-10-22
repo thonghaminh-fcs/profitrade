@@ -1,0 +1,58 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/brand-intro",
+	"version": "1.0.0",
+	"title": "Brand Intro",
+	"category": "ai-zippy",
+	"icon": "store",
+	"description": "Hero image with arch overlay tagline and brand story section below.",
+	"keywords": ["brand", "intro", "about", "hero", "story"],
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"attributes": {
+		"heroImageId": {
+			"type": "number",
+			"default": 0
+		},
+		"heroImageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"tagline": {
+			"type": "string",
+			"default": "Pure Vegetarian.\nAuthentic.\nMade with Care."
+		},
+		"subtitle": {
+			"type": "string",
+			"default": "Wholesome Indian vegetarian meals cooked with quality ingredients, strict hygiene, and the same care we give our own family."
+		},
+		"brandName": {
+			"type": "string",
+			"default": "KALINDI'S KUZINES"
+		},
+		"story": {
+			"type": "string",
+			"default": "Kalindi's Kuzines began in 2016 with one simple idea to share honest, home-cooked vegetarian food made with care. What started in a small home kitchen has grown into a trusted name for fresh, homestyle Indian meals across Singapore..."
+		},
+		"linkText": {
+			"type": "string",
+			"default": "Learn more"
+		},
+		"linkUrl": {
+			"type": "string",
+			"default": "/about"
+		},
+		"bgColor": {
+			"type": "string",
+			"default": "#f5f0eb"
+		}
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

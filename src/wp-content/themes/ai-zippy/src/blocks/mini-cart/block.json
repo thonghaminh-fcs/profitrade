@@ -1,0 +1,81 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/mini-cart",
+	"version": "1.0.0",
+	"title": "Mini Cart",
+	"category": "ai-zippy",
+	"icon": "cart",
+	"description": "Cart toggle with a slide-in drawer. Replaces the WooCommerce Mini-Cart block so the markup and class names belong to the theme instead of WooCommerce internals.",
+	"keywords": ["cart", "mini cart", "drawer", "woocommerce", "basket"],
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"spacing": { "margin": true, "padding": true },
+		"color": { "text": true, "background": false },
+		"typography": { "fontSize": true }
+	},
+	"attributes": {
+		"iconStyle": {
+			"type": "string",
+			"default": "bag",
+			"enum": ["bag", "cart", "basket", "custom"]
+		},
+		"customIconUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"customIconId": {
+			"type": "number",
+			"default": 0
+		},
+		"showCount": {
+			"type": "boolean",
+			"default": true
+		},
+		"showSubtotal": {
+			"type": "boolean",
+			"default": false
+		},
+		"badgePosition": {
+			"type": "string",
+			"default": "top-right",
+			"enum": ["top-right", "top-left", "inline"]
+		},
+		"drawerSide": {
+			"type": "string",
+			"default": "right",
+			"enum": ["right", "left"]
+		},
+		"openOnAdd": {
+			"type": "boolean",
+			"default": true
+		},
+		"showFreeShippingProgress": {
+			"type": "boolean",
+			"default": false
+		},
+		"thresholdSource": {
+			"type": "string",
+			"default": "woo",
+			"enum": ["woo", "manual"]
+		},
+		"manualThreshold": {
+			"type": "number",
+			"default": 0
+		},
+		"showCrossSell": {
+			"type": "boolean",
+			"default": false
+		},
+		"crossSellCount": {
+			"type": "number",
+			"default": 3
+		}
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

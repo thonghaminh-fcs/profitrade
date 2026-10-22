@@ -1,0 +1,1074 @@
+// Shop Filter React App Styles
+
+// Card markup (.sf__card*) lives in the shared partial so the showcase block
+// and any other server-rendered cards share one CSS source of truth.
+@use "@scss/product-card";
+
+$sf-primary: var(--wp--preset--color--primary, #1a1a1a);
+$sf-accent: var(--wp--preset--color--accent, #c8a97e);
+$sf-bg: var(--wp--preset--color--secondary, #f5f5f5);
+$sf-white: var(--wp--preset--color--white, #ffffff);
+$sf-danger: var(--wp--preset--color--danger, #e53935);
+$sf-muted: var(--wp--preset--color--muted, #999999);
+$sf-border: #e5e5e5;
+$sf-radius: 8px;
+$sf-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// ---- LAYOUT ----
+.sf {
+	max-width: 1200px;
+	margin: 0 auto;
+	min-height: 80vh;
+}
+
+// ---- INITIAL LOADING STATE ----
+.sf--loading {
+	min-height: 80vh;
+
+	.sf__toolbar-skeleton {
+		height: 50px;
+		border-radius: $sf-radius;
+		margin-bottom: 1rem;
+		background: linear-gradient(90deg, #f5f5f5 25%, #eee 50%, #f5f5f5 75%);
+		background-size: 200% 100%;
+		animation: sfShimmer 1.5s ease infinite;
+	}
+
+	.sf__filters-skeleton {
+		width: 260px;
+		min-width: 260px;
+		min-height: 400px;
+		border-radius: $sf-radius;
+		background: linear-gradient(90deg, #f5f5f5 25%, #eee 50%, #f5f5f5 75%);
+		background-size: 200% 100%;
+		animation: sfShimmer 1.5s ease infinite;
+	}
+
+	.sf__body {
+		display: flex;
+		gap: 2rem;
+	}
+
+	.sf__products {
+		flex: 1;
+		min-width: 0;
+	}
+}
+
+// Match the initial filter skeleton to the desktop top-mode layout: search on
+// its own row, followed by the filter cards. The mobile rules hide this skeleton
+// because filters live in a closed drawer until the user opens them.
+@media (min-width: 841px) {
+	.sf--loading .sf__filters-skeleton--top {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		align-items: start;
+		gap: 1rem;
+		width: 100%;
+		min-width: 0;
+		min-height: 0;
+		padding: 1.25rem;
+		box-sizing: border-box;
+		background: $sf-bg;
+		animation: none;
+
+		.sf__filter-skeleton {
+			height: 48px;
+			border: 1px solid $sf-border;
+			border-radius: $sf-radius;
+			background: linear-gradient(90deg, #fff 25%, #eee 50%, #fff 75%);
+			background-size: 200% 100%;
+			animation: sfShimmer 1.5s ease infinite;
+
+			&--search {
+				grid-column: 1 / -1;
+				height: 42px;
+			}
+		}
+	}
+}
+
+.sf__body {
+	display: flex;
+	gap: 2rem;
+}
+
+// Loading state
+.sf-loading {
+	text-align: center;
+	padding: 3rem;
+	color: #999; 
+}
+
+// Sidebar mode — desktop
+.sf--sidebar .sf__filters--sidebar {
+	width: 260px;
+	min-width: 260px;
+	position: sticky;
+	top: 5rem;
+	align-self: flex-start;
+	max-height: calc(100vh - 6rem);
+	overflow-y: auto;
+	padding-right: 0.5rem;
+
+	&::-webkit-scrollbar {
+		width: 4px;
+	}
+	&::-webkit-scrollbar-thumb {
+		background: #ddd;
+		border-radius: 2px;
+	}
+
+	.sf__filters-header {
+		display: none;
+	}
+}
+
+.sf--sidebar .sf__products {
+	flex: 1;
+	min-width: 0;
+}
+
+// Top mode
+.sf--top .sf__body {
+	flex-direction: column;
+}
+
+.sf--top .sf__filters--top {
+	width: 100%;
+	padding: 1.25rem;
+	background: $sf-bg;
+	border-radius: $sf-radius;
+	margin-bottom: 1.5rem;
+
+	.sf__section {
+		padding-bottom: 0;
+		margin-bottom: 0;
+	}
+
+	.sf__filters-header {
+		display: none;
+	}
+}
+
+// The filter sections live inside .sf__filters-body, so that wrapper—not the
+// outer panel—owns the desktop grid. Keeping this desktop-only lets the existing
+// mobile bottom-sheet continue to use its normal stacked flow.
+@media (min-width: 841px) {
+	.sf--top .sf__filters--top .sf__filters-body {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		align-items: start;
+		gap: 1rem;
+
+		// Search occupies its own full-width first row; the remaining filter
+		// sections auto-flow across the row below.
+		.sf__section--search {
+			grid-column: 1 / -1;
+		}
+	}
+}
+
+// ---- TOOLBAR ----
+.sf__toolbar {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	padding: 0.75rem 0;
+	margin-bottom: 1rem;
+	border-bottom: 1px solid $sf-border;
+}
+
+.sf__toolbar-left,
+.sf__toolbar-right {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.sf__count {
+	font-size: 0.85rem;
+	color: #666;
+}
+
+.sf__sort {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	padding: 0.45rem 2rem 0.45rem 0.75rem;
+	border: 1px solid $sf-border;
+	border-radius: $sf-radius;
+	font-size: 0.8rem;
+	background-color: $sf-white;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%231a1a1a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 0.75rem center;
+	background-size: 10px 6px;
+	cursor: pointer;
+	transition: border-color $sf-transition;
+
+	&:focus {
+		border-color: $sf-primary;
+		outline: none;
+	}
+}
+
+.sf__layout-toggle,
+.sf__view-toggle {
+	display: flex;
+	gap: 2px;
+}
+
+.sf__layout-btn,
+.sf__view-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	border: 1px solid $sf-border;
+	background: #fff;
+	color: #aaa;
+	cursor: pointer;
+	transition: all $sf-transition;
+
+	&:first-child {
+		border-radius: $sf-radius 0 0 $sf-radius;
+	}
+	&:last-child {
+		border-radius: 0 $sf-radius $sf-radius 0;
+	}
+
+	&:hover,
+	&.is-active {
+		border-color: $sf-primary;
+		color: $sf-primary;
+		background: $sf-bg;
+	}
+}
+
+// Mobile floating filter button — hidden on desktop (shown in the
+// max-width: 840px block below). Fixed to the viewport corner rather than
+// pinned inline in the toolbar, so it stays reachable while scrolling
+// without sticking a whole bar to the top (and the visible seam that made
+// against whatever content scrolls underneath it). Pinned to the LEFT —
+// .az-scroll-top (theme-wide back-to-top button) already owns the
+// bottom-right corner (see _base.scss); sharing that corner would overlap
+// the two whenever both are visible.
+.sf__filter-fab {
+	display: none;
+	align-items: center;
+	gap: 0.4rem;
+	position: fixed;
+	left: 1rem;
+	bottom: 1.25rem;
+	z-index: 900;
+	padding: 0.75rem 1.1rem;
+	border: none;
+	border-radius: 999px;
+	background: $sf-primary;
+	color: $sf-white;
+	font-size: 0.85rem;
+	font-weight: 700;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	transition: background $sf-transition, transform $sf-transition;
+
+	&:hover {
+		background: $sf-accent;
+		transform: translateY(-2px);
+	}
+}
+
+// ---- FILTER PANEL ----
+// Each section renders as its own card (border + radius), matching the
+// sidebar's "widget panel" look, rather than one flat block with dividers.
+.sf__filters {
+	background: transparent;
+}
+
+// Mobile bottom-sheet chrome — hidden by default (desktop sidebar), shown
+// only inside the max-width: 840px block further down.
+.sf__filters-grabber,
+.sf__filters-footer {
+	display: none;
+}
+
+.sf__filters-header {
+	display: none;
+	justify-content: space-between;
+	align-items: center;
+	flex-shrink: 0;
+	padding: 0.5rem 1.25rem 1rem;
+	border-bottom: 1px solid $sf-border;
+	margin-bottom: 1rem;
+}
+
+.sf__filters-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+.sf__filters-close {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	background: $sf-bg;
+	border: none;
+	border-radius: 50%;
+	font-size: 1.25rem;
+	cursor: pointer;
+	color: #666;
+	transition: all $sf-transition;
+
+	&:hover {
+		background: #e0e0e0;
+		color: #333;
+	}
+}
+
+// The search box sits above the first card, not inside one — it isn't a
+// collapsible section like the rest.
+.sf__section--search {
+	margin-bottom: 1.25rem;
+}
+
+// Filter sections with accordion — each is its own card.
+.sf__section {
+	border: 1px solid $sf-border;
+	border-radius: $sf-radius;
+	background: $sf-white;
+	margin-bottom: 1rem;
+	overflow: hidden;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.sf__section-toggle {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: 0.9rem 1rem;
+	background: none;
+	border: none;
+	border-bottom: 1px solid transparent;
+	font-size: 0.85rem;
+	font-weight: 700;
+	color: $sf-primary;
+	cursor: pointer;
+	transition: background $sf-transition, border-color $sf-transition;
+
+	.sf__section.is-open > & {
+		border-bottom-color: $sf-border;
+	}
+
+	&:hover {
+		background: $sf-bg;
+	}
+
+	svg {
+		flex-shrink: 0;
+		transition: transform $sf-transition;
+	}
+}
+
+// Expand/collapse animation per filter section, driven by .sf__section.is-open.
+// Same single-child grid-rows technique as .sf__cat-children: the content is
+// always mounted (see FilterSection) and the 0fr -> 1fr track follows its real
+// height, so it eases instead of snapping on mount/unmount. The unpadded clip
+// wrapper is the grid item, allowing the track to reach a true zero height while
+// clipping the padded content inside it.
+.sf__section-content {
+	display: grid;
+	grid-template-rows: 0fr;
+	opacity: 0;
+	transition: grid-template-rows 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+
+	.sf__section.is-open > & {
+		grid-template-rows: 1fr;
+		opacity: 1;
+	}
+}
+
+.sf__section-content-clip {
+	min-height: 0;
+	overflow: hidden;
+}
+
+.sf__section-content-inner {
+	padding: 1rem;
+}
+
+@keyframes sfFadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+// Search input
+.sf__search {
+	position: relative;
+}
+
+.sf__search-icon {
+	position: absolute;
+	left: 0.85rem;
+	top: 50%;
+	transform: translateY(-50%);
+	color: $sf-muted;
+	pointer-events: none;
+}
+
+.sf__search-input {
+	width: 100%;
+	padding: 0.7rem 2rem 0.7rem 2.5rem;
+	border: 1px solid $sf-border;
+	border-radius: $sf-radius;
+	font-size: 0.85rem;
+	background: $sf-white;
+	transition: border-color $sf-transition, box-shadow $sf-transition;
+
+	&:focus {
+		border-color: $sf-primary;
+		box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.06);
+		outline: none;
+	}
+
+	&::placeholder {
+		color: $sf-muted;
+	}
+}
+
+.sf__search-clear {
+	position: absolute;
+	right: 0.5rem;
+	top: 50%;
+	transform: translateY(-50%);
+	background: none;
+	border: none;
+	font-size: 1.2rem;
+	color: $sf-muted;
+	cursor: pointer;
+	line-height: 1;
+	transition: color $sf-transition;
+
+	&:hover {
+		color: $sf-danger;
+	}
+}
+
+// Checkbox / Radio — each row gets a bottom divider like the template's
+// widget-list, instead of running edge-to-edge with no separation.
+//
+// WooCommerce's own block-theme stylesheet has ".woocommerce-page label
+// { margin-bottom: .7em }" (specificity 0,2,0, no !important) — these are
+// real <label> elements, so plain ".sf__checkbox { margin-bottom: 0 }"
+// (0,1,0) lost to it. Doubling the class (0,2,0 too) still depends on load
+// order tiebreaking in our favor; tripling it (0,3,0) wins outright.
+// .sf__checkbox-main covers the category row's <label> — .sf__checkbox
+// itself is a plain <div> wrapper there now (see CategoryList in
+// FilterPanel.jsx), so it stopped being a <label> WC's rule could even
+// match, but the nested one still is.
+.sf__checkbox.sf__checkbox.sf__checkbox,
+.sf__checkbox-main.sf__checkbox-main.sf__checkbox-main,
+.sf__radio.sf__radio.sf__radio {
+	margin-bottom: 0;
+}
+
+// .sf__checkbox is a plain <label> for simple rows (attribute filters,
+// .sf__radio) but a wrapping <div> for category rows, which need a chevron
+// button that sits outside the <label> — see the note on .sf__cat-toggle.
+// Both cases share this row-level layout/spacing/hover.
+.sf__checkbox,
+.sf__radio {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.4rem 0;
+	font-size: 0.83rem;
+	color: $sf-primary;
+	cursor: pointer;
+	transition: color $sf-transition;
+
+	&:hover {
+		color: $sf-accent;
+	}
+
+	input {
+		flex-shrink: 0;
+		width: 16px;
+		height: 16px;
+		accent-color: $sf-primary;
+		cursor: pointer;
+	}
+}
+
+.sf__checkbox-main {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	flex: 1;
+	min-width: 0;
+	cursor: pointer;
+}
+
+.sf__checkbox-label {
+	flex: 1;
+}
+
+// Expand/collapse a category's children without checking (filtering by) the
+// category itself. Deliberately a sibling <button>, not nested inside
+// .sf__checkbox-main's <label> — anything inside a <label> is part of its
+// click target, so a chevron placed there used to also toggle the checkbox
+// on every click (see CategoryList in FilterPanel.jsx).
+.sf__cat-toggle {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	background: none;
+	border: none;
+	color: $sf-muted;
+	cursor: pointer;
+	transition: color $sf-transition;
+
+	&:hover {
+		color: $sf-accent;
+	}
+
+	svg {
+		transition: transform $sf-transition;
+	}
+
+	&.is-open svg {
+		transform: rotate(180deg);
+	}
+}
+
+.sf__checkbox-count {
+	font-size: 0.72rem;
+	color: $sf-muted;
+}
+
+.sf__cat-list,
+.sf__cat-sublist {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+
+	// Divider between rows lives on the <li>, not the row itself — a parent
+	// with visible children would otherwise show two dividers back to back
+	// (its own, and the child list's first one) with no gap between them.
+	> li {
+		border-bottom: 1px solid $sf-bg;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+}
+
+// Collapse/expand animation: grid-template-rows 0fr -> 1fr tracks the
+// content's real height without JS ever measuring pixels. Always mounted
+// (see CategoryList in FilterPanel.jsx) — toggling display or
+// mount/unmount instead of this class gives the transition nothing to
+// animate, it just snaps open/closed.
+//
+// Wraps a single inner .sf__cat-sublist on purpose: the 0fr track only sizes
+// the FIRST grid item, so multiple <li> placed straight in this grid would
+// leave every row after the first at auto height — invisible (opacity 0) but
+// still reserving vertical space. One child keeps the whole list collapsed.
+.sf__cat-children {
+	display: grid;
+	grid-template-rows: 0fr;
+	padding-left: 1.25rem;
+	opacity: 0;
+	// $sf-transition bundles a duration ("0.3s cubic-bezier(...)"), so
+	// appending it after an explicit 0.25s here parsed as
+	// "grid-template-rows 0.25s <easing> 0.3s" — CSS read that trailing
+	// 0.3s as transition-delay, not a second duration, and the row sat at
+	// height 0 for 0.3s before snapping open in the time left. Written out
+	// instead of reusing the variable so there's exactly one duration.
+	transition: grid-template-rows 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+
+	> * {
+		min-height: 0;
+		overflow: hidden;
+		// Gap above the sub-list lives here, inside the clipped grid child, not
+		// as margin-top on .is-open below. Margin sits outside the animated row,
+		// so it was removed instantly on collapse while the height eased down —
+		// jerking the rows up ~2px at the start. As padding on the child it's
+		// clipped and eased along with the row, so the collapse stays smooth.
+		padding-top: 0.15rem;
+	}
+
+	&.is-open {
+		grid-template-rows: 1fr;
+		opacity: 1;
+	}
+}
+
+// Price range
+.sf__price-inputs {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-bottom: 1rem;
+}
+
+.sf__price-input {
+	width: 100%;
+	min-height: 40px;
+	padding: 0.5rem 0.65rem;
+	border: 1px solid $sf-border;
+	border-radius: $sf-radius;
+	font-size: 0.85rem;
+	background: $sf-white;
+	color: $sf-primary;
+	text-align: center;
+	transition: border-color $sf-transition;
+
+	&:focus {
+		border-color: $sf-primary;
+		outline: none;
+	}
+
+	&::-webkit-inner-spin-button,
+	&::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+	}
+	-moz-appearance: textfield;
+}
+
+.sf__price-sep {
+	color: $sf-muted;
+	flex-shrink: 0;
+}
+
+.sf__price-slider {
+	width: 100%;
+	height: 24px;
+	accent-color: $sf-primary;
+}
+
+// ---- ACTIVE FILTERS ----
+.sf__active {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem 0 0.75rem;
+}
+
+.sf__tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.3rem 0.75rem;
+	background: $sf-bg;
+	border-radius: 100px;
+	font-size: 0.75rem;
+	font-weight: 500;
+	animation: sfFadeIn 0.2s ease;
+}
+
+.sf__tag-remove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 1rem;
+	line-height: 1;
+	color: #999;
+	padding: 0;
+	transition: color $sf-transition;
+
+	&:hover {
+		color: #e53935;
+	}
+}
+
+.sf__clear-all {
+	background: none;
+	border: none;
+	color: #e53935;
+	font-size: 0.75rem;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+// ---- PRODUCT GRID ----
+.sf__grid {
+	display: grid;
+	gap: 1.25rem;
+}
+
+.sf__grid--grid {
+	grid-template-columns: repeat(3, 1fr);
+}
+
+.sf__grid--list {
+	grid-template-columns: 1fr;
+}
+
+
+// ---- GRID WRAPPER (prevents height jump) ----
+.sf__grid-wrap {
+	transition: min-height 0.3s ease;
+}
+
+// ---- LOADING SKELETON ----
+.sf__grid-loading {
+	display: grid;
+	gap: 1.25rem;
+	animation: sfFadeIn 0.25s ease;
+
+	&--grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	&--list {
+		grid-template-columns: 1fr;
+	}
+}
+
+// Top-filter mode frees the full content width for products, so use four cards
+// per row on wide desktops. The existing <=1090px rules below still reduce both
+// the product grid and its loading skeleton to two columns.
+@media (min-width: 1091px) {
+	.sf--top .sf__grid--grid,
+	.sf--top .sf__grid-loading--grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.sf__skeleton {
+	border-radius: 12px;
+	background: linear-gradient(90deg, #f5f5f5 25%, #eeeeee 50%, #f5f5f5 75%);
+	background-size: 200% 100%;
+	animation: sfShimmer 1.5s ease infinite;
+
+	.sf__grid-loading--grid & {
+		aspect-ratio: 3 / 4;
+	}
+
+	.sf__grid-loading--list & {
+		height: 160px;
+	}
+}
+
+@keyframes sfShimmer {
+	0% { background-position: 200% 0; }
+	100% { background-position: -200% 0; }
+}
+
+// Fade in products after loading
+.sf__grid {
+	animation: sfFadeIn 0.3s ease;
+}
+
+.sf__empty {
+	text-align: center;
+	padding: 3rem 1rem;
+	color: #999;
+	font-size: 0.95rem;
+	animation: sfFadeIn 0.3s ease;
+}
+
+// ---- PAGINATION ----
+.sf__pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 0.35rem;
+	margin-top: 2.5rem;
+}
+
+.sf__page-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 36px;
+	height: 36px;
+	padding: 0 0.6rem;
+	border: 1px solid $sf-border;
+	border-radius: $sf-radius;
+	background: #fff;
+	color: $sf-primary;
+	font-size: 0.85rem;
+	cursor: pointer;
+	transition: all $sf-transition;
+
+	&:hover:not(:disabled),
+	&.is-active {
+		background: $sf-primary;
+		color: #fff;
+		border-color: $sf-primary;
+	}
+
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+}
+
+.sf__page-dots {
+	color: #ccc;
+	padding: 0 0.25rem;
+}
+
+// ---- MOBILE DRAWER (overlay + slide) ----
+.sf__overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0);
+	z-index: 999;
+	animation: sfOverlayIn 0.3s ease forwards;
+}
+
+@keyframes sfOverlayIn {
+	to { background: rgba(0, 0, 0, 0.45); }
+}
+
+// ===========================
+// RESPONSIVE
+// ===========================
+// Grid drops to two columns earlier than the sidebar collapses, so a medium
+// desktop shows the sidebar alongside a 2-up grid. Kept above the 840/550
+// blocks so those narrower ranges still override the column count by source
+// order (equal specificity).
+@media (max-width: 1090px) {
+	.sf__grid--grid,
+	.sf__grid-loading--grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 840px) {
+	// Show mobile floating filter button
+	.sf__filter-fab {
+		display: inline-flex;
+	}
+
+	// Hide layout toggle on mobile
+	.sf__layout-toggle {
+		display: none;
+	}
+
+	// Filters are a closed bottom-sheet on initial mobile load, so rendering a
+	// filter placeholder in the page flow would reserve space for hidden UI.
+	.sf--loading .sf__filters-skeleton {
+		display: none;
+	}
+
+	// Sidebar becomes a mobile bottom-sheet: slides up from the bottom edge
+	// instead of in from the side, capped short of the full viewport height
+	// so the page behind stays visibly present (matches the reference
+	// template's .filter-drawer).
+	.sf--sidebar .sf__filters--sidebar,
+	.sf--top .sf__filters--top {
+		position: fixed;
+		top: auto;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: auto;
+		max-height: 88vh;
+		z-index: 1000;
+		display: flex;
+		flex-direction: column;
+		background: #fff;
+		border-radius: 16px 16px 0 0;
+		padding: 0;
+		overflow: hidden;
+		box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
+		transform: translateY(100%);
+		transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+		// Reset desktop sticky
+		position: fixed !important;
+		min-width: 0;
+
+		// Show mobile-only chrome
+		.sf__filters-grabber,
+		.sf__filters-header,
+		.sf__filters-footer {
+			display: flex;
+		}
+
+		// Open state — slide up
+		&.is-open {
+			transform: translateY(0);
+		}
+	}
+
+	.sf__filters-body {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		padding: 0 1.25rem 1.25rem;
+	}
+
+	.sf__filters-grabber {
+		display: none;
+		justify-content: center;
+		padding: 0.6rem 0 0.2rem;
+		flex-shrink: 0;
+
+		&::before {
+			content: "";
+			width: 44px;
+			height: 4px;
+			border-radius: 999px;
+			background: $sf-border;
+		}
+	}
+
+	.sf__filters-footer {
+		display: none;
+		gap: 0.75rem;
+		padding: 1rem 1.25rem;
+		border-top: 1px solid $sf-border;
+		flex-shrink: 0;
+	}
+
+	.sf__filters-clear,
+	.sf__filters-apply {
+		flex: 1;
+		min-height: 44px;
+		border-radius: $sf-radius;
+		font-size: 0.85rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: background $sf-transition, color $sf-transition, border-color $sf-transition;
+	}
+
+	.sf__filters-clear {
+		background: $sf-white;
+		border: 1px solid $sf-border;
+		color: $sf-primary;
+
+		&:hover {
+			border-color: $sf-primary;
+		}
+	}
+
+	.sf__filters-apply {
+		background: $sf-primary;
+		border: 1px solid $sf-primary;
+		color: $sf-white;
+
+		&:hover {
+			background: $sf-accent;
+			border-color: $sf-accent;
+		}
+	}
+
+	// Top mode on mobile also becomes drawer (reset grid)
+	.sf--top .sf__filters--top {
+		.sf__section {
+			border-bottom: 1px solid #f0f0f0;
+			padding-bottom: 1rem;
+			margin-bottom: 1rem;
+		}
+	}
+
+	// Body layout stacks
+	.sf__body {
+		flex-direction: column;
+	}
+
+	.sf__toolbar {
+		gap: 0.5rem;
+	}
+
+	.sf__toolbar-right {
+		flex-wrap: wrap;
+	}
+}
+
+@media (max-width: 550px) {
+	// Two per row rather than one — a single column at this width wastes
+	// horizontal space the 3:4 card image doesn't need to fill on its own.
+	.sf__grid--grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.75rem;
+	}
+
+	.sf__grid-loading--grid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.75rem;
+	}
+
+	// List-mode cards remain one full-width row on mobile; its skeleton must not
+	// inherit the grid mode's two-column layout.
+	.sf__grid-loading--list {
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+	}
+
+	// Count + sort/view share one row instead of each claiming the full
+	// toolbar width and wrapping onto its own line. The <select> keeps its
+	// natural content width rather than being allowed to shrink — Safari
+	// computes a flex item's shrink target from its content's intrinsic
+	// width differently than Chromium for native form controls, and letting
+	// this one shrink collapsed it to near-zero (invisible) on iOS while
+	// behaving fine in Chromium device emulation. Fixed width sidesteps the
+	// cross-engine difference entirely: it's a known, tested size instead of
+	// something each browser negotiates on its own.
+	.sf__toolbar-left {
+		flex-shrink: 0;
+	}
+
+	.sf__toolbar-right {
+		flex: 1;
+		justify-content: flex-end;
+		min-width: 0;
+	}
+
+	.sf__sort {
+		flex-shrink: 0;
+		width: 110px;
+		padding-right: 1.5rem;
+		font-size: 0.75rem;
+	}
+
+	// Icon-only Add to Cart / Sold Out in the 2-up grid — a card this narrow
+	// doesn't have room for icon + label on one line without wrapping to an
+	// oversized second row. List mode keeps its label; its row layout has
+	// the horizontal space this grid mode doesn't.
+	.sf__grid--grid .sf__card-btn {
+		gap: 0;
+		padding: 0.65rem;
+
+		.sf__card-btn-label {
+			display: none;
+		}
+	}
+
+	// The page-level container (archive-product.html's .shop-content) ships
+	// a 2rem/4rem desktop padding baked into the block's inline style —
+	// FSE spacing presets don't have their own responsive variants, so it
+	// has to be overridden here instead of edited at the source.
+	.shop-content {
+		padding-left: 1rem !important;
+		padding-right: 1rem !important;
+		padding-top: 1.25rem !important;
+		padding-bottom: 2rem !important;
+	}
+}

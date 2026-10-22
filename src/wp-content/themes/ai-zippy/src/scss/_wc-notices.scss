@@ -1,0 +1,170 @@
+@use "variables" as *;
+
+// WooCommerce Store Notices — toast-style notifications
+
+.wc-block-components-notice-banner,
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error {
+	position: fixed !important;
+	bottom: 1.25rem;
+	top: auto !important;
+	right: 1.25rem;
+	left: auto !important;
+	z-index: 9999;
+	max-width: 420px;
+	width: calc(100% - 2.5rem);
+	margin: 0 !important;
+	padding: 1rem 1.25rem !important;
+	border-radius: $border-radius !important;
+	border: none !important;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+	font-size: 0.875rem;
+	line-height: 1.5;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	// Auto-hide after 5s. Previously gated behind an .is-dismissible class
+	// that nothing on this site ever adds — WC core doesn't set it, and no
+	// theme JS does either — so every server-rendered notice sat on screen
+	// permanently until the page navigated away. Applied unconditionally
+	// now; the close button (below) still lets a reader dismiss early, and
+	// 5s is enough to read and click a notice's own link (e.g. "added back
+	// to your cart here") before it goes.
+	animation: wcToastIn 0.3s $transition-ease,
+		wcToastOut 0.3s ease 5s forwards;
+
+	// Success (green)
+	&.is-success,
+	&.woocommerce-message {
+		background: $c-white;
+		border-left: 4px solid $c-success !important;
+		color: $c-primary;
+	}
+
+	// Info (blue)
+	&.is-info,
+	&.woocommerce-info {
+		background: $c-white;
+		border-left: 4px solid $c-info !important;
+		color: $c-primary;
+	}
+
+	// Error (red)
+	&.is-error,
+	&.woocommerce-error {
+		background: $c-white;
+		border-left: 4px solid $c-danger !important;
+		color: $c-primary;
+	}
+
+	// Remove focus border
+	&:focus-visible,
+	&:focus {
+		outline: none !important;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+	}
+
+	// Icon
+	.wc-block-components-notice-banner__content > svg,
+	&::before {
+		flex-shrink: 0;
+	}
+
+	// Dismiss button
+	.wc-block-components-notice-banner__dismiss,
+	.woocommerce-message-close {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		background: none;
+		border: none;
+		font-size: 1.1rem;
+		color: $c-muted;
+		cursor: pointer;
+		padding: 0.25rem;
+		line-height: 1;
+		transition: color $transition-speed;
+
+		&:hover {
+			color: #333;
+		}
+	}
+
+	// "View cart" link
+	a {
+		font-weight: 600;
+		color: inherit;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		margin-left: auto;
+		white-space: nowrap;
+
+		&:hover {
+			color: $c-accent;
+		}
+	}
+}
+
+// Stack multiple notices
+.wc-block-components-notice-banner + .wc-block-components-notice-banner {
+	margin-top: 0.75rem !important;
+}
+
+// Inline checkout notices are part of the form, not transient toasts. The
+// prime example is WooCommerce's "no available payment methods" banner, which
+// is printed inside #payment (.woocommerce-checkout-payment) by
+// checkout/payment.php. Left as a fixed toast it pins to the viewport top and
+// slides beneath the sticky header, so within the checkout form reset it to a
+// normal in-flow banner — the coloured left border and card styling above
+// still apply. Transient store notices (outside the form) keep the toast.
+.woocommerce-checkout {
+	.wc-block-components-notice-banner,
+	.woocommerce-info,
+	.woocommerce-error,
+	.woocommerce-message {
+		position: static !important;
+		width: auto;
+		max-width: none;
+		margin: 0 !important;
+		z-index: auto;
+		animation: none;
+	}
+}
+
+// Slides up a short distance and fades in, matching az-toast (add-to-cart.js's
+// own notifications) — settles into place instead of flying in from off-screen.
+@keyframes wcToastIn {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes wcToastOut {
+	from {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateY(12px);
+		pointer-events: none;
+	}
+}
+
+// Mobile
+@include until(sm) {
+	.wc-block-components-notice-banner,
+	.woocommerce-message,
+	.woocommerce-info,
+	.woocommerce-error {
+		bottom: 0.75rem;
+		right: 0.75rem;
+		max-width: calc(100% - 1.5rem);
+	}
+}

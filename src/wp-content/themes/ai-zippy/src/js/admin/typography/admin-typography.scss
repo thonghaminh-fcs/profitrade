@@ -1,0 +1,229 @@
+// =============================================================================
+// Typography admin app styles
+// Prefix: zt__ (Zippy Typography)
+// =============================================================================
+
+#ai-zippy-typography-app.wrap {
+	// Override WP wrap defaults for our custom layout
+	padding: 20px 0;
+	max-width: 1100px;
+}
+
+.zt {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+
+	// ---- Header ----
+	&__header {
+		margin-bottom: 0.25rem;
+	}
+
+	&__title {
+		font-size: 1.6rem !important;
+		font-weight: 700 !important;
+		margin: 0 0 0.3rem !important;
+		color: #1e1e1e;
+	}
+
+	&__sub {
+		color: #555 !important;
+		font-size: 0.9rem !important;
+	}
+
+	// ---- Loading ----
+	&__loading {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 3rem;
+		background: #fff;
+		border: 1px solid #dcdcde;
+		border-radius: 8px;
+	}
+
+	// ---- Grid of slots ----
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1rem;
+
+		@media (max-width: 900px) {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	// ---- Slot card ----
+	&__slot {
+		border-radius: 8px !important;
+	}
+
+	&__slot-header {
+		background: #f6f7f7;
+	}
+
+	&__slot-title {
+		font-size: 1.05rem;
+		font-weight: 700;
+		margin: 0 0 0.15rem;
+		color: #1e1e1e;
+	}
+
+	&__slot-desc {
+		font-size: 0.8rem !important;
+		color: #757575 !important;
+	}
+
+	&__slot-field {
+		margin-bottom: 1rem;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	&__label {
+		display: block;
+		font-size: 0.75rem;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.02em;
+		color: #1e1e1e;
+		margin-bottom: 0.4rem;
+	}
+
+	// ---- Preview ----
+	&__preview {
+		margin-top: 1rem;
+		padding: 1rem;
+		background: #fafafa;
+		border: 1px dashed #dcdcde;
+		border-radius: 6px;
+	}
+
+	&__preview-label {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		color: #757575;
+		margin-bottom: 0.5rem;
+	}
+
+	&__preview-sample {
+		color: #1e1e1e;
+		line-height: 1.4;
+
+		&--body {
+			font-size: 0.95rem;
+		}
+
+		&--heading {
+			font-size: 1.5rem;
+			font-weight: 700;
+		}
+	}
+
+	// ---- Save actions ----
+	&__actions {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem 0 0.5rem;
+		border-top: 1px solid #dcdcde;
+	}
+
+	&__saved-hint {
+		color: #00a32a;
+		font-size: 0.85rem;
+		font-weight: 500;
+	}
+
+	// ---- Upload section ----
+	&__upload {
+		border-radius: 8px !important;
+		margin-top: 0.5rem;
+	}
+
+	&__upload-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	&__upload-drop {
+		position: relative;
+		padding: 1.25rem;
+		background: #f6f7f7;
+		border: 2px dashed #c3c4c7;
+		border-radius: 6px;
+		text-align: center;
+	}
+
+	&__upload-drop-inner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	&__upload-input {
+		font-size: 0.85rem;
+	}
+
+	&__upload-list {
+		margin-top: 1.25rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid #dcdcde;
+	}
+
+	&__upload-list-title {
+		font-size: 0.95rem;
+		font-weight: 700;
+		margin: 0 0 0.75rem;
+		color: #1e1e1e;
+	}
+
+	&__upload-family {
+		padding: 0.85rem 0;
+		border-bottom: 1px solid #f0f0f1;
+
+		&:last-child {
+			border-bottom: none;
+		}
+	}
+
+	&__upload-family-name {
+		font-weight: 600;
+		color: #1e1e1e;
+		margin-bottom: 0.4rem;
+	}
+
+	&__upload-files {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	&__upload-file {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		padding: 0.35rem 0;
+		font-size: 0.85rem;
+
+		code {
+			background: #f6f7f7;
+			padding: 0.15rem 0.4rem;
+			border-radius: 3px;
+			font-size: 0.8rem;
+		}
+	}
+
+	&__upload-file-meta {
+		color: #757575;
+		font-size: 0.8rem;
+		flex: 1;
+	}
+}

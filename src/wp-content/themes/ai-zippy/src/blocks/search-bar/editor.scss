@@ -1,0 +1,38 @@
+// Search Bar block — editor-only styles
+
+.zs__editor-wrap {
+	.zs__preview {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.25rem 0;
+	}
+
+	.zs__input-wrap {
+		position: relative;
+		display: flex;
+		align-items: center;
+		min-width: 240px;
+	}
+
+	.zs__input {
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.zs__icon-trigger {
+		cursor: default;
+		pointer-events: none;
+		background: rgba(0, 0, 0, 0.04);
+	}
+}
+
+.zs__preview-badge {
+	font-size: 0.7rem;
+	font-weight: 600;
+	color: #999;
+	background: #f0f0f0;
+	padding: 2px 8px;
+	border-radius: 100px;
+	white-space: nowrap;
+}

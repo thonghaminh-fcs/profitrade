@@ -1,0 +1,700 @@
+// ============================================
+// CUSTOM CART — "zc" prefix (zippy cart)
+// ============================================
+
+$transition: 0.25s ease;
+$radius: 12px;
+$radius-sm: 8px;
+$gray-bg: #f5f5f5;
+$gray-border: #eee;
+$gray-text: #888;
+$red: #e53935;
+
+// ---- CONTAINER ----
+.zc {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0;
+}
+
+// ---- ERROR TOAST ----
+.zc__error {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 9999;
+	background: #fff;
+	border-left: 4px solid $red;
+	padding: 0.75rem 1rem;
+	border-radius: $radius-sm;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+	font-size: 0.85rem;
+	animation: zcSlideIn 0.3s ease;
+}
+
+@keyframes zcSlideIn {
+	from {
+		opacity: 0;
+		transform: translateX(100%);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+// ---- SKELETON LOADING ----
+.zc__skeleton {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+.zc__skeleton-items {
+	background: #fff;
+	border-radius: $radius;
+	padding: 1.5rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.zc__skeleton-row {
+	height: 72px;
+	border-radius: $radius-sm;
+	background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+	background-size: 200% 100%;
+	animation: zcShimmer 1.5s infinite;
+}
+
+.zc__skeleton-sidebar {
+	background: #fff;
+	border-radius: $radius;
+	padding: 1.5rem;
+	height: 300px;
+	background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+	background-size: 200% 100%;
+	animation: zcShimmer 1.5s infinite;
+}
+
+@keyframes zcShimmer {
+	0% {
+		background-position: 200% 0;
+	}
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+// ---- STEP BREADCRUMB ----
+.zc-steps {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	max-width: 520px;
+	margin: 0 auto 2rem;
+}
+
+.zc-steps__item {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+	position: relative;
+	white-space: nowrap;
+
+	// Connector line
+	.zc-steps__line {
+		display: block;
+		width: 60px;
+		height: 2px;
+		background: #ddd;
+		margin: 0 0.75rem;
+		flex-shrink: 0;
+	}
+
+	&.is-active .zc-steps__line,
+	&.is-done .zc-steps__line {
+		background: var(--wp--preset--color--primary, #1a1a1a);
+	}
+}
+
+.zc-steps__num {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: #d0d0d0;
+	color: #fff;
+	font-size: 0.7rem;
+	font-weight: 700;
+	flex-shrink: 0;
+}
+
+.zc-steps__label {
+	font-size: 0.8rem;
+	color: #999;
+	font-weight: 500;
+}
+
+.zc-steps__item.is-active .zc-steps__num {
+	background: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.zc-steps__item.is-active .zc-steps__label {
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	font-weight: 600;
+}
+
+.zc-steps__item.is-done .zc-steps__num {
+	background: var(--wp--preset--color--accent, #c8a97e);
+}
+
+// ---- TWO-COLUMN LAYOUT ----
+.zc__layout {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 1.5rem;
+	align-items: start;
+}
+
+// ============================================
+// LEFT: CART ITEMS
+// ============================================
+.zc-items {
+	background: #fff;
+	border-radius: $radius;
+	padding: 1.5rem;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+	transition: opacity $transition;
+
+	&.is-loading {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+// Header: "Cart (X products)" + "× Clear cart"
+.zc-items__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1rem;
+}
+
+.zc-items__title {
+	font-size: 1.15rem;
+	font-weight: 600;
+	margin: 0;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.zc-items__count {
+	font-weight: 400;
+	color: $gray-text;
+	font-size: 0.85rem;
+}
+
+.zc-items__clear {
+	background: none;
+	border: none;
+	color: $red;
+	font-size: 0.8rem;
+	font-weight: 500;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 0.2rem;
+	padding: 0.25rem 0.5rem;
+	border-radius: 4px;
+	transition: background $transition;
+
+	&:hover {
+		background: #ffeaea;
+	}
+}
+
+// Column labels
+.zc-items__cols {
+	display: grid;
+	grid-template-columns: 64px 1fr 110px 80px 32px;
+	gap: 1rem;
+	align-items: center;
+	padding: 0 0.75rem 0.75rem;
+	border-bottom: 1px solid $gray-border;
+	margin-bottom: 0.5rem;
+
+	span {
+		font-size: 0.75rem;
+		font-weight: 600;
+		text-transform: capitalize;
+		color: #999;
+	}
+}
+
+.zc-items__col-product {
+	grid-column: 1 / 3;
+}
+
+// ============================================
+// CART ROW (each item)
+// ============================================
+.zc-row {
+	display: grid;
+	grid-template-columns: 64px 1fr 110px 80px 32px;
+	gap: 1rem;
+	align-items: center;
+	padding: 0.75rem;
+	border: 1px solid #f0f0f0;
+	border-radius: $radius-sm;
+	margin-bottom: 0.5rem;
+	transition: border-color $transition, opacity $transition;
+
+	&:hover {
+		border-color: #ddd;
+	}
+
+	&.is-busy {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}
+
+// Product image
+.zc-row__img {
+	width: 56px;
+	height: 56px;
+	flex-shrink: 0;
+
+	img {
+		width: 56px;
+		height: 56px;
+		border-radius: $radius-sm;
+		object-fit: cover;
+		display: block;
+		background: $gray-bg;
+	}
+}
+
+.zc-row__img-placeholder {
+	width: 56px;
+	height: 56px;
+	border-radius: $radius-sm;
+	background: $gray-bg;
+}
+
+// Product name + variant
+.zc-row__info {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	min-width: 0;
+}
+
+.zc-row__name {
+	font-weight: 600;
+	font-size: 0.875rem;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	line-height: 1.3;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.zc-row__variant {
+	font-size: 0.7rem;
+	color: $gray-text;
+}
+
+// Quantity controls: [−] 1 [+]
+.zc-row__qty {
+	display: inline-flex;
+	align-items: center;
+	justify-self: center;
+	gap: 0;
+	border: 1px solid #e0e0e0;
+	border-radius: $radius-sm;
+	overflow: hidden;
+}
+
+.zc-row__qty-btn {
+	background: none;
+	border: none;
+	width: 30px;
+	height: 30px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.95rem;
+	color: #666;
+	cursor: pointer;
+	transition: all $transition;
+	padding: 0;
+
+	&:hover:not(:disabled) {
+		background: $gray-bg;
+		color: var(--wp--preset--color--primary, #1a1a1a);
+	}
+
+	&:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+}
+
+.zc-row__qty-val {
+	width: 28px;
+	text-align: center;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+// Price
+.zc-row__price {
+	font-weight: 600;
+	font-size: 0.9rem;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	text-align: right;
+	white-space: nowrap;
+}
+
+// Remove × button
+.zc-row__remove {
+	background: none;
+	border: none;
+	color: $red;
+	font-size: 1.1rem;
+	cursor: pointer;
+	width: 28px;
+	height: 28px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: background $transition;
+	padding: 0;
+	justify-self: center;
+
+	&:hover:not(:disabled) {
+		background: #ffeaea;
+	}
+
+	&:disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+	}
+}
+
+// ============================================
+// RIGHT: SIDEBAR
+// ============================================
+.zc-sidebar {
+	background: #fff;
+	border-radius: $radius;
+	padding: 1.5rem;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+	position: sticky;
+	top: 5rem;
+}
+
+// Promo code section
+.zc-sidebar__promo {
+	margin-bottom: 1.25rem;
+	padding-bottom: 1.25rem;
+	border-bottom: 1px solid $gray-border;
+}
+
+.zc-sidebar__promo-title {
+	font-size: 0.9rem;
+	font-weight: 600;
+	margin: 0 0 0.6rem;
+	color: var(--wp--preset--color--primary, #1a1a1a);
+}
+
+.zc-sidebar__promo-form {
+	display: flex;
+	gap: 0.5rem;
+
+	input {
+		flex: 1;
+		padding: 0.55rem 0.75rem;
+		border: 1px solid #e0e0e0;
+		border-radius: 100px;
+		font-size: 0.8rem;
+		background: $gray-bg;
+		transition: border-color $transition, background $transition;
+
+		&::placeholder {
+			color: #aaa;
+		}
+
+		&:focus {
+			border-color: var(--wp--preset--color--primary, #1a1a1a);
+			outline: none;
+			background: #fff;
+		}
+	}
+
+	button {
+		padding: 0.55rem 1rem;
+		background: var(--wp--preset--color--primary, #1a1a1a);
+		color: #fff;
+		border: none;
+		border-radius: 100px;
+		font-size: 0.8rem;
+		font-weight: 600;
+		cursor: pointer;
+		white-space: nowrap;
+		transition: background $transition;
+
+		&:hover:not(:disabled) {
+			background: var(--wp--preset--color--accent, #c8a97e);
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+	}
+}
+
+.zc-sidebar__promo-error {
+	color: $red;
+	font-size: 0.75rem;
+	margin: 0.4rem 0 0;
+}
+
+// Applied coupon tags
+.zc-sidebar__coupons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.4rem;
+	margin-bottom: 1rem;
+}
+
+.zc-sidebar__coupon-tag {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.2rem 0.6rem;
+	background: $gray-bg;
+	border-radius: 100px;
+	font-size: 0.7rem;
+	font-weight: 600;
+	text-transform: uppercase;
+
+	button {
+		background: none;
+		border: none;
+		color: $red;
+		cursor: pointer;
+		font-size: 0.9rem;
+		padding: 0;
+		line-height: 1;
+	}
+}
+
+// Totals rows
+.zc-sidebar__totals {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.zc-sidebar__row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.85rem;
+
+	span:first-child {
+		color: $gray-text;
+	}
+
+	span:last-child {
+		font-weight: 600;
+		color: #555;
+	}
+
+	&--discount span:last-child {
+		color: #4caf50;
+	}
+
+	&--total {
+		padding-top: 0.75rem;
+		margin-top: 0.25rem;
+		border-top: 1px solid $gray-border;
+
+		span:first-child {
+			font-weight: 700;
+			font-size: 0.95rem;
+			color: var(--wp--preset--color--primary, #1a1a1a);
+		}
+
+		span:last-child {
+			font-weight: 700;
+			font-size: 1.15rem;
+			color: var(--wp--preset--color--primary, #1a1a1a);
+		}
+	}
+}
+
+// Checkout button
+.zc-sidebar__checkout {
+	display: block;
+	width: 100%;
+	margin-top: 1.25rem;
+	padding: 0.8rem 1.5rem;
+	background: var(--wp--preset--color--primary, #1a1a1a);
+	color: #fff !important;
+	border: none;
+	border-radius: 100px;
+	font-size: 0.9rem;
+	font-weight: 600;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background $transition, transform $transition;
+
+	&:hover {
+		background: var(--wp--preset--color--accent, #c8a97e);
+		transform: translateY(-1px);
+	}
+}
+
+// ============================================
+// EMPTY CART
+// ============================================
+.zc-empty {
+	text-align: center;
+	padding: 4rem 1rem;
+	max-width: 420px;
+	margin: 0 auto;
+}
+
+.zc-empty__icon {
+	color: var(--wp--preset--color--accent, #c8a97e);
+	margin-bottom: 1.5rem;
+}
+
+.zc-empty__title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin: 0 0 0.5rem;
+}
+
+.zc-empty__text {
+	font-size: 0.85rem;
+	color: $gray-text;
+	margin: 0 0 2rem;
+	line-height: 1.6;
+}
+
+.zc-empty__actions {
+	display: flex;
+	justify-content: center;
+	gap: 0.75rem;
+}
+
+.zc-empty__btn {
+	padding: 0.7rem 1.75rem;
+	border-radius: 100px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: all $transition;
+
+	&--primary {
+		background: var(--wp--preset--color--primary, #1a1a1a);
+		color: #fff !important;
+
+		&:hover {
+			background: var(--wp--preset--color--accent, #c8a97e);
+		}
+	}
+
+	&--secondary {
+		background: #fff;
+		color: var(--wp--preset--color--primary, #1a1a1a) !important;
+		border: 1px solid #ddd;
+
+		&:hover {
+			border-color: var(--wp--preset--color--primary, #1a1a1a);
+		}
+	}
+}
+
+// ============================================
+// RESPONSIVE
+// ============================================
+@media (max-width: 960px) {
+	.zc__layout,
+	.zc__skeleton {
+		grid-template-columns: 1fr;
+	}
+
+	.zc-sidebar {
+		position: static;
+	}
+}
+
+@media (max-width: 600px) {
+	.zc-steps__label {
+		display: none;
+	}
+
+	.zc-steps__item .zc-steps__line {
+		width: 32px;
+		margin: 0 0.35rem;
+	}
+
+	// Stack row layout on mobile
+	.zc-items__cols {
+		display: none;
+	}
+
+	.zc-row {
+		grid-template-columns: 48px 1fr auto;
+		grid-template-areas:
+			"img  info  remove"
+			"img  qty   price";
+		gap: 0.5rem 0.75rem;
+
+		.zc-row__img {
+			grid-area: img;
+			width: 48px;
+			height: 48px;
+
+			img {
+				width: 48px;
+				height: 48px;
+			}
+		}
+
+		.zc-row__info {
+			grid-area: info;
+		}
+
+		.zc-row__qty {
+			grid-area: qty;
+			justify-self: start;
+		}
+
+		.zc-row__price {
+			grid-area: price;
+			text-align: right;
+		}
+
+		.zc-row__remove {
+			grid-area: remove;
+		}
+	}
+
+	.zc-empty__actions {
+		flex-direction: column;
+		align-items: center;
+	}
+}

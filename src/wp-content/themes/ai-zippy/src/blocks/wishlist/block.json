@@ -1,0 +1,19 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/wishlist",
+	"version": "1.0.0",
+	"title": "Wishlist",
+	"category": "ai-zippy",
+	"icon": "heart",
+	"description": "Displays the customer wishlist application.",
+	"keywords": ["wishlist", "products", "woocommerce"],
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
+}

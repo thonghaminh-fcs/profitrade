@@ -1,0 +1,1973 @@
+@use "sass:color";
+@use "variables" as *;
+
+// =============================================================================
+// My Account — AI Zippy
+// Prefix: ma__
+// =============================================================================
+
+// ---- SHARED TOKENS ----
+$ma-card-bg:     #f8f8fa;
+$ma-sidebar-w:   260px;
+$ma-gap:         1.5rem;
+
+// ---- LAYOUT ----
+.woocommerce-MyAccount-content,
+.ma__layout {
+  display: flex;
+  align-items: flex-start;
+  gap: $ma-gap;
+  width: 100%;
+}
+
+// Remove WC default nav (we use our own inside .ma__sidebar)
+.woocommerce-MyAccount-navigation {
+  display: none;
+}
+
+.ma__sidebar {
+  flex-shrink: 0;
+  width: $ma-sidebar-w;
+  position: sticky;
+  top: 2rem;
+
+  @include until(md) {
+    position: static;
+    width: 100%;
+  }
+}
+
+.ma__content {
+  flex: 1;
+  min-width: 0;
+
+  // WC injects .woocommerce-MyAccount-content wrapper — remove its padding
+  .woocommerce-MyAccount-content {
+    display: block;
+    padding: 0;
+  }
+}
+
+// Full-width for login page (no sidebar shown for guests)
+.ma__login-wrap {
+  width: 100%;
+}
+
+// ---- SIDEBAR NAV ----
+.ma__nav {
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+}
+
+.ma__nav-user {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.ma__nav-avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: $c-border;
+}
+
+.ma__nav-avatar-img {
+  width: 44px !important;
+  height: 44px !important;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+  margin: 0 !important;
+}
+
+.ma__nav-avatar-placeholder {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $c-secondary;
+  border-radius: 50%;
+  color: $c-muted;
+}
+
+.ma__nav-user-info {
+  min-width: 0;
+}
+
+.ma__nav-user-name {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $c-primary;
+  @include truncate(1);
+}
+
+.ma__nav-user-email {
+  display: block;
+  font-size: 0.72rem;
+  color: $c-muted;
+  @include truncate(1);
+}
+
+.ma__nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.ma__nav-item {
+  &--logout {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    margin-top: 0.35rem;
+    padding-top: 0.35rem;
+
+    .ma__nav-link {
+      color: $c-danger !important;
+
+      &:hover {
+        background: rgba(229, 57, 53, 0.05) !important;
+      }
+    }
+  }
+}
+
+.ma__nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $c-primary;
+  text-decoration: none;
+  border-radius: 0;
+  @include transition((background, color));
+  position: relative;
+
+  &:hover {
+    background: rgba(0,0,0,0.04);
+    color: $c-primary;
+  }
+
+  // Active state — WC adds is-active class
+  .is-active > & {
+    background: rgba(200, 169, 126, 0.1);
+    color: $c-accent;
+    font-weight: 700;
+
+    .ma__nav-icon {
+      color: $c-accent;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: $c-accent;
+      border-radius: 0 2px 2px 0;
+    }
+  }
+}
+
+.ma__nav-icon {
+  flex-shrink: 0;
+  color: $c-muted;
+  display: flex;
+  align-items: center;
+  @include transition(color);
+}
+
+.ma__nav-label {
+  flex: 1;
+}
+
+// ---- SECTION HEADER ----
+.ma__section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.ma__section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0;
+}
+
+.ma__section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $c-secondary;
+  color: $c-muted;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+  min-width: 22px;
+}
+
+// ---- SHARED BUTTONS ----
+.ma__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: $border-radius;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  @include transition((background, border-color, color));
+  white-space: nowrap;
+
+  &--primary {
+    background: $c-primary;
+    color: $c-white;
+    border-color: $c-primary;
+
+    &:hover {
+      background: #333;
+      border-color: #333;
+      color: $c-white;
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $c-primary;
+    border-color: $c-border;
+
+    &:hover {
+      border-color: $c-primary;
+    }
+  }
+
+  &--sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  &--full {
+    width: 100%;
+  }
+}
+
+// ---- ORDER STATUS BADGES ----
+.ma__order-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+
+  // WC status colours
+  &--pending,
+  &--on-hold       { background: rgba(255,107,0,0.1); color: #e65c00; }
+  &--processing    { background: rgba(33,150,243,0.1); color: #1976d2; }
+  &--completed     { background: rgba(76,175,80,0.1);  color: #388e3c; }
+  &--cancelled,
+  &--failed,
+  &--refunded      { background: rgba(229,57,53,0.1); color: $c-danger; }
+
+  &--lg {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.75rem;
+  }
+}
+
+// ---- EMPTY STATE ----
+.ma__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+}
+
+.ma__empty-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: $c-secondary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  color: $c-muted;
+}
+
+.ma__empty-text {
+  font-size: 0.9rem;
+  color: $c-muted;
+  margin: 0 0 1.25rem;
+}
+
+// ---- DASHBOARD ----
+.ma__dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: $ma-gap;
+}
+
+.ma__dash-welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: $c-primary;
+  border-radius: $border-radius-lg;
+  padding: 1.5rem;
+  color: $c-white;
+
+  // Stack the title/subtitle above the CTA once the sidebar+content split
+  // narrows the banner enough that the flex-shrink: 0 CTA squeezes the title
+  // column and forces "Welcome back, Vinh!" onto two lines. Kicks in well
+  // above the mobile block so the desktop-with-sidebar layout stays clean.
+  @include until(915px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ma__btn--outline {
+    border-color: rgba(255,255,255,0.35);
+    color: $c-white;
+    flex-shrink: 0;
+
+    &:hover {
+      border-color: $c-white;
+      background: rgba(255,255,255,0.08);
+    }
+  }
+}
+
+.ma__dash-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: inherit;
+}
+
+.ma__dash-subtitle {
+  font-size: 0.85rem;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.ma__dash-stats {
+  // flex-wrap instead of grid so a wrapped card (typically the "Last Order"
+  // date value that can't fit alongside the other two below ~915px) grows
+  // via flex-grow: 1 to fill its own row — CSS grid with a fixed track count
+  // would leave it stuck at a single-column width and ellipsize the date.
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+
+  .ma__dash-stat {
+    flex: 1 1 200px;
+  }
+
+  @include until(sm) {
+    .ma__dash-stat { flex-basis: 100%; }
+  }
+}
+
+.ma__dash-stat {
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.ma__dash-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &--orders { background: rgba(33,150,243,0.1); color: #1976d2; }
+  &--spent  { background: rgba(76,175,80,0.1);  color: #388e3c; }
+  &--last   { background: rgba(200,169,126,0.15); color: color.adjust(#c8a97e, $lightness: -10%); }
+}
+
+.ma__dash-stat-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ma__dash-stat-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: $c-primary;
+  line-height: 1.2;
+  @include truncate(1);
+}
+
+.ma__dash-stat-label {
+  font-size: 0.72rem;
+  color: $c-muted;
+  margin-top: 0.1rem;
+}
+
+.ma__dash-section {
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+}
+
+.ma__dash-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.ma__dash-section-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0;
+}
+
+.ma__dash-section-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: $c-accent;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+.ma__dash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+}
+
+.ma__dash-empty-icon {
+  color: $c-muted;
+  margin-bottom: 0.85rem;
+}
+
+.ma__dash-empty-text {
+  font-size: 0.875rem;
+  color: $c-muted;
+  margin: 0 0 1rem;
+}
+
+// Dashboard order cards (inside recent orders panel)
+.ma__order-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1.25rem;
+  @include transition(background);
+
+  &:hover { background: rgba(0,0,0,0.02); }
+
+  + .ma__order-card {
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+}
+
+.ma__order-card-thumb {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+
+  img {
+    width: 48px !important;
+    height: 48px !important;
+    object-fit: cover;
+    display: block;
+    // Rounded here instead of clipping the thumb with overflow: hidden, so the
+    // count badge (positioned -4px past the corner) isn't cropped.
+    border-radius: 8px;
+  }
+}
+
+.ma__order-card-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $c-muted;
+}
+
+.ma__order-card-count {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: $c-primary;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.1rem 0.25rem;
+  border-radius: 4px;
+  line-height: 1.2;
+}
+
+.ma__order-card-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ma__order-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ma__order-card-num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $c-primary;
+}
+
+.ma__order-card-date,
+.ma__order-card-items {
+  font-size: 0.72rem;
+  color: $c-muted;
+}
+
+.ma__order-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.ma__order-card-total {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $c-primary;
+}
+
+// ---- ORDERS LIST (orders.php) ----
+.ma__orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ma__order-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  padding: 1rem 1.25rem;
+
+  @include until(sm) {
+    flex-wrap: wrap;
+  }
+}
+
+// Shared hover-lift for every card-like surface on the account pages.
+// One rule instead of repeating transition+box-shadow on each class so the
+// timing stays consistent and future card variants automatically inherit it
+// by joining the list.
+.ma__nav,
+.ma__empty-state,
+.ma__dash-stat,
+.ma__dash-section,
+.ma__dash-empty,
+.ma__order-row,
+.ma__vo-card,
+.ma__addr-card,
+.ma__form-card,
+.woocommerce-order-details,
+.woocommerce-customer-details {
+  @include transition(box-shadow);
+
+  &:hover {
+    box-shadow: $box-shadow;
+  }
+}
+
+.ma__order-thumbs {
+  display: flex;
+  gap: -8px;
+  flex-shrink: 0;
+}
+
+.ma__order-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid #fff;
+  margin-left: -8px;
+  flex-shrink: 0;
+
+  &:first-child { margin-left: 0; }
+
+  img {
+    width: 44px !important;
+    height: 44px !important;
+    object-fit: cover;
+    display: block;
+  }
+
+  &-placeholder {
+    width: 100%;
+    height: 100%;
+    background: $c-secondary;
+    border-radius: 6px;
+  }
+
+  &--more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $c-secondary;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: $c-muted;
+  }
+}
+
+.ma__order-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ma__order-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.ma__order-num {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $c-primary;
+  text-decoration: none;
+
+  &:hover { color: $c-accent; }
+}
+
+.ma__order-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ma__order-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: $c-muted;
+}
+
+.ma__order-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.ma__order-total {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $c-primary;
+}
+
+.ma__order-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+// ---- PAGINATION ----
+.ma__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.ma__page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $c-primary;
+  text-decoration: none;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid $c-border;
+  border-radius: $border-radius;
+  @include transition((border-color, background));
+
+  &:hover {
+    border-color: $c-primary;
+    background: rgba(0,0,0,0.02);
+  }
+}
+
+.ma__page-info {
+  font-size: 0.8rem;
+  color: $c-muted;
+}
+
+// ---- VIEW ORDER ----
+.ma__view-order {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ma__back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $c-muted;
+  text-decoration: none;
+  margin-bottom: 0.25rem;
+  @include transition(color);
+
+  &:hover { color: $c-primary; }
+}
+
+.ma__vo-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ma__vo-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0 0 0.2rem;
+}
+
+.ma__vo-date {
+  font-size: 0.8rem;
+  color: $c-muted;
+}
+
+.ma__vo-card {
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  padding: 1.25rem;
+}
+
+.ma__vo-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0 0 1rem;
+
+  svg { color: $c-muted; }
+}
+
+.ma__vo-notes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.ma__vo-note {
+  padding: 0.75rem;
+  background: #fff;
+  border-radius: $border-radius;
+  border-left: 3px solid $c-accent;
+}
+
+.ma__vo-note-date {
+  display: block;
+  font-size: 0.7rem;
+  color: $c-muted;
+  margin-bottom: 0.3rem;
+}
+
+.ma__vo-note-text {
+  font-size: 0.85rem;
+  color: $c-primary;
+  line-height: 1.5;
+
+  p { margin: 0; }
+}
+
+// View-order items
+.ma__vo-items {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.ma__vo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0;
+
+  + .ma__vo-item {
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+}
+
+.ma__vo-item-img {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+
+  img {
+    width: 56px !important;
+    height: 56px !important;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.ma__vo-item-detail {
+  flex: 1;
+  min-width: 0;
+}
+
+.ma__vo-item-name {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $c-primary;
+  @include truncate(2);
+}
+
+.ma__vo-item-meta {
+  display: block;
+  font-size: 0.72rem;
+  color: $c-muted;
+  margin-top: 0.1rem;
+}
+
+.ma__vo-item-qty {
+  display: block;
+  font-size: 0.72rem;
+  color: $c-muted;
+}
+
+.ma__vo-item-total {
+  font-size: 0.9rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+// Totals
+.ma__vo-totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ma__vo-totals-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: $c-primary;
+
+  &--discount { color: #388e3c; }
+
+  &--total {
+    font-size: 1rem;
+    font-weight: 700;
+    padding-top: 0.65rem;
+    margin-top: 0.35rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+}
+
+.ma__free { color: #388e3c; font-weight: 600; }
+
+// Addresses in view-order
+.ma__vo-addresses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.25rem;
+}
+
+.ma__vo-address-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: $c-muted;
+  margin-bottom: 0.4rem;
+}
+
+.ma__vo-address-block {
+  address, span {
+    font-size: 0.82rem;
+    color: $c-primary;
+    font-style: normal;
+    line-height: 1.6;
+  }
+}
+
+// ---- LOGIN / REGISTER CARD ----
+.ma__login-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+}
+
+.ma__login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: $border-radius-lg;
+  padding: 2.25rem 2rem 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+// Brand mark
+.ma__login-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.ma__login-brand-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, $c-primary, #333);
+  color: $c-white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+// Tabs
+.ma__auth-tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: $c-secondary;
+  border-radius: 100px;
+  padding: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.ma__auth-tab {
+  position: relative;
+  z-index: 1;
+  background: none;
+  border: none;
+  padding: 0.6rem 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $c-muted;
+  cursor: pointer;
+  border-radius: 100px;
+  @include transition(color);
+
+  &.is-active {
+    color: $c-primary;
+  }
+}
+
+.ma__auth-tabs-slider {
+  position: absolute;
+  z-index: 0;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  background: $c-white;
+  border-radius: 100px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  @include transition(transform);
+}
+
+// Slide to register panel
+.ma__auth-tab[data-tab="register"].is-active ~ .ma__auth-tabs-slider {
+  transform: translateX(100%);
+}
+
+// Panels — fade-in animation on activate
+.ma__auth-panel {
+  animation: maFadeIn 0.25s ease-out;
+
+  &[hidden] { display: none; }
+}
+
+@keyframes maFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ma__login-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.ma__login-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.ma__login-sub {
+  font-size: 0.82rem;
+  color: $c-muted;
+  margin: 0;
+}
+
+.ma__login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ma__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ma__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: $c-primary;
+  letter-spacing: 0.01em;
+}
+
+.ma__required {
+  color: $c-danger;
+  margin-left: 0.15rem;
+}
+
+.ma__input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ma__input {
+  width: 100%;
+  border: 1px solid $c-border;
+  border-radius: $border-radius;
+  padding: 0.8rem 1rem;
+  font-size: 0.875rem;
+  color: $c-primary;
+  background: #fff;
+  @include transition((border-color, box-shadow, background));
+
+  &::placeholder {
+    color: $c-muted;
+    opacity: 0.7;
+  }
+
+  &:hover {
+    border-color: color.adjust(#e5e5e5, $lightness: -8%);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $c-primary;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  }
+
+  // Remove pale-yellow/purple Chrome autofill background
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #fff inset !important;
+    -webkit-text-fill-color: $c-primary !important;
+    caret-color: $c-primary;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  .ma__input-wrap--icon & {
+    padding-left: 2.5rem;
+  }
+}
+
+// When a password-visibility toggle is present, reserve right padding on the input.
+// Uses :has() (supported in all current evergreens); harmless if unsupported.
+.ma__input-wrap:has(> .ma__toggle-pw) > .ma__input {
+  padding-right: 2.75rem;
+}
+
+.ma__input-icon {
+  position: absolute;
+  left: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $c-muted;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ma__toggle-pw {
+  position: absolute;
+  right: 0.65rem;
+  background: none;
+  border: none;
+  padding: 0.35rem;
+  cursor: pointer;
+  color: $c-muted;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  @include transition((color, background));
+
+  &:hover {
+    color: $c-primary;
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.ma__login-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin: 0.15rem 0 0.25rem;
+}
+
+.ma__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: $c-primary;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ma__checkbox {
+  width: 16px;
+  height: 16px;
+  border: 1px solid $c-border;
+  border-radius: 4px;
+  accent-color: #1a1a1a;
+  cursor: pointer;
+}
+
+.ma__lost-pw {
+  font-size: 0.8rem;
+  color: $c-accent;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover { text-decoration: underline; }
+}
+
+// Large primary button variant
+.ma__btn--lg {
+  padding: 0.85rem 1.25rem;
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+}
+
+.ma__login-footer {
+  text-align: center;
+  font-size: 0.82rem;
+  color: $c-muted;
+  margin: 1.25rem 0 0;
+}
+
+.ma__link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: $c-accent;
+  font-weight: 600;
+  font-size: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+.ma__hint {
+  font-size: 0.72rem;
+  color: $c-muted;
+  margin: 0.2rem 0 0;
+}
+
+// Info note (for auto-generated password case)
+.ma__info-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  background: rgba(33, 150, 243, 0.08);
+  color: #1976d2;
+  border-radius: $border-radius;
+  font-size: 0.8rem;
+  line-height: 1.45;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+}
+
+// Hide WC-injected privacy policy text inside the card (register flow) — gets too crowded
+.ma__auth-panel .woocommerce-privacy-policy-text {
+  font-size: 0.72rem;
+  color: $c-muted;
+  line-height: 1.5;
+  margin: 0.25rem 0 0;
+
+  p { margin: 0; }
+  a { color: $c-accent; text-decoration: none; &:hover { text-decoration: underline; } }
+}
+
+// =============================================================================
+// WooCommerce order/order-details.php + order/order-details-customer.php
+// These are rendered by do_action('woocommerce_view_order') inside view-order.php
+// =============================================================================
+
+// Wrap both sections in a card-like style
+.woocommerce-order-details,
+.woocommerce-customer-details {
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  padding: 1.25rem;
+  margin-top: 0.85rem;
+}
+
+// Section titles
+.woocommerce-order-details__title,
+.woocommerce-column__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0 0 1rem;
+}
+
+// Order details table
+.woocommerce-table--order-details {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  thead tr {
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+  }
+
+  th, td {
+    padding: 0.6rem 0;
+    color: $c-primary;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $c-muted;
+  }
+
+  td.product-total {
+    text-align: right;
+  }
+
+  th.product-total {
+    text-align: right;
+  }
+
+  // Product name cell — thumbnail + name + meta
+  .woocommerce-table__product-name {
+    a {
+      font-weight: 600;
+      color: $c-primary;
+      text-decoration: none;
+
+      &:hover { color: $c-accent; }
+    }
+  }
+
+  .woocommerce-table__product-table {
+    text-align: right;
+  }
+
+  // Product image thumbnail (WC adds it via order-details-item.php)
+  .product-thumbnail img {
+    width: 48px !important;
+    height: 48px !important;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.06);
+    display: block;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+
+    &:last-child { border-bottom: none; }
+  }
+
+  // Variation meta inside item row
+  .wc-item-meta {
+    margin: 0.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.72rem;
+    color: $c-muted;
+
+    li { display: inline; }
+    li + li::before { content: ', '; }
+
+    strong { font-weight: 600; }
+    p { display: inline; margin: 0; }
+  }
+
+  // Tfoot totals rows
+  tfoot {
+    border-top: 1px solid rgba(0,0,0,0.07);
+
+    tr th {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: $c-primary;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    tr td {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    // Grand total row — last tfoot tr
+    tr:last-child th,
+    tr:last-child td {
+      font-size: 1rem;
+      font-weight: 700;
+      padding-top: 0.75rem;
+    }
+  }
+
+  // Action buttons row
+  .order-actions-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+    border: 1px solid $c-border;
+    border-radius: $border-radius;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $c-primary;
+    text-decoration: none;
+    background: transparent;
+    @include transition((border-color, background));
+    margin-right: 0.4rem;
+
+    &:hover {
+      border-color: $c-primary;
+      background: rgba(0,0,0,0.02);
+    }
+  }
+}
+
+// Customer details — billing + shipping address columns
+.woocommerce-columns--addresses {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+.woocommerce-column--billing-address,
+.woocommerce-column--shipping-address {
+  .woocommerce-column__title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $c-muted;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  address {
+    font-style: normal;
+    font-size: 0.82rem;
+    color: $c-primary;
+    line-height: 1.65;
+  }
+}
+
+.woocommerce-customer-details--phone,
+.woocommerce-customer-details--email {
+  font-size: 0.82rem;
+  color: $c-muted;
+  margin: 0.2rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.5;
+  }
+}
+
+.woocommerce-customer-details--phone::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 10.5 19.79 19.79 0 0 1 1.61 2 2 2 0 0 1 3.59 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.18 6.18l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z'/%3E%3C/svg%3E");
+}
+
+.woocommerce-customer-details--email::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round'%3E%3Crect x='2' y='4' width='20' height='16' rx='2'/%3E%3Cpolyline points='22,4 12,13 2,4'/%3E%3C/svg%3E");
+}
+
+// =============================================================================
+// Intro paragraph (used at top of Addresses, etc.)
+// =============================================================================
+.ma__intro {
+  font-size: 0.85rem;
+  color: $c-muted;
+  margin: 0 0 1.25rem;
+}
+
+// =============================================================================
+// Addresses (my-address.php)
+// =============================================================================
+.ma__addr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.ma__addr-card {
+  display: flex;
+  flex-direction: column;
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  padding: 1.25rem;
+  @include transition(box-shadow);
+
+  &:hover { box-shadow: $box-shadow; }
+
+  &--empty {
+    border: 2px dashed rgba(0,0,0,0.1);
+    background: transparent;
+
+    address, .ma__addr-empty-text {
+      color: $c-muted;
+    }
+  }
+}
+
+.ma__addr-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.ma__addr-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(200,169,126,0.15);
+  color: $c-accent;
+  flex-shrink: 0;
+}
+
+.ma__addr-card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0;
+}
+
+.ma__addr-card-body {
+  flex: 1;
+
+  address {
+    font-style: normal;
+    font-size: 0.85rem;
+    color: $c-primary;
+    line-height: 1.65;
+    margin: 0;
+  }
+}
+
+.ma__addr-empty-text {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.ma__addr-card-footer {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+// =============================================================================
+// Forms — Edit Address, Edit Account, Password change
+// =============================================================================
+.ma__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.ma__form-card {
+  background: $ma-card-bg;
+  border-radius: $border-radius-lg;
+  padding: 1.5rem;
+}
+
+.ma__form-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0 0 0.25rem;
+
+  svg { color: $c-accent; }
+}
+
+.ma__form-card-sub {
+  font-size: 0.78rem;
+  color: $c-muted;
+  margin: 0 0 1rem;
+}
+
+.ma__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+
+  @include until(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ma__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.ma__form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+// edit-address nests its card and actions inside .woocommerce-address-fields
+// (WC's own wrapper), one level below .ma__form. Mirror the parent's stacking
+// so the card/button rhythm matches the Account Details page.
+.ma__form .woocommerce-address-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+// -----------------------------------------------------------------------------
+// Style WC-native form fields inside .ma__form (edit-address uses
+// woocommerce_form_field() which outputs .form-row/.woocommerce-input-wrapper).
+// -----------------------------------------------------------------------------
+.ma__form .woocommerce-address-fields__field-wrapper,
+.ma__form .ma__form-grid {
+  // WC wraps each field in <p class="form-row woocommerce-form-row ..."/>
+  .form-row {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    &.form-row-first,
+    &.form-row-last {
+      width: auto;
+      float: none;
+    }
+
+    &.form-row-wide,
+    &.notes {
+      grid-column: 1 / -1;
+    }
+
+    > label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: $c-primary;
+      letter-spacing: 0.01em;
+
+      .required {
+        color: $c-danger;
+        margin-left: 0.15rem;
+      }
+
+      .optional {
+        color: $c-muted;
+        font-weight: 500;
+        margin-left: 0.25rem;
+      }
+    }
+
+    .woocommerce-input-wrapper {
+      display: block;
+    }
+
+    input.input-text,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="password"],
+    // Skip select2's mirror <select>. It stays in the DOM as an absolutely
+    // positioned 1x1 clipped element, but select2 hides it with only one class
+    // of specificity (.select2-hidden-accessible), so these !important rules
+    // used to win and re-inflate it to width: 100% of the viewport at its
+    // indented static position — invisible, yet wide enough to give the whole
+    // page a horizontal scrollbar on mobile.
+    select:not(.select2-hidden-accessible),
+    textarea,
+    .select2-selection--single,
+    .select2-selection {
+      width: 100% !important;
+      border: 1px solid $c-border !important;
+      border-radius: $border-radius !important;
+      padding: 0.75rem 1rem !important;
+      font-size: 0.875rem !important;
+      color: $c-primary !important;
+      background: #fff !important;
+      height: auto !important;
+      line-height: 1.4 !important;
+      box-shadow: none !important;
+      @include transition((border-color, box-shadow));
+
+      &:focus {
+        outline: none !important;
+        border-color: $c-primary !important;
+        box-shadow: 0 0 0 3px rgba(0,0,0,0.05) !important;
+      }
+    }
+
+    // Select2 overrides (used by WC country/state dropdowns)
+    .select2-container {
+      width: 100% !important;
+    }
+
+    // The padded box is .select2-selection--single above, so the inner text span
+    // must not add its own. WooCommerce's block-theme stylesheet pads it with
+    // 0.9rem 1.1rem (.woocommerce-page form .form-row … .select2-selection__rendered),
+    // which double-pads the field — reset the whole shorthand, not just the left.
+    .select2-selection__rendered {
+      padding: 0 !important;
+      line-height: 1.4 !important;
+      color: $c-primary !important;
+    }
+
+    .select2-selection__arrow {
+      height: 100% !important;
+      right: 0.5rem !important;
+    }
+
+    // Description / hint text
+    .description,
+    em {
+      font-size: 0.72rem;
+      color: $c-muted;
+      font-style: normal;
+      margin-top: 0.15rem;
+    }
+  }
+
+  // WC's .clear divs — kill them, grid handles wrapping
+  > .clear { display: none; }
+}
+
+// =============================================================================
+// Back link (also used for view-order)
+// =============================================================================
+// (.ma__back-link already defined above — no changes needed)
+
+// ---- ORDER ROW: stacked bottom-bar layout (≤920px) ----
+// Kicks in above the general mobile block (until(md) = 767px) because the
+// three-button action set on a pending-payment order (Details + Pay + Cancel)
+// still fights the middle info column for space until roughly 920px, causing
+// the date and items chips to wrap in two-line ragged columns. Wrapping the
+// row and giving .ma__order-right its own full-width bar under thumbs+info
+// keeps the info column intact from 920px down to md, where the general
+// mobile block already applies the same rules.
+@include until(920px) {
+  .ma__order-row {
+    flex-wrap: wrap;
+  }
+
+  .ma__order-right {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+// ---- RESPONSIVE ----
+@include until(md) {
+  .ma__layout {
+    flex-direction: column;
+  }
+
+  .ma__sidebar {
+    width: 100%;
+  }
+
+  // Stacked, the layout's align-items: flex-start shrinks children to their
+  // content width on the cross axis — flex: 1 only governs the main axis, so
+  // the content column has to claim the full width itself.
+  .ma__content {
+    width: 100%;
+  }
+
+  .ma__nav {
+    // Horizontal scroll nav on mobile
+    .ma__nav-user { display: none; }
+
+    .ma__nav-list {
+      display: flex;
+      overflow-x: auto;
+      padding: 0.35rem 0.5rem;
+      gap: 0.25rem;
+
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .ma__nav-item--logout {
+      border-top: none;
+      margin-top: 0;
+      padding-top: 0;
+      margin-left: auto;
+    }
+  }
+
+  .ma__nav-link {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.65rem;
+    white-space: nowrap;
+    font-size: 0.72rem;
+    border-radius: $border-radius;
+
+    &::before { display: none !important; }
+  }
+
+  .ma__nav-label {
+    font-size: 0.65rem;
+  }
+
+  // Endpoints that ship a shorter mobile label via data-short-label
+  // (see woocommerce/myaccount/navigation.php $mobile_short_labels).
+  // Hide the full text with font-size: 0 and render the compact label
+  // through a pseudo-element so no extra markup is needed.
+  .ma__nav-label[data-short-label] {
+    font-size: 0;
+
+    &::before {
+      content: attr(data-short-label);
+      font-size: 0.65rem;
+    }
+  }
+
+  .ma__order-row {
+    flex-wrap: wrap;
+  }
+
+  .ma__order-right {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .ma__vo-addresses {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ---- ULTRA-NARROW MOBILE — ORDER ROW STACKING (≤475px) ----
+// At this width the thumbs (176px+) still share the row with .ma__order-info,
+// squeezing the status badge / date / items count into two-line wraps.
+// Give thumbs and info their own full-width rows so the meta column can
+// breathe. .ma__order-right is already full-width from the until(md) block.
+@include until(475px) {
+  .ma__order-thumbs,
+  .ma__order-info {
+    width: 100%;
+  }
+
+  // With multiple actions (e.g. Details + Pay + Cancel on a pending order)
+  // the buttons wrap under the total in a ragged column. Letting each button
+  // grow equally keeps them on one row and visually balanced.
+  .ma__order-actions .ma__btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+// ---- ULTRA-NARROW MOBILE — ORDER DETAILS ACTIONS ROW (≤410px) ----
+// WC's core order-details.php renders the Actions row as
+// <th>Actions:</th><td>Pay Cancel</td> inside <tfoot>. Below ~410px the
+// td collapses narrow enough that the two inline-flex .order-actions-button
+// links wrap into a ragged single-column stack on the right side of the row
+// (see the "Actions: | Pay / Cancel" screenshot). Turn the td into a right-
+// aligned flex container so the buttons share one row at their natural label
+// width — deliberately NOT flex: 1 here, otherwise they shrink to unusable
+// icon-sized boxes and look squished.
+@include until(410px) {
+  .woocommerce-table--order-details .order-actions--heading + td {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.4rem;
+
+    .order-actions-button {
+      // Drop the base rule's margin-right so the flex gap owns spacing and
+      // there's no phantom offset trailing the last button.
+      margin-right: 0;
+    }
+  }
+}
+
+// ---- ULTRA-NARROW MOBILE — ICON-ONLY NAV (≤407px) ----
+// At this width the five account nav items (icon + label + padding + gap)
+// no longer fit on one row, so the last item (Log out) gets cropped by the
+// horizontal-scroll overflow. Drop the labels to keep an icon-only row;
+// the anchor's title attribute preserves the destination name for hover
+// tooltips and assistive tech.
+@include until(407px) {
+  .ma__nav .ma__nav-list {
+    justify-content: space-between;
+    gap: 0;
+  }
+
+  .ma__nav .ma__nav-item--logout {
+    margin-left: 0;
+  }
+
+  .ma__nav-label {
+    display: none;
+  }
+}
+
+// ---- ULTRA-NARROW MOBILE — DASHBOARD RECENT ORDERS (≤380px) ----
+// The dashboard's recent-orders panel uses its own compact .ma__order-card
+// layout (thumb | info | total+View column), which is different from the
+// full my-orders .ma__order-row and so isn't covered by the until(475px)
+// stacking. At this width the .ma__order-card-right column steals enough
+// space from .ma__order-card-info that the date wraps to two lines
+// ("September 22," / "2026") and the status badge stacks. Pin the total +
+// View button to their own full-width bottom bar under thumb + info.
+@include until(380px) {
+  .ma__order-card {
+    flex-wrap: wrap;
+  }
+
+  .ma__order-card-right {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}

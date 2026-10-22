@@ -1,0 +1,52 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/search-bar",
+	"version": "1.0.0",
+	"title": "Search Bar",
+	"category": "ai-zippy",
+	"icon": "search",
+	"description": "Smart search with live typeahead. Works in headers or anywhere on the page. Supports product SKU, product ID, and post search.",
+	"keywords": ["search", "typeahead", "products", "woocommerce"],
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"]
+	},
+	"attributes": {
+		"displayMode": {
+			"type": "string",
+			"default": "icon",
+			"enum": ["inline", "icon"]
+		},
+		"searchScope": {
+			"type": "string",
+			"default": "both",
+			"enum": ["products", "posts", "both"]
+		},
+		"placeholder": {
+			"type": "string",
+			"default": "Search products…"
+		},
+		"maxResults": {
+			"type": "number",
+			"default": 8
+		},
+		"iconUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"iconId": {
+			"type": "number",
+			"default": 0
+		},
+		"iconSize": {
+			"type": "number",
+			"default": 20
+		}
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

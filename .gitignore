@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build output
+src/wp-content/themes/ai-zippy/assets/dist
+src/wp-content/themes/ai-zippy/assets/dist-admin
+src/wp-content/themes/ai-zippy/assets/blocks
+src/wp-content/themes/ai-zippy-child/assets/dist
+src/wp-content/themes/ai-zippy-child/assets/blocks
+
+# Environment
+.env
+
+# WordPress default themes (not needed)
+src/wp-content/themes/twentytwentyone
+src/wp-content/themes/twentytwentytwo
+src/wp-content/themes/twentytwentythree
+src/wp-content/themes/twentytwentyfour
+src/wp-content/themes/twentytwentyfive
+
+# WordPress default plugins (not needed)
+src/wp-content/plugins/akismet
+src/wp-content/plugins/hello.php
+
+# Zippy owner plugins (not needed)
+src/wp-content/plugins/zippy-*
+src/wp-content/plugins/epos-*
+
+# WordPress uploads and cache
+src/wp-content/uploads
+src/wp-content/upgrade
+src/wp-content/cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# AI 
+.qoder

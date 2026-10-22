@@ -1,0 +1,49 @@
+<!-- wp:template-part {"slug":"header","area":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"2rem","bottom":"2rem","left":"2rem","right":"2rem"}}},"layout":{"type":"constrained","contentSize":"1200px"}} -->
+<main class="wp-block-group" style="padding-top:2rem;padding-right:1.5rem;padding-bottom:2rem;padding-left:1.5rem">
+
+	<!-- wp:woocommerce/breadcrumbs {"fontSize":"small","style":{"spacing":{"margin":{"bottom":"2rem"}}}} /-->
+
+	<!-- wp:woocommerce/store-notices /-->
+
+	<!-- wp:columns {"style":{"spacing":{"blockGap":{"left":"3rem"}}}} -->
+	<div class="wp-block-columns">
+
+		<!-- wp:column {"width":"50%"} -->
+		<div class="wp-block-column" style="flex-basis:50%">
+			<!-- wp:woocommerce/product-image-gallery /-->
+		</div>
+		<!-- /wp:column -->
+
+		<!-- wp:column {"width":"50%"} -->
+		<div class="wp-block-column" style="flex-basis:50%">
+			<!-- wp:shortcode -->
+			[ai_zippy_product_summary]
+			<!-- /wp:shortcode -->
+		</div>
+		<!-- /wp:column -->
+
+	</div>
+	<!-- /wp:columns -->
+
+	<!-- wp:shortcode -->
+	[ai_zippy_product_tabs]
+	<!-- /wp:shortcode -->
+
+	<!-- wp:group {"style":{"spacing":{"margin":{"top":"3rem"}}},"className":"zp-related-wrap","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group zp-related-wrap" data-lazy-related style="margin-top:3rem">
+		<!-- wp:heading {"fontSize":"large","style":{"spacing":{"margin":{"bottom":"1.5rem"}}}} -->
+		<h2 class="wp-block-heading has-large-font-size" style="margin-bottom:1.5rem">You may also like</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:shortcode -->
+		[ai_zippy_related_products per_page="4" columns="4"]
+		<!-- /wp:shortcode -->
+	</div>
+	<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","area":"footer"} /-->

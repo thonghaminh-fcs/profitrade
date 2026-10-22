@@ -1,0 +1,35 @@
+// Shim for @wordpress/components → reads from window.wp.components.
+const m = (typeof window !== "undefined" && window.wp && window.wp.components) || {};
+
+export default m;
+export const Button = m.Button;
+export const Card = m.Card;
+export const CardHeader = m.CardHeader;
+export const CardBody = m.CardBody;
+export const CardFooter = m.CardFooter;
+export const SelectControl = m.SelectControl;
+export const TextControl = m.TextControl;
+export const ToggleControl = m.ToggleControl;
+export const CheckboxControl = m.CheckboxControl;
+export const RangeControl = m.RangeControl;
+export const ColorPicker = m.ColorPicker;
+export const Notice = m.Notice;
+export const Spinner = m.Spinner;
+export const Modal = m.Modal;
+export const Panel = m.Panel;
+export const PanelBody = m.PanelBody;
+export const TabPanel = m.TabPanel;
+export const Dashicon = m.Dashicon;
+export const Tooltip = m.Tooltip;
+export const DropZone = m.DropZone;
+export const FormFileUpload = m.FormFileUpload;
+export const Icon = m.Icon;
+export const Flex = m.Flex;
+export const FlexItem = m.FlexItem;
+export const __experimentalToggleGroupControl = m.__experimentalToggleGroupControl;
+export const __experimentalToggleGroupControlOption = m.__experimentalToggleGroupControlOption;
+export const __experimentalHeading = m.__experimentalHeading;
+export const __experimentalText = m.__experimentalText;
+export const __experimentalVStack = m.__experimentalVStack;
+export const __experimentalHStack = m.__experimentalHStack;
+export const __experimentalGrid = m.__experimentalGrid;

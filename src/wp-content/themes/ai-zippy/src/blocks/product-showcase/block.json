@@ -1,0 +1,76 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/product-showcase",
+	"version": "1.0.0",
+	"title": "Product Showcase",
+	"category": "ai-zippy",
+	"icon": "products",
+	"description": "Display WooCommerce products in a grid or slider. Choose category, brand, layout, and number of items.",
+	"keywords": ["product", "shop", "grid", "slider", "carousel", "woocommerce"],
+	"supports": {
+		"html": false,
+		"align": ["wide", "full"],
+		"spacing": {
+			"margin": true,
+			"padding": true
+		}
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": ""
+		},
+		"columns": {
+			"type": "number",
+			"default": 4
+		},
+		"rows": {
+			"type": "number",
+			"default": 2
+		},
+		"category": {
+			"type": "string",
+			"default": ""
+		},
+		"brand": {
+			"type": "string",
+			"default": ""
+		},
+		"displayStyle": {
+			"type": "string",
+			"default": "grid",
+			"enum": ["grid", "slider"]
+		},
+		"orderby": {
+			"type": "string",
+			"default": "date"
+		},
+		"showSaleBadge": {
+			"type": "boolean",
+			"default": true
+		},
+		"showRating": {
+			"type": "boolean",
+			"default": true
+		},
+		"showAddToCart": {
+			"type": "boolean",
+			"default": true
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": false
+		},
+		"autoplayDelay": {
+			"type": "number",
+			"default": 5000
+		}
+	},
+	"textdomain": "ai-zippy",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php",
+	"viewScript": "file:./view.js"
+}

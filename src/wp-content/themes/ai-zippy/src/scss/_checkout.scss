@@ -1,0 +1,1159 @@
+@use "variables" as *;
+
+// =============================================================================
+// WooCommerce Default Checkout Block — styled to match React checkout
+// =============================================================================
+
+// ---- LAYOUT ----
+.wc-block-checkout {
+  font-size: 0.9rem;
+}
+
+// ---- SECTION CARDS ----
+// Each checkout step gets a card-style background (no borders)
+.wc-block-checkout__form .wc-block-components-checkout-step {
+  background: #f8f8fa !important;
+  border: none !important;
+  border-radius: $border-radius-lg !important;
+  padding: 1.5rem !important;
+  margin-bottom: 0.85rem !important;
+}
+
+// Section heading
+.wc-block-components-checkout-step__heading {
+  margin-bottom: 1rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wc-block-components-checkout-step__title {
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  color: $c-primary;
+}
+
+.wc-block-components-checkout-step__description {
+  font-size: 0.8rem !important;
+  color: $c-muted !important;
+  margin-top: 0.15rem;
+}
+
+// Step number indicator
+.wc-block-components-checkout-step__container::before {
+  display: none !important; // remove WC default step line
+}
+
+// ---- TEXT INPUTS & SELECTS ----
+.wc-block-components-text-input,
+.wc-block-components-country-input,
+.wc-block-components-state-input,
+.wc-block-components-combobox {
+  margin-bottom: 0.75rem !important;
+
+  input,
+  select,
+  .components-combobox-control__input {
+    border: 1px solid $c-border !important;
+    border-radius: $border-radius !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
+    color: $c-primary !important;
+    background: #fff !important;
+    @include transition((border-color, box-shadow));
+    height: auto !important;
+
+    &:focus {
+      border-color: $c-accent !important;
+      box-shadow: 0 0 0 3px rgba(200, 169, 126, 0.12) !important;
+      outline: none !important;
+    }
+  }
+
+  // Floating label
+  label {
+    font-size: 0.8rem !important;
+    color: $c-muted !important;
+    font-weight: 600 !important;
+  }
+}
+
+// Country select — grey background like React checkout
+.wc-block-components-country-input select,
+.wc-block-components-state-input select,
+.wc-block-components-combobox .components-combobox-control__input {
+  background-color: #f0f0f2 !important;
+  border-color: transparent !important;
+
+  &:focus {
+    border-color: $c-accent !important;
+    background-color: #fff !important;
+  }
+}
+
+// ---- TEXTAREA ----
+.wc-block-components-textarea {
+  border: 1px solid $c-border !important;
+  border-radius: $border-radius !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem !important;
+  background: #fff;
+  @include transition((border-color, box-shadow));
+  resize: vertical;
+  min-height: 80px;
+
+  &:focus {
+    border-color: $c-accent !important;
+    box-shadow: 0 0 0 3px rgba(200, 169, 126, 0.12) !important;
+    outline: none !important;
+  }
+}
+
+// ---- CHECKBOXES ----
+.wc-block-components-checkbox {
+  .wc-block-components-checkbox__input {
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 4px !important;
+    border: 1px solid $c-border !important;
+    @include transition((border-color, background));
+
+    &:checked {
+      background: $c-primary !important;
+      border-color: $c-primary !important;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(200, 169, 126, 0.12) !important;
+    }
+  }
+
+  .wc-block-components-checkbox__label {
+    font-size: 0.8rem !important;
+    color: $c-primary;
+  }
+}
+
+// ---- RADIO BUTTONS (shipping methods, payment) ----
+.wc-block-components-radio-control {
+  .wc-block-components-radio-control__option {
+    border: 1px solid $c-border !important;
+    border-radius: $border-radius !important;
+    padding: 0.85rem 1rem !important;
+    margin-bottom: 0.5rem !important;
+    background: #fff;
+    @include transition((border-color, background));
+
+    &.wc-block-components-radio-control__option-checked,
+    &:has(input:checked) {
+      border-color: $c-primary !important;
+      background: rgba(26, 26, 26, 0.02) !important;
+    }
+  }
+
+  .wc-block-components-radio-control__input {
+    width: 18px !important;
+    height: 18px !important;
+    border: 2px solid $c-border !important;
+    accent-color: #1a1a1a;
+
+    &:checked {
+      border-color: $c-primary !important;
+    }
+  }
+
+  .wc-block-components-radio-control__label {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: $c-primary;
+  }
+
+  .wc-block-components-radio-control__description {
+    font-size: 0.8rem !important;
+    color: $c-muted;
+  }
+
+  .wc-block-components-radio-control__secondary-label {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    color: $c-primary;
+  }
+}
+
+// ---- PAYMENT METHODS ----
+.wc-block-components-payment-method-label {
+  font-size: 0.875rem !important;
+  font-weight: 600 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  img {
+    height: 24px;
+    width: auto;
+  }
+}
+
+.wc-block-components-payment-method-icons {
+  gap: 0.35rem !important;
+
+  .wc-block-components-payment-method-icon {
+    height: 24px !important;
+    width: auto !important;
+  }
+}
+
+// ---- ORDER SUMMARY SIDEBAR ----
+.wc-block-checkout__sidebar {
+  .wc-block-components-order-summary {
+    background: #f8f8fa;
+    border: none;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+  }
+
+  .wc-block-components-order-summary-item {
+    padding: 0.85rem 1rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .wc-block-components-order-summary-item__image {
+    position: relative;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 8px !important;
+    overflow: visible !important;
+    background: $c-secondary;
+    flex-shrink: 0;
+
+    img {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: none !important;
+      object-fit: cover !important;
+      border-radius: 8px;
+    }
+  }
+
+  // Quantity badge — pinned to top-right of image
+  .wc-block-components-order-summary-item__quantity {
+    position: absolute !important;
+    top: -6px;
+    right: -6px;
+    z-index: 1;
+    background: $c-primary !important;
+    color: $c-white !important;
+    font-size: 0.6rem !important;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  }
+
+  .wc-block-components-order-summary-item__description {
+    min-width: 0;
+  }
+
+  .wc-block-components-product-name {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: $c-primary !important;
+    text-decoration: none !important;
+    @include truncate(2);
+  }
+
+  .wc-block-components-product-metadata {
+    font-size: 0.75rem !important;
+    color: $c-muted !important;
+    margin-top: 0.15rem;
+  }
+
+  .wc-block-components-order-summary-item__total-price {
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+  }
+}
+
+// ---- TOTALS ----
+.wc-block-checkout__sidebar {
+  .wc-block-components-totals-wrapper {
+    padding: 0.65rem 0 !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .wc-block-components-totals-item__label {
+    font-size: 0.85rem !important;
+    color: $c-primary;
+  }
+
+  .wc-block-components-totals-item__value {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+  }
+
+  // Grand total
+  .wc-block-components-totals-footer-item {
+    .wc-block-components-totals-item__label {
+      font-size: 1rem !important;
+      font-weight: 700 !important;
+    }
+
+    .wc-block-components-totals-item__value {
+      font-size: 1.15rem !important;
+      font-weight: 700 !important;
+    }
+  }
+
+  .wc-block-components-totals-shipping__via {
+    font-size: 0.75rem !important;
+    color: $c-muted;
+  }
+}
+
+// ---- COUPON ----
+.wc-block-checkout__sidebar {
+  .wc-block-components-totals-coupon {
+    padding: 0.65rem 0 !important;
+
+    .wc-block-components-totals-coupon__button {
+      font-size: 0.8rem !important;
+      color: $c-accent !important;
+      font-weight: 600;
+      text-decoration: none !important;
+      background: none !important;
+      border: none !important;
+      cursor: pointer;
+      padding: 0 !important;
+
+      &:hover {
+        text-decoration: underline !important;
+      }
+    }
+  }
+
+  .wc-block-components-totals-coupon__content {
+    display: flex;
+    gap: 0.5rem;
+
+    .wc-block-components-text-input {
+      flex: 1;
+      margin-bottom: 0 !important;
+    }
+
+    .wc-block-components-button {
+      background: $c-primary !important;
+      color: $c-white !important;
+      border: none !important;
+      border-radius: $border-radius !important;
+      padding: 0.6rem 1rem !important;
+      font-size: 0.8rem !important;
+      font-weight: 600 !important;
+      white-space: nowrap;
+      @include transition((background));
+
+      &:hover {
+        background: #333 !important;
+      }
+    }
+  }
+
+  .wc-block-components-totals-discount__coupon-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .wc-block-components-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: $c-secondary !important;
+    border: none !important;
+    border-radius: 100px !important;
+    padding: 0.25rem 0.6rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 600;
+
+    .wc-block-components-chip__remove {
+      width: 14px !important;
+      height: 14px !important;
+      padding: 0 !important;
+      background: none !important;
+      border: none !important;
+      color: $c-muted;
+      cursor: pointer;
+      @include transition(color);
+
+      &:hover {
+        color: $c-danger;
+      }
+    }
+  }
+}
+
+// ---- PLACE ORDER BUTTON ----
+.wc-block-components-checkout-place-order-button,
+.wc-block-checkout__actions_row .wc-block-components-button {
+  width: 100%;
+  background: $c-primary !important;
+  color: $c-white !important;
+  border: none !important;
+  border-radius: $border-radius !important;
+  padding: 0.95rem 1.5rem !important;
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+  @include transition((background, transform));
+
+  &:hover {
+    background: #333 !important;
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .wc-block-components-button__text {
+    font-weight: 700;
+  }
+
+  .wc-block-components-spinner {
+    margin-right: 0.5rem;
+  }
+}
+
+// ---- RETURN TO CART LINK ----
+.wc-block-checkout__actions_row .wc-block-components-checkout-return-to-cart-button {
+  font-size: 0.8rem !important;
+  color: $c-muted !important;
+  text-decoration: none !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  @include transition(color);
+
+  &:hover {
+    color: $c-primary !important;
+  }
+}
+
+// ---- TERMS & CONDITIONS ----
+.wc-block-checkout__terms {
+  font-size: 0.75rem !important;
+  color: $c-muted;
+  margin-top: 0.75rem;
+
+  a {
+    color: $c-accent;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+// ---- VALIDATION ERRORS ----
+.wc-block-components-validation-error {
+  font-size: 0.75rem !important;
+  color: $c-danger !important;
+  margin-top: 0.25rem;
+}
+
+// ---- EXPRESS PAYMENT ----
+.wc-block-components-express-payment {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid $c-border;
+
+  .wc-block-components-express-payment__title {
+    font-size: 0.8rem;
+    color: $c-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .wc-block-components-express-payment__title-container {
+    margin-bottom: 0.85rem;
+  }
+
+  .wc-block-components-express-payment--checkout {
+    .wc-block-components-express-payment__event-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      > * {
+        flex: 1;
+        min-width: 120px;
+      }
+    }
+  }
+}
+
+// ---- SEPARATOR (OR divider) ----
+.wc-block-components-express-payment-continue-rule {
+  font-size: 0.75rem !important;
+  color: $c-muted !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &::before,
+  &::after {
+    background: $c-border !important;
+  }
+}
+
+// ---- ADDRESS CARD (saved address summary) ----
+.wc-block-components-address-card {
+  background: #fff;
+  border: 1px solid $c-border;
+  border-radius: $border-radius;
+  padding: 0.85rem 1rem;
+
+  .wc-block-components-address-card__edit {
+    font-size: 0.8rem;
+    color: $c-accent !important;
+    font-weight: 600;
+    text-decoration: none !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}
+
+// ---- SIDEBAR PANEL (Order summary accordion) ----
+.wc-block-checkout__sidebar .wc-block-components-panel {
+  background: #f8f8fa;
+  border: none;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+
+  .wc-block-components-panel__button {
+    padding: 0.85rem 1rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+  }
+
+  .wc-block-components-panel__content {
+    padding: 0 !important;
+  }
+}
+
+// ---- RESPONSIVE ----
+@include until(sm) {
+  .wc-block-checkout {
+    font-size: 0.85rem;
+  }
+
+  .wc-block-checkout__form .wc-block-components-checkout-step {
+    padding: 1.25rem !important;
+  }
+
+  .wc-block-components-checkout-place-order-button,
+  .wc-block-checkout__actions_row .wc-block-components-button {
+    padding: 0.85rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+// =============================================================================
+// Order Confirmation Page (WC Block template)
+// =============================================================================
+
+// ---- Header ----
+.az-oc__header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+}
+
+.az-oc__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.az-oc__desc {
+  font-size: 0.9rem !important;
+  color: $c-muted !important;
+  margin-bottom: 1.25rem !important;
+}
+
+// WC Status block — style as subtle inline text
+.wc-block-order-confirmation-status {
+  text-align: center;
+  padding: 0;
+  background: none;
+  border: none;
+  margin: 0;
+
+  p {
+    font-size: 0.8rem;
+    color: $c-muted;
+    margin: 0;
+  }
+}
+
+// ---- Summary (order number, date, email, total) ----
+.wc-block-order-confirmation-summary {
+  padding: 1rem 1.25rem;
+  background: #f8f8fa;
+  border-radius: $border-radius-lg;
+  margin-bottom: 0.85rem;
+
+  .wc-block-order-confirmation-summary-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .wc-block-order-confirmation-summary-list-item {
+    &__key {
+      font-size: 0.7rem;
+      color: $c-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    &__value {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: $c-primary;
+      margin-top: 0.1rem;
+    }
+  }
+}
+
+// ---- Cards ----
+.az-oc__card {
+  background: #f8f8fa !important;
+  border-radius: $border-radius-lg !important;
+  padding: 1.5rem !important;
+  margin-bottom: 0.85rem !important;
+
+  // Headings inside cards
+  h3 {
+    font-weight: 700 !important;
+    color: $c-primary;
+  }
+}
+
+// ---- Order Totals Table ----
+.wc-block-order-confirmation-totals {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+
+  .wc-block-order-confirmation-totals__table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.65rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    th {
+      font-weight: 600;
+      color: $c-primary;
+      text-align: left;
+    }
+
+    td {
+      text-align: right;
+    }
+
+    tfoot th,
+    tfoot td {
+      font-weight: 700;
+      font-size: 1.05rem;
+      border-bottom: none;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
+    }
+  }
+}
+
+// ---- Addresses ----
+.az-oc__addresses {
+  gap: 1rem !important;
+}
+
+.az-oc__address-label {
+  font-weight: 700 !important;
+  color: $c-primary;
+}
+
+.wc-block-order-confirmation-shipping-address,
+.wc-block-order-confirmation-billing-address {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: $c-muted;
+
+  address {
+    font-style: normal;
+  }
+}
+
+// ---- Additional Information ----
+.wc-block-order-confirmation-additional-information {
+  background: #f8f8fa;
+  border-radius: $border-radius-lg;
+  padding: 1.5rem;
+  margin-top: 0.85rem;
+  font-size: 0.85rem;
+  color: $c-primary;
+
+  h3, h2 {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.75rem !important;
+  }
+}
+
+// ---- Downloads ----
+.wc-block-order-confirmation-downloads {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 0.6rem 0;
+      font-size: 0.8rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      text-align: left;
+    }
+
+    th {
+      font-weight: 600;
+      color: $c-muted;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    a {
+      color: $c-accent;
+      font-weight: 600;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// ---- Responsive ----
+@include until(sm) {
+  .az-oc__header h1 {
+    font-size: 1.25rem !important;
+  }
+
+  .az-oc__card {
+    padding: 1.25rem !important;
+  }
+
+  .az-oc__addresses {
+    flex-direction: column !important;
+  }
+}
+
+// =============================================================================
+// Thank You Page (Classic WC: woocommerce/checkout/thankyou.php)
+// =============================================================================
+
+.az-thankyou {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+// ---- Header ----
+.az-thankyou__header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &--failed {
+    .az-thankyou__icon {
+      background: rgba(229, 57, 53, 0.08);
+      color: $c-danger;
+    }
+  }
+}
+
+.az-thankyou__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+
+  &--failed {
+    background: rgba(229, 57, 53, 0.08);
+    color: $c-danger;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+.az-thankyou__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0 0 0.4rem;
+}
+
+.az-thankyou__desc {
+  font-size: 0.9rem;
+  color: $c-muted;
+  margin: 0 0 1.5rem;
+}
+
+// Order number pill
+.az-thankyou__order-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid $c-border;
+  border-radius: $border-radius;
+  padding: 0.65rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.az-thankyou__order-num-inner {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.az-thankyou__order-num-label {
+  font-size: 0.65rem;
+  color: $c-muted;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.az-thankyou__order-num-val {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $c-primary;
+  line-height: 1;
+  margin-top: 0.25rem;
+}
+
+.az-thankyou__copy {
+  background: none;
+  border: none;
+  color: $c-muted;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  @include transition(color);
+  flex-shrink: 0;
+
+  &:hover {
+    color: $c-primary;
+  }
+}
+
+// Email note
+.az-thankyou__email-note {
+  font-size: 0.8rem;
+  color: $c-muted;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  strong {
+    color: $c-primary;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+}
+
+// ---- Cards ----
+.az-thankyou__card {
+  background: #f8f8fa;
+  border-radius: $border-radius-lg;
+  padding: 1.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.az-thankyou__card-header {
+  margin-bottom: 1rem;
+}
+
+.az-thankyou__card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $c-primary;
+  margin: 0;
+}
+
+// ---- Order Items ----
+.az-thankyou__items {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.az-thankyou__item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.65rem 0;
+  align-items: center;
+
+  + .az-thankyou__item {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+}
+
+.az-thankyou__item-img {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
+  img {
+    width: 56px !important;
+    height: 56px !important;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.az-thankyou__item-detail {
+  flex: 1;
+  min-width: 0;
+}
+
+.az-thankyou__item-name {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: $c-primary;
+  line-height: 1.35;
+}
+
+.az-thankyou__item-meta {
+  display: block;
+  font-size: 0.7rem;
+  color: $c-muted;
+  margin-top: 0.1rem;
+}
+
+.az-thankyou__item-qty {
+  display: block;
+  font-size: 0.7rem;
+  color: $c-muted;
+}
+
+.az-thankyou__item-total {
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ---- Totals ----
+.az-thankyou__totals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.az-thankyou__totals-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: $c-primary;
+
+  &--discount {
+    color: #4caf50;
+  }
+
+  &--total {
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding-top: 0.65rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    margin-top: 0.35rem;
+  }
+}
+
+.az-thankyou__free {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+// ---- Delivery Details ----
+.az-thankyou__details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.az-thankyou__detail-block {
+  display: flex;
+  gap: 0.75rem;
+
+  strong {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: $c-primary;
+    margin-bottom: 0.2rem;
+  }
+
+  address,
+  span {
+    font-size: 0.8rem;
+    color: $c-muted;
+    font-style: normal;
+    line-height: 1.55;
+  }
+}
+
+.az-thankyou__detail-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: $c-primary;
+}
+
+// ---- Actions (failed state) ----
+.az-thankyou__actions {
+  display: flex;
+  gap: 0.65rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.az-thankyou__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.25rem;
+  border-radius: $border-radius;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  @include transition((background, border-color));
+
+  &--primary {
+    background: $c-primary;
+    color: $c-white;
+    border: 1px solid $c-primary;
+
+    &:hover {
+      background: #333;
+      border-color: #333;
+    }
+  }
+
+  &--outline {
+    background: $c-white;
+    color: $c-primary;
+    border: 1px solid $c-border;
+
+    &:hover {
+      border-color: $c-primary;
+    }
+  }
+}
+
+// ---- Footer (appreciation + continue shopping) ----
+.az-thankyou__footer {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  margin-top: 0.85rem;
+  background: #f8f8fa;
+  border-radius: $border-radius-lg;
+}
+
+.az-thankyou__footer-msg {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $c-primary;
+  margin: 0 0 0.35rem;
+}
+
+.az-thankyou__footer-sub {
+  font-size: 0.8rem;
+  color: $c-muted;
+  margin: 0 0 1.5rem;
+}
+
+.az-thankyou__footer-actions {
+  display: flex;
+  gap: 0.65rem;
+  justify-content: center;
+}
+
+// ---- Responsive ----
+@include until(sm) {
+  .az-thankyou__title {
+    font-size: 1.25rem;
+  }
+
+  .az-thankyou__card {
+    padding: 1.25rem;
+  }
+
+  .az-thankyou__footer-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+

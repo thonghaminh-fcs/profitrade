@@ -1,0 +1,1535 @@
+@use "variables" as *;
+
+// =============================================================================
+// Classic WooCommerce Checkout — AI Zippy card-based layout
+// Loaded conditionally when admin selects "WooCommerce Default Checkout"
+// =============================================================================
+
+// WooCommerce's block-theme stylesheet limits this wrapper to 1000px.
+// Match the custom cart instead and let the checkout use its full layout width.
+.woocommerce-checkout main .woocommerce {
+  width: 100%;
+  max-width: 1300px;
+}
+
+// Space between WC's validation-error banner (rendered by wc_print_notices
+// above the checkout form) and the .zc-steps breadcrumb that follows — WC's
+// own stylesheet ships the banner flush to whatever comes next.
+.woocommerce-checkout .woocommerce-notices-wrapper,
+.woocommerce-checkout > .woocommerce-error,
+.woocommerce-checkout > .wc-block-components-notice-banner {
+  margin-bottom: 1.5rem;
+}
+
+.az-checkout {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+// ---- CHECKOUT PROGRESS ----
+.az-checkout > .zc-steps {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 520px;
+  margin: 0 auto 2rem;
+}
+
+.az-checkout .zc-steps__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  position: relative;
+  white-space: nowrap;
+
+  .zc-steps__line {
+    display: block;
+    width: 60px;
+    height: 2px;
+    background: #ddd;
+    margin: 0 0.75rem;
+    flex-shrink: 0;
+  }
+
+  &.is-active .zc-steps__line,
+  &.is-done .zc-steps__line {
+    background: $c-primary;
+  }
+}
+
+.az-checkout .zc-steps__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #d0d0d0;
+  color: $c-white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.az-checkout .zc-steps__label {
+  font-size: 0.8rem;
+  color: #999;
+  font-weight: 500;
+}
+
+.az-checkout .zc-steps__item.is-active {
+  .zc-steps__num {
+    background: $c-primary;
+  }
+
+  .zc-steps__label {
+    color: $c-primary;
+    font-weight: 600;
+  }
+}
+
+.az-checkout .zc-steps__item.is-done .zc-steps__num {
+  background: $c-accent;
+}
+
+@include until(sm) {
+  .az-checkout .zc-steps__label {
+    display: none;
+  }
+
+  .az-checkout .zc-steps__item .zc-steps__line {
+    width: 32px;
+    margin: 0 0.35rem;
+  }
+}
+
+// ---- TWO-COLUMN LAYOUT ----
+.az-checkout__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 1.5rem;
+  align-items: start;
+
+  @include until(lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.az-checkout__form {
+  min-width: 0;
+}
+
+.az-checkout__sidebar {
+  position: sticky;
+  top: 5rem;
+
+  .az-checkout__card-header {
+    margin-bottom: 0;
+  }
+
+  @include until(lg) {
+    position: static;
+  }
+}
+
+// ---- CARDS ----
+.az-checkout__card {
+  background: $c-white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  &--sticky {
+    @include until(lg) {
+      // no sticky on mobile
+    }
+  }
+}
+
+.az-checkout__card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+
+.az-checkout__card-num {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $c-primary;
+}
+
+.az-checkout__card-title {
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  color: $c-primary;
+  margin: 0 !important;
+  padding: 0;
+}
+
+.az-checkout__card-body {
+  // Remove WC default section headings inside cards (we have our own).
+  // form-shipping.php's <h3 id="ship-to-different-address"> is NOT a plain
+  // heading — it wraps the "Ship to a different address?" checkbox, so it's
+  // excluded here or the checkbox disappears along with the heading text.
+  > .woocommerce-billing-fields > h3,
+  > .woocommerce-shipping-fields > h3:not(#ship-to-different-address),
+  > .woocommerce-additional-fields > h3 {
+    display: none;
+  }
+}
+
+// ---- SHIPPING: "Ship to a different address?" toggle ----
+.az-checkout #ship-to-different-address {
+  margin: 0 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+
+  label {
+    display: flex !important;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: $c-primary;
+    cursor: pointer;
+  }
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: $c-primary;
+    margin: 0;
+  }
+}
+
+// The shipping address fields collapse/expand instead of just toggling
+// display, via a grid-rows trick: animating 0fr -> 1fr tracks whatever the
+// content's real height is, so it works without JS ever measuring pixels.
+// wc-checkout-phone.js toggles the .is-open class; the child's
+// overflow: hidden is what actually clips the content at 0fr (grid-rows
+// alone doesn't hide anything on its own).
+.az-checkout .shipping_address {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+
+  > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+}
+
+// ---- FORM FIELDS ----
+.az-checkout {
+  font-size: 0.9rem;
+
+  // Field wrappers — grid layout
+  .woocommerce-billing-fields__field-wrapper,
+  .woocommerce-shipping-fields__field-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 0.85rem;
+
+    @include until(sm) {
+      grid-template-columns: 1fr;
+    }
+
+    // Full-width fields
+    #billing_company_field,
+    #billing_country_field,
+    #billing_address_1_field,
+    #billing_address_2_field,
+    #billing_email_field,
+    #billing_phone_field,
+    #shipping_company_field,
+    #shipping_country_field,
+    #shipping_address_1_field,
+    #shipping_address_2_field {
+      grid-column: 1 / -1;
+    }
+  }
+
+  // Form rows
+  .form-row {
+    margin-bottom: 0.85rem;
+    padding: 0 !important;
+    float: none !important;
+    width: 100% !important;
+
+    &.form-row-first,
+    &.form-row-last {
+      width: 100% !important;
+      float: none !important;
+    }
+  }
+
+  // Labels
+  label {
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: $c-primary;
+    margin-bottom: 0.35rem !important;
+    display: block;
+
+    .required {
+      color: $c-danger;
+      font-weight: 700;
+    }
+
+    .optional {
+      color: $c-muted;
+      font-size: 0.75rem;
+      font-weight: 400;
+    }
+  }
+
+  // Inputs
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  input[type="url"],
+  // Skip select2's mirror <select> — see the note in _account.scss. Styling it
+  // overrides select2's 1x1 hide rule and overflows the viewport.
+  select:not(.select2-hidden-accessible),
+  textarea {
+    width: 100% !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 8px !important;
+    padding: 0.7rem 0.85rem !important;
+    font-size: 0.875rem !important;
+    color: $c-primary !important;
+    background: #f5f5f5 !important;
+    @include transition((border-color, box-shadow));
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &:focus {
+      border-color: $c-primary !important;
+      background: $c-white !important;
+      box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.06) !important;
+    }
+  }
+
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+  }
+
+  // intl-tel-input wraps #billing_phone in a .iti container. It sizes the
+  // flag + dial-code button at runtime (width varies by country — e.g. +65
+  // vs +673) and needs the input's padding-left to match; see
+  // wc-checkout-phone.js, which sets that padding via the same !important
+  // priority so it isn't overridden by the shared input rule above.
+  .iti {
+    display: block;
+    width: 100%;
+  }
+
+  // Select2
+  .select2-container {
+    width: 100% !important;
+
+    .select2-selection--single {
+      height: auto !important;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      background-color: #f5f5f5 !important;
+      border: 1px solid #e0e0e0 !important;
+      border-radius: 8px !important;
+
+      .select2-selection__rendered {
+        padding: 0.75rem 0.85rem !important;
+        font-size: 0.875rem !important;
+        color: $c-primary !important;
+        line-height: 1.4;
+      }
+
+      .select2-selection__arrow {
+        height: 100%;
+        top: 0;
+        right: 8px;
+      }
+
+      &:focus,
+      &[aria-expanded="true"] {
+        border-color: $c-primary !important;
+        background-color: #fff !important;
+      }
+    }
+  }
+}
+
+// ---- SIDEBAR: Order Items ----
+.az-checkout__items {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0;
+  margin-bottom: 0.85rem;
+}
+
+.az-checkout__item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.75rem 0;
+  border: none;
+  border-bottom: 1px solid #eee;
+  border-radius: 0;
+  margin: 0;
+  @include transition(opacity);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.az-checkout__item-img {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: $border-radius;
+  overflow: hidden;
+  background: #f5f5f5;
+  border: none;
+
+  img {
+    width: 56px !important;
+    height: 56px !important;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.az-checkout__item-detail {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.az-checkout__item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.az-checkout__item-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: $c-primary;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.az-checkout__item-total {
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.az-checkout__item-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.az-checkout__item-meta {
+  font-size: 0.75rem;
+  color: $c-muted;
+}
+
+// Quantity controls — compact row
+.az-checkout__item-qty {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid $c-border;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 26px;
+}
+
+.az-checkout__qty-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: #fff;
+  color: $c-primary;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  @include transition((background));
+
+  &:hover {
+    background: $c-secondary;
+  }
+}
+
+.az-checkout__qty-val {
+  font-size: 0.7rem;
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+  border-left: 1px solid $c-border;
+  border-right: 1px solid $c-border;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ---- SIDEBAR: Totals ----
+.az-checkout__totals {
+  margin-top: 0;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.az-checkout__totals-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: $c-primary;
+
+  &--discount {
+    color: var(--wp--preset--color--success, #2e7d32);
+  }
+
+  &--total {
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding-top: 0.65rem;
+    border-top: 1px solid #eee;
+    margin-top: 0.35rem;
+  }
+}
+
+// ---- Coupon line in totals ----
+// .az-checkout__totals-row--discount > .az-checkout__coupon-label is the
+// left side: a pill-styled tag with the code + a small remove (×) icon button.
+.az-checkout__coupon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.az-checkout__coupon-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 100px;
+  background: rgba(46, 125, 50, 0.1);
+  color: var(--wp--preset--color--success, #2e7d32);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+
+  svg {
+    flex-shrink: 0;
+    opacity: 0.75;
+  }
+}
+
+.az-checkout__coupon-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: transparent;
+  color: #999;
+  text-decoration: none !important;
+  border: none;
+  cursor: pointer;
+  @include transition((background, color));
+
+  &:hover,
+  &:focus {
+    background: rgba(229, 57, 53, 0.1);
+    color: var(--wp--preset--color--danger, #e53935);
+    text-decoration: none !important;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--wp--preset--color--danger, #e53935);
+    outline-offset: 2px;
+  }
+}
+
+.az-checkout__coupon-amount {
+  font-weight: 600;
+
+  // Strip WC's <bdi> wrapper styling and our minus prefix sits flush
+  bdi { font-weight: inherit; }
+}
+
+// ---- PAYMENT SECTION (inside card) ----
+.az-checkout {
+  #payment {
+    background: transparent !important;
+
+    // Hide gateway icons globally inside checkout (PAYNOW logo, card icons,
+    // gateway-specific images injected into the <label>). We only want the
+    // gateway *title text* in our compact UI.
+    .payment_methods li label img,
+    .payment_methods li .wc_payment_method__icon,
+    .payment_methods li .wc_payment_method_logo,
+    .payment_methods li .payment_method_icon {
+      display: none !important;
+    }
+
+    ul.payment_methods {
+      list-style: none;
+      padding: 0 !important;
+      margin: 0 0 1rem !important;
+      border: none !important;
+
+      li {
+        border: 1px solid $c-border;
+        border-radius: $border-radius;
+        margin-bottom: 0.5rem;
+        padding: 0.85rem 1rem !important;
+        background: #fff;
+        cursor: pointer;
+        @include transition((border-color, background));
+
+        &:has(input:checked) {
+          // border-color: $c-primary;
+          // background: rgba(26, 26, 26, 0.02);
+        }
+
+        label {
+          font-size: 0.875rem !important;
+          font-weight: 600 !important;
+          cursor: pointer;
+          display: inline !important;
+
+          // Belt-and-braces: also kill any image directly inside the label
+          // regardless of class name. WC + most gateways use this pattern.
+          img {
+            display: none !important;
+          }
+        }
+
+        input[type="radio"] {
+          width: 18px !important;
+          height: 18px !important;
+          accent-color: #1a1a1a;
+          margin-right: 0.5rem;
+          vertical-align: middle;
+        }
+
+        .payment_box {
+          display: grid;
+          grid-template-rows: 0fr;
+          margin-top: 0;
+          margin-bottom: 0;
+          padding: 0;
+          background: transparent;
+          transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+          > .payment_box__clip {
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .payment_box__inner {
+            padding: 0.75rem;
+            background: #f8f8fa;
+            border: 1px solid #e0e0e0;
+            border-radius: $border-radius;
+            font-size: 0.8rem;
+            color: $c-muted;
+            line-height: 1.5;
+
+            p:first-child {
+              margin-top: 0;
+            }
+          }
+
+          &::before {
+            display: none !important;
+          }
+
+          &.is-open {
+            grid-template-rows: 1fr;
+            margin-top: 0.65rem;
+          }
+        }
+      }
+    }
+
+    .place-order {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  }
+
+  // Place order button
+  #place_order {
+    width: 100%;
+    margin-top: 1.25rem;
+    background: $c-primary !important;
+    color: $c-white !important;
+    border: none !important;
+    border-radius: 100px !important;
+    padding: 0.8rem 1.5rem !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    @include transition((background, transform));
+
+    &:hover {
+      background: $c-accent !important;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: scale(0.99);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  // Terms
+  .woocommerce-terms-and-conditions-wrapper {
+    margin-bottom: 1rem;
+
+    .woocommerce-form__label-for-checkbox {
+      font-size: 0.8rem !important;
+      color: $c-muted;
+
+      a {
+        color: $c-accent;
+      }
+    }
+  }
+
+  // Hide WC's order review table — we render items manually in the sidebar
+  .woocommerce-checkout-review-order-table {
+    display: none !important;
+  }
+
+  // Payment inside sidebar — compact, borderless
+  .az-checkout__sidebar #payment {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: transparent !important;
+
+    ul.payment_methods {
+      padding: 0 !important;
+      margin: 0 0 0.75rem !important;
+      border: none !important;
+
+      li {
+        border: 1px solid $c-border !important;
+        border-radius: $border-radius !important;
+        background: #fff !important;
+        padding: 0.75rem 0.85rem !important;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        @include transition((border-color, background));
+
+        // &:has(input:checked) {
+        //   border-color: $c-primary !important;
+        //   background: rgba(26, 26, 26, 0.02) !important;
+        // }
+
+        label {
+          font-size: 0.8rem !important;
+          font-weight: 600 !important;
+          cursor: pointer;
+          display: inline !important;
+        }
+
+        input[type="radio"] {
+          width: 16px !important;
+          height: 16px !important;
+          accent-color: #1a1a1a;
+          margin-right: 0.4rem;
+          vertical-align: middle;
+        }
+
+        // Hide gateway icons (PAYNOW logo, card icons, etc.) — keep only the
+        // gateway title text. Covers both <img> appended to the label and any
+        // <img> inside dedicated icon classes.
+        label img,
+        .wc_payment_method__icon,
+        .wc_payment_method_logo,
+        .payment_method_icon {
+          display: none !important;
+        }
+
+        .payment_box {
+          display: grid;
+          grid-template-rows: 0fr;
+          margin-top: 0;
+          margin-bottom: 0;
+          transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+          > .payment_box__clip {
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .payment_box__inner {
+            padding: 0.75rem;
+            background: #f8f8fa;
+            border: 1px solid #e0e0e0;
+            border-radius: $border-radius;
+            font-size: 0.8rem;
+
+            p:first-child {
+              margin-top: 0;
+            }
+          }
+
+          &.is-open {
+            grid-template-rows: 1fr;
+            margin-top: 0.65rem;
+          }
+        }
+      }
+    }
+
+    .place-order {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+  }
+
+  .az-checkout__sidebar .woocommerce-privacy-policy-text {
+    font-size: 0.7rem;
+    color: $c-muted;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+
+    p {
+      margin: 0;
+    }
+
+    a {
+      color: $c-accent;
+    }
+  }
+
+  .az-checkout__sidebar .woocommerce-terms-and-conditions-wrapper {
+    margin-bottom: 0.5rem;
+  }
+}
+
+// ---- HIDE DEFAULT WC COUPON (moved to sidebar) ----
+.woocommerce-form-coupon-toggle,
+.checkout_coupon.woocommerce-form-coupon {
+  display: none !important;
+}
+
+// ---- SIDEBAR MEMBERSHIP POINTS ----
+// #epos_crm_point_information's own content is a third-party MUI React
+// component (EPOS CRM plugin); its plugin stylesheet only sets the input's
+// border/background (with !important) and coarse group spacing (plain
+// margin, no !important) — everything below overrides that spacing/type
+// scale to match the sidebar's other cards instead of the plugin's own
+// (wider, form-page-oriented) defaults. Class names — .point-info__*,
+// .epos_crm_point_input, #epos_crm_billing_point — come from
+// PointInformation.js and are the plugin's stable render output, not
+// something this theme owns.
+.az-checkout__points {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
+
+  &:empty {
+    display: none;
+  }
+
+  .point-info__title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: $c-primary;
+    margin-bottom: 0.75rem;
+  }
+
+  .point-info__group {
+    margin-bottom: 0.6rem;
+    align-items: center;
+
+    &.group_input {
+      margin-bottom: 0;
+    }
+  }
+
+  .point-info__icon {
+    width: 18px;
+    height: 18px;
+    color: $c-accent;
+  }
+
+  .point-info__detail {
+    font-size: 0.8rem;
+    color: $c-primary;
+
+    label {
+      font-size: 0.8rem;
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .point-info__value {
+    color: $c-accent;
+  }
+
+  .points_to_redeem {
+    background: rgba(200, 169, 126, 0.08);
+    border-radius: 8px;
+    padding: 0.5rem 0.65rem;
+    margin-top: 0.5rem;
+  }
+
+  // .epos_crm_point_input IS MUI's OutlinedInput root (className passed
+  // straight to it in PointField.js). Two other things draw their own
+  // border/background on top of it, each needing its own override at
+  // matching !important priority:
+  //   - MUI itself draws the visible border on a child
+  //     <fieldset class="MuiOutlinedInput-notchedOutline">, not the root —
+  //     left alone it double-outlines at a slightly different radius.
+  //   - #epos_crm_billing_point is a plain <input type="number">, which
+  //     this file's global input[type="number"] rule also targets.
+  // Spinner arrows are hidden too; there's no sensible "step" for a dollar
+  // amount.
+  .epos_crm_point_input {
+    border: 1px solid $c-border !important;
+    border-radius: 8px !important;
+    background: #f5f5f5 !important;
+    overflow: hidden;
+
+    .MuiOutlinedInput-notchedOutline {
+      border: none !important;
+    }
+
+    #epos_crm_billing_point {
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0.55rem 0.75rem !important;
+      font-size: 0.8rem !important;
+      background: transparent !important;
+
+      // The global input[type="number"]:focus rule above (same file) sets
+      // its own !important border-color/background/box-shadow — needs the
+      // same priority here or it wins on focus and reintroduces the ring
+      // this wrapper is meant to replace with a plain border-color change.
+      &:focus {
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        appearance: none;
+        margin: 0;
+      }
+
+      &[type="number"] {
+        appearance: textfield;
+      }
+    }
+
+    &.Mui-focused {
+      border-color: $c-primary !important;
+    }
+  }
+}
+
+// ---- SIDEBAR COUPON ----
+.az-checkout__coupon {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.az-checkout__coupon-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.az-checkout__coupon-input {
+  flex: 1;
+  border: 1px solid $c-border !important;
+  border-radius: 100px !important;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.8rem !important;
+  background: #f5f5f5 !important;
+  outline: none;
+  @include transition((border-color, box-shadow));
+
+  &:focus {
+    border-color: $c-primary !important;
+    background: $c-white !important;
+    box-shadow: none !important;
+  }
+}
+
+.az-checkout__coupon-btn {
+  background: $c-primary;
+  color: $c-white;
+  border: none !important;
+  border-radius: 100px !important;
+  padding: 0.55rem 1rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  white-space: nowrap;
+  @include transition((border-color, background));
+
+  &:hover {
+    background: $c-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.az-checkout__coupon-msg {
+  font-size: 0.75rem;
+  margin-top: 0.45rem;
+  display: none;
+
+  &.is-success,
+  &.is-error {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: $border-radius;
+    line-height: 1.3;
+  }
+
+  &.is-success {
+    background: rgba(46, 125, 50, 0.1);
+    color: var(--wp--preset--color--success, #2e7d32);
+
+    &::before {
+      content: "✓";
+      font-weight: 700;
+    }
+  }
+
+  &.is-error {
+    background: rgba(229, 57, 53, 0.08);
+    color: $c-danger;
+
+    &::before {
+      content: "!";
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: $c-danger;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.65rem;
+      font-weight: 700;
+    }
+  }
+}
+
+// ---- LOGIN TOGGLE ----
+.woocommerce-form-login-toggle {
+  margin-bottom: 0.85rem;
+
+  .wc-block-components-notice-banner,
+  .woocommerce-info {
+    position: static !important;
+    background: #f8f8fa !important;
+    border-radius: $border-radius !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0.85rem 1rem !important;
+    font-size: 0.85rem;
+    animation: none !important;
+    max-width: 100%;
+    width: 100%;
+
+    a {
+      color: $c-accent;
+      font-weight: 600;
+    }
+  }
+}
+
+.woocommerce-form-login {
+  background: #f8f8fa !important;
+  border: none !important;
+  border-radius: $border-radius-lg !important;
+  padding: 1.5rem !important;
+  margin-bottom: 0.85rem !important;
+}
+
+// ---- SELECT2 DROPDOWN (rendered outside form) ----
+.select2-dropdown {
+  border: 1px solid $c-border !important;
+  border-radius: $border-radius !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden;
+
+  .select2-search__field {
+    border: 1px solid $c-border !important;
+    border-radius: $border-radius !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.8rem !important;
+    outline: none;
+
+    &:focus {
+      border-color: $c-accent !important;
+    }
+  }
+
+  .select2-results__option {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+
+    &--highlighted {
+      background: $c-secondary !important;
+      color: $c-primary !important;
+    }
+
+    &--selected,
+    &[aria-selected="true"] {
+      background: rgba(200, 169, 126, 0.1) !important;
+      color: $c-primary !important;
+      font-weight: 600;
+    }
+  }
+}
+
+// ---- RESPONSIVE ----
+@include until(sm) {
+  .az-checkout {
+    font-size: 0.85rem;
+  }
+
+  .az-checkout__card {
+    padding: 1.25rem;
+  }
+
+  .az-checkout #place_order {
+    padding: 0.85rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+}
+
+// =============================================================
+// ORDER-PAY PAGE  (/checkout/order-pay/{id}/ — "Pay for order")
+// -------------------------------------------------------------
+// This endpoint renders stock WooCommerce form-pay.php (form#order_review +
+// table.shop_table + #payment), NOT the custom .zk / az-checkout app, so it
+// gets no styling from the rules above. Skin it here using the same tokens,
+// scoped to the #order_review id so nothing leaks into the main checkout.
+// WordPress' wpautop also mangles the gateway markup (labels wrapped in <p>,
+// a <br> inside the label, stray empty <p>s), so those are flattened below.
+// =============================================================
+.woocommerce-order-pay #order_review_heading {
+  max-width: 720px;
+  margin: 0 auto 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: $c-primary;
+}
+
+.woocommerce-order-pay #order_review {
+  max-width: 720px;
+  margin: 0 auto;
+  background: $c-white;
+  border: none;
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  // ---- Order items + totals as a borderless "receipt" ----
+  // It's a real <table> (stock form-pay.php). Rather than reflow it with
+  // display:block/flex — which breaks border-collapse and exposes WooCommerce's
+  // per-cell borders as stray column rules — keep the native table (columns
+  // stay aligned) and simply strip it back: drop the header and all grid lines,
+  // leaving hairline row separators so it reads as an itemised list.
+  .shop_table {
+    width: 100%;
+    border: 0;
+    border-collapse: collapse;
+    margin: 0 0 1.25rem;
+
+    // Kill inherited borders/backgrounds from WooCommerce + core table styles
+    // (the source of the vertical rules). #order_review's id keeps this ahead
+    // of .woocommerce table.shop_table on specificity — no !important needed.
+    th,
+    td {
+      border: 0;
+      background: none;
+      padding: 0.75rem 0;
+      vertical-align: top;
+    }
+
+    // A receipt has no column headers.
+    thead {
+      display: none;
+    }
+
+    // Hairline separators between items only (no cell/column lines).
+    tbody td {
+      border-bottom: 1px solid #eee;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .product-name {
+      font-weight: 600;
+      color: $c-primary;
+
+      // wpautop drops empty <p>s between the name and the meta list.
+      > p:empty {
+        display: none;
+      }
+    }
+
+    // Qty + price hug the right; padding-left keeps them off the name column.
+    .product-quantity {
+      text-align: right;
+      color: $c-muted;
+      font-weight: 500;
+      white-space: nowrap;
+      padding-left: 1rem;
+    }
+
+    .product-subtotal {
+      text-align: right;
+      white-space: nowrap;
+      padding-left: 1rem;
+    }
+
+    // Variation meta (Size: Medium, …) under the product name.
+    .wc-item-meta {
+      list-style: none;
+      margin: 0.25rem 0 0;
+      padding: 0;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: $c-muted;
+
+      li {
+        margin: 0;
+      }
+
+      .wc-item-meta-label {
+        font-weight: 600;
+        margin-right: 0.25rem;
+      }
+
+      p {
+        display: inline;
+        margin: 0;
+      }
+    }
+
+    .woocommerce-Price-amount {
+      font-weight: 700;
+      color: $c-primary;
+    }
+
+    // ---- Totals (Subtotal / Total / Payment method) ----
+    tfoot {
+      // Single separator above the totals block.
+      tr:first-child th,
+      tr:first-child td {
+        padding-top: 0.75rem;
+        border-top: 1px solid #eee;
+      }
+
+      th {
+        text-align: left;
+        font-weight: 400;
+        color: $c-muted;
+      }
+
+      td {
+        text-align: right;
+        font-weight: 600;
+        color: #555;
+      }
+
+      // Total is immediately before the payment-method row.
+      tr:nth-last-child(2) th,
+      tr:nth-last-child(2) td {
+        padding-top: 0.75rem;
+        border-top: 1px solid #eee;
+        font-size: 1rem;
+        font-weight: 700;
+        color: $c-primary;
+      }
+
+      tr:last-child td {
+        font-weight: 500;
+      }
+    }
+  }
+
+  // ---- Payment methods + place order ----
+  #payment {
+    background: transparent;
+    padding-top: 1.25rem;
+    border-top: 1px solid #eee;
+
+    ul.payment_methods {
+      list-style: none;
+      margin: 0 0 1rem;
+      padding: 0;
+      border: none;
+
+      li {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        background: $c-white;
+        padding: 0.75rem 0.85rem;
+        margin-bottom: 0.5rem;
+        @include transition((border-color, background));
+
+        &:hover {
+          border-color: #ccc;
+          background: #fafafa;
+        }
+
+        // Flatten wpautop wrapping so radio + title sit on one line.
+        > p {
+          display: inline;
+          margin: 0;
+        }
+
+        input[type="radio"] {
+          width: 18px;
+          height: 18px;
+          accent-color: #1a1a1a;
+          margin-right: 0.5rem;
+          vertical-align: middle;
+        }
+
+        label {
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          display: inline;
+
+          br {
+            display: none;
+          }
+        }
+
+        .payment_box {
+          display: grid;
+          grid-template-rows: 0fr;
+          margin-top: 0;
+          margin-bottom: 0;
+          padding: 0;
+          background: transparent;
+          border-radius: 0;
+          transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+          > .payment_box__clip {
+            min-height: 0;
+            overflow: hidden;
+          }
+
+          .payment_box__inner {
+            padding: 0.75rem;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: $c-muted;
+            line-height: 1.5;
+          }
+
+          &::before {
+            display: none;
+          }
+
+          &.is-open {
+            grid-template-rows: 1fr;
+            margin-top: 0.65rem;
+          }
+
+          p {
+            margin: 0 0 0.5rem;
+
+            &:first-child {
+              margin-top: 0;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .form-row {
+      padding: 0;
+      margin: 0;
+
+      // Strip the empty <p>s wpautop scatters around the button + nonces.
+      > p:empty {
+        display: none;
+      }
+    }
+
+    .woocommerce-privacy-policy-text {
+      font-size: 0.75rem;
+      color: $c-muted;
+      line-height: 1.5;
+      margin: 1rem 0;
+
+      p {
+        margin: 0;
+      }
+
+      a {
+        color: $c-accent;
+      }
+    }
+
+    #place_order {
+      width: 100%;
+      margin-top: 0.25rem;
+      background: $c-primary;
+      color: $c-white;
+      border: none;
+      border-radius: 100px;
+      padding: 0.8rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      @include transition((background, transform));
+
+      &:hover {
+        background: $c-accent;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: scale(0.99);
+      }
+    }
+  }
+
+  @include until(sm) {
+    padding: 1.25rem;
+    font-size: 0.85rem;
+
+    #payment #place_order {
+      padding: 0.85rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// ---- LOADING OVERLAYS ----
+// Custom spinner (form-checkout.php's azShowLoading()/azShowFullLoading())
+// in place of jQuery blockUI's plain grey box. .az-loading-anchor is added
+// to whatever element the small overlay is pinned to, only if that element
+// isn't already positioned — most call sites (.az-checkout__totals) already
+// establish their own stacking context.
+.az-loading-anchor {
+  position: relative;
+}
+
+.az-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: inherit;
+  backdrop-filter: blur(1px);
+
+  &--full {
+    position: fixed;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.85);
+  }
+}
+
+.az-loading-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(26, 26, 26, 0.1);
+  border-top-color: $c-primary;
+  animation: az-spin 0.7s linear infinite;
+
+  .az-loading-overlay--full & {
+    width: 44px;
+    height: 44px;
+    border-width: 3.5px;
+    border-top-color: $c-accent;
+  }
+}
+
+@keyframes az-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Applied to <body> while the full-page overlay is up, so the customer
+// can't scroll the page behind it during payment/order-placing.
+body.az-scroll-locked {
+  overflow: hidden;
+}

@@ -1,0 +1,470 @@
+// DEPRECATED — see mini-cart-legacy-entry.scss for why.
+//
+// Overrides for the core woocommerce/mini-cart block. Superseded by the
+// ai-zippy/mini-cart block; add nothing here.
+
+@use "variables" as *;
+
+// ---- MINI CART ICON (header) ----
+.wc-block-mini-cart__button {
+  background: none !important;
+  border: none !important;
+  cursor: pointer;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: opacity $transition-speed;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.wc-block-mini-cart__icon {
+  width: 22px;
+  height: 22px;
+}
+
+.wc-block-mini-cart__badge {
+  background: $c-accent !important;
+  color: $c-white !important;
+  font-size: 0.6rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.wc-block-mini-cart__amount {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+// ---- MINI CART DRAWER ----
+.wc-block-mini-cart__drawer {
+  z-index: 99999 !important;
+  max-width: 400px !important;
+  width: 100% !important;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15) !important;
+  animation: miniCartSlideIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  // Overlay
+  .wc-block-components-drawer__screen-overlay {
+    background: rgba(0, 0, 0, 0) !important;
+    animation: miniCartOverlayIn 0.3s ease forwards;
+  }
+}
+
+@keyframes miniCartOverlayIn {
+  to {
+    background: rgba(0, 0, 0, 0.4) !important;
+  }
+}
+
+@keyframes miniCartSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+// ---- CLOSE BUTTON ----
+.wc-block-mini-cart__drawer .components-modal__header,
+.wc-block-components-drawer__close {
+  position: absolute !important;
+  top: 0.85rem !important;
+  right: 0.85rem !important;
+  z-index: 10;
+
+  button,
+  & {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    border-radius: 50% !important;
+    background: #f2f2f2 !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0 !important;
+    transition: background $transition-speed;
+
+    &:hover {
+      background: #e0e0e0 !important;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+// The drawer's close button carries both .wc-block-components-button and
+// .wc-block-components-drawer__close, and WC ships this against the pair in both
+// mini-cart.css and mini-cart-contents.css:
+//
+//   .wc-block-components-button.wc-block-components-drawer__close {
+//     padding: 1em !important; background: transparent !important;
+//   }
+//
+// At (0,2,0) that outranks the (0,1,0) selectors above, so their !important never
+// reached padding or background — the button was rendering at 16px padding with no
+// fill, which is what made it hard to spot. Matching the compound class is what
+// gets us there; the border also supersedes the `border: none` above.
+.wc-block-components-button.wc-block-components-drawer__close {
+  padding: 0 !important;
+  background: #f2f2f2 !important;
+  border: 1px solid #d4d4d4 !important;
+
+  &:hover {
+    background: #e0e0e0 !important;
+    border-color: #b8b8b8 !important;
+  }
+}
+
+// ---- DRAWER TITLE ----
+.wc-block-mini-cart__title {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  padding: 1.25rem 1.25rem 1rem !important;
+  margin: 0 !important;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+// ---- CART ITEMS ----
+.wc-block-mini-cart__items {
+  padding: 0 !important;
+  flex: 1;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 2px;
+  }
+}
+
+// Single cart item row
+.wc-block-mini-cart-items .wc-block-components-order-summary-item,
+.wc-block-cart-items__row {
+  padding: 0.85rem 1.25rem !important;
+  margin: 0 !important;
+  border-bottom: 1px solid $c-secondary !important;
+  display: grid !important;
+  grid-template-columns: 72px 1fr auto;
+  gap: 0.85rem;
+  align-items: start;
+
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+// Product image
+.wc-block-components-order-summary-item__image,
+.wc-block-cart-item__image,
+.wc-block-mini-cart-items .wc-block-components-product-image {
+  width: 72px !important;
+  min-width: 72px !important;
+  height: 72px;
+  border-radius: 10px !important;
+  overflow: hidden;
+  background: $c-secondary;
+
+  img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block;
+  }
+}
+
+// Product details (middle column)
+.wc-block-components-order-summary-item__description {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0; // Allow text truncation
+}
+
+// Product name
+.wc-block-mini-cart-items .wc-block-components-product-name {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: $c-primary !important;
+  text-decoration: none !important;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  &:hover {
+    color: $c-accent !important;
+  }
+}
+
+// Unit price (below name)
+.wc-block-mini-cart-items .wc-block-components-product-price {
+  font-size: 0.8rem !important;
+  color: #888 !important;
+  font-weight: 400;
+
+  .wc-block-components-product-price__value {
+    color: #888;
+  }
+}
+
+// Line total price (right column)
+.wc-block-components-order-summary-item__total-price {
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  color: $c-primary !important;
+  text-align: right;
+  white-space: nowrap;
+}
+
+// Quantity wrapper (contains selector + remove link)
+.wc-block-cart-item__quantity {
+  display: flex !important;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+// Quantity +/- selector
+.wc-block-components-quantity-selector {
+  display: inline-flex !important;
+  align-items: center;
+  border: 1px solid $c-border !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  height: 30px;
+  width: auto !important;
+  margin: 0 !important;
+
+  &::after {
+    display: none !important; // Remove WC default border overlay
+  }
+
+  .wc-block-components-quantity-selector__button {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px !important;
+    border: none !important;
+    background: #fafafa !important;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #666;
+    padding: 0 !important;
+    opacity: 1 !important;
+    transition: background $transition-speed;
+
+    &:hover {
+      background: #eee !important;
+      opacity: 1 !important;
+    }
+  }
+
+  .wc-block-components-quantity-selector__input {
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 28px !important;
+    border: none !important;
+    border-left: 1px solid $c-border !important;
+    border-right: 1px solid $c-border !important;
+    text-align: center;
+    font-size: 0.7rem !important;
+    font-weight: 600;
+    padding: 0 !important;
+    -moz-appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    &:focus {
+      box-shadow: none !important;
+    }
+  }
+}
+
+// Remove link — always red
+.wc-block-cart-item__remove-link {
+  font-size: 0.7rem !important;
+  color: $c-danger !important;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: opacity $transition-speed;
+  white-space: nowrap;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+
+  &:hover {
+    opacity: 0.7;
+    text-decoration: underline !important;
+    color: $c-danger !important;
+  }
+}
+
+// ---- FOOTER ----
+.wc-block-mini-cart__footer {
+  padding: 1rem 1.25rem 1.25rem !important;
+  border-top: 1px solid #eee !important;
+  background: $c-white;
+  margin-top: auto;
+}
+
+// Subtotal
+.wc-block-mini-cart__footer-subtotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.15rem;
+}
+
+.wc-block-mini-cart__footer-subtotal .wc-block-components-totals-item__label,
+.wc-block-mini-cart__footer .wc-block-components-totals-item__label {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: $c-primary;
+}
+
+.wc-block-mini-cart__footer-subtotal .wc-block-components-totals-item__value,
+.wc-block-mini-cart__footer .wc-block-components-totals-item__value,
+.wc-block-mini-cart__footer .wc-block-formatted-money-amount {
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+  color: $c-primary;
+}
+
+// Tax note
+.wc-block-mini-cart__footer .wc-block-components-totals-item__description,
+.wc-block-mini-cart__footer-subtotal + p {
+  font-size: 0.7rem !important;
+  color: #aaa !important;
+  margin: 0 0 1rem !important;
+}
+
+// Buttons
+.wc-block-mini-cart__footer-actions {
+  display: flex;
+  gap: 0.65rem;
+
+  // Both buttons
+  .wc-block-components-button,
+  a {
+    flex: 1;
+    padding: 0.7rem 1rem !important;
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-align: center;
+    cursor: pointer;
+    transition: all $transition-speed;
+    text-decoration: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.3;
+  }
+
+  // View cart — outlined
+  .wc-block-mini-cart__footer-cart,
+  a:first-child {
+    background: $c-white !important;
+    color: $c-primary !important;
+    border: 1px solid #ddd !important;
+
+    &:hover {
+      border-color: $c-primary !important;
+    }
+  }
+
+  // Checkout — filled
+  .wc-block-mini-cart__footer-checkout,
+  a:last-child {
+    background: $c-primary !important;
+    color: $c-white !important;
+    border: 1px solid $c-primary !important;
+
+    &:hover {
+      background: #333 !important;
+      border-color: #333 !important;
+    }
+  }
+}
+
+// ---- EMPTY STATE ----
+.wc-block-mini-cart__empty-cart-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  flex: 1;
+
+  svg {
+    width: 64px;
+    height: 64px;
+    color: #ddd;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: $c-muted;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.wc-block-mini-cart__shopping-button {
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    background: $c-primary;
+    color: $c-white !important;
+    text-decoration: none !important;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background $transition-speed;
+
+    &:hover {
+      background: #333;
+    }
+  }
+}
+
+// ---- MOBILE ----
+@include until(sm) {
+  .wc-block-mini-cart__drawer .wc-block-components-drawer__content {
+    max-width: 100% !important;
+  }
+}

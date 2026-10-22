@@ -1,0 +1,228 @@
+@use "variables" as *;
+
+// =============================================================================
+// Single post (.az-single) — templates/single.html
+// =============================================================================
+// Scoped to the class hooks added in templates/single.html. Styles the reading
+// column, featured image, title, meta row and the post-content body typography
+// (headings, paragraphs, links, inline images + captions, lists, quotes,
+// separator). The comment form inside this template is styled separately in
+// _comments.scss and is intentionally left untouched here.
+//
+// Visuals reuse the theme tokens: $c-primary text, $c-accent links/quote rule,
+// $c-muted meta, $c-border hairlines, rounded media with the resting shadow.
+// =============================================================================
+
+$az-single-measure: 820px;
+
+.az-single {
+	// ---- Reading measure -------------------------------------------------
+	// Constrained layout centres direct children at the (wide) global content
+	// size; narrow the article to a comfortable measure. The core layout rule
+	// uses :where() (zero specificity) so these plain declarations win without
+	// !important.
+	> .wp-block-post-featured-image,
+	> .wp-block-post-title,
+	> .az-single-meta,
+	> .wp-block-post-content,
+	> .wp-block-separator,
+	> .wp-block-comments {
+		max-width: $az-single-measure;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	// ---- Featured image --------------------------------------------------
+	> .wp-block-post-featured-image {
+		margin-bottom: 1.75rem;
+		overflow: hidden;
+		border-radius: $border-radius-lg;
+		background: $c-secondary;
+		box-shadow: $box-shadow;
+
+		img {
+			display: block;
+			width: 100%;
+			height: auto;
+			border-radius: $border-radius-lg;
+			object-fit: cover;
+		}
+	}
+
+	// ---- Title -----------------------------------------------------------
+	> .wp-block-post-title {
+		margin: 0 0 1rem;
+		color: $c-primary;
+		font-family: $font-heading;
+		font-weight: 700;
+		line-height: 1.2;
+		font-size: clamp(1.9rem, 4vw, 2.6rem);
+	}
+
+	// ---- Meta row (date · author · category) -----------------------------
+	.az-single-meta {
+		align-items: center;
+		margin-bottom: 2rem;
+		padding-bottom: 1.25rem;
+		border-bottom: 1px solid $c-border;
+		color: $c-muted;
+
+		a {
+			color: $c-primary;
+			font-weight: 600;
+			text-decoration: none;
+			@include transition(color);
+
+			&:hover {
+				color: $c-accent;
+			}
+		}
+
+		// Category term renders as a subtle accent-tinted pill.
+		.wp-block-post-terms {
+			a {
+				display: inline-block;
+				padding: 0.2rem 0.7rem;
+				border-radius: 100px;
+				background: rgba($c-accent, 0.12);
+				color: $c-accent;
+				font-size: 0.78rem;
+				font-weight: 600;
+			}
+		}
+	}
+
+	// ---- Body copy -------------------------------------------------------
+	> .wp-block-post-content {
+		color: #333;
+		font-size: 1.05rem;
+		line-height: 1.75;
+
+		// Vertical rhythm between flow blocks.
+		> * + * {
+			margin-top: 1.4rem;
+		}
+
+		p {
+			margin: 0;
+		}
+
+		a {
+			color: $c-accent;
+			text-decoration: underline;
+			text-underline-offset: 2px;
+			@include transition(color);
+
+			&:hover {
+				color: $c-primary;
+			}
+		}
+
+		h2,
+		h3,
+		h4 {
+			margin: 2.25rem 0 0;
+			color: $c-primary;
+			font-family: $font-heading;
+			font-weight: 700;
+			line-height: 1.3;
+			scroll-margin-top: 1.5rem;
+
+			// Tighter gap between a heading and the paragraph it introduces.
+			& + * {
+				margin-top: 0.75rem;
+			}
+		}
+
+		h2 {
+			font-size: clamp(1.4rem, 2.5vw, 1.75rem);
+		}
+
+		h3 {
+			font-size: clamp(1.2rem, 2vw, 1.4rem);
+		}
+
+		h4 {
+			font-size: 1.1rem;
+		}
+
+		// ---- Inline images + captions -----------------------------------
+		.wp-block-image {
+			margin: 2rem 0;
+
+			img {
+				display: block;
+				width: 100%;
+				height: auto;
+				border-radius: $border-radius-lg;
+				box-shadow: $box-shadow;
+			}
+
+			figcaption {
+				margin-top: 0.6rem;
+				color: $c-muted;
+				font-size: 0.85rem;
+				font-style: italic;
+				line-height: 1.5;
+				text-align: center;
+			}
+		}
+
+		// ---- Lists ------------------------------------------------------
+		ul,
+		ol {
+			margin: 0;
+			padding-left: 1.4rem;
+
+			li + li {
+				margin-top: 0.5rem;
+			}
+
+			li::marker {
+				color: $c-accent;
+			}
+		}
+
+		// ---- Pull quote -------------------------------------------------
+		.wp-block-quote {
+			margin: 2rem 0;
+			padding: 0.5rem 0 0.5rem 1.5rem;
+			border-left: 4px solid $c-accent;
+			color: $c-primary;
+			font-size: 1.15rem;
+			font-style: italic;
+			line-height: 1.6;
+
+			p {
+				margin: 0;
+			}
+
+			cite {
+				display: block;
+				margin-top: 0.75rem;
+				color: $c-muted;
+				font-size: 0.85rem;
+				font-style: normal;
+				font-weight: 600;
+			}
+		}
+	}
+
+	// ---- Separator before the comments form ------------------------------
+	> .wp-block-separator {
+		border: none;
+		border-top: 1px solid $c-border;
+		opacity: 1;
+	}
+
+	// ---- Narrow screens --------------------------------------------------
+	@include until(sm) {
+		> .wp-block-post-content {
+			font-size: 1rem;
+		}
+
+		.az-single-meta {
+			margin-bottom: 1.5rem;
+		}
+	}
+}

@@ -1,0 +1,42 @@
+{
+	"name": "ai-zippy",
+	"version": "4.0.0",
+	"private": true,
+	"type": "module",
+	"description": "AI Zippy - WordPress FSE Theme + WooCommerce",
+	"author": "Zippy <dev@zippy.sg>",
+	"scripts": {
+		"dev": "concurrently -n vite,admin,blocks,bs -c cyan,blue,magenta,yellow \"NODE_ENV=development vite build --config vite.config.parent.js\" \"NODE_ENV=development vite build --config vite.config.admin.js\" \"wp-scripts start --webpack-src-dir=src/wp-content/themes/ai-zippy/src/blocks --output-path=src/wp-content/themes/ai-zippy/assets/blocks\" \"node bs.config.parent.js\"",
+		"dev:child": "concurrently -n vite,blocks,bs -c cyan,magenta,yellow \"NODE_ENV=development vite build --config vite.config.child.js\" \"wp-scripts start --webpack-src-dir=src/wp-content/themes/ai-zippy-child/src/blocks --output-path=src/wp-content/themes/ai-zippy-child/assets/blocks\" \"node bs.config.child.js\"",
+		"dev:admin": "NODE_ENV=development vite build --config vite.config.admin.js",
+		"dev:all": "concurrently -n parent,child -c cyan,green \"npm run dev\" \"npm run dev:child\"",
+		"build": "npm run build:parent && npm run build:child",
+		"build:parent": "vite build --config vite.config.parent.js && vite build --config vite.config.admin.js && wp-scripts build --webpack-src-dir=src/wp-content/themes/ai-zippy/src/blocks --output-path=src/wp-content/themes/ai-zippy/assets/blocks",
+		"build:child": "vite build --config vite.config.child.js && wp-scripts build --webpack-src-dir=src/wp-content/themes/ai-zippy-child/src/blocks --output-path=src/wp-content/themes/ai-zippy-child/assets/blocks",
+		"build:admin": "vite build --config vite.config.admin.js",
+		"build:blocks": "wp-scripts build --webpack-src-dir=src/wp-content/themes/ai-zippy/src/blocks --output-path=src/wp-content/themes/ai-zippy/assets/blocks",
+		"build:blocks:child": "wp-scripts build --webpack-src-dir=src/wp-content/themes/ai-zippy-child/src/blocks --output-path=src/wp-content/themes/ai-zippy-child/assets/blocks"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-react": "^4.3.4",
+		"@wordpress/api-fetch": "^7.44.0",
+		"@wordpress/components": "^32.6.0",
+		"@wordpress/compose": "^7.44.0",
+		"@wordpress/data": "^10.44.0",
+		"@wordpress/element": "^6.44.0",
+		"@wordpress/i18n": "^6.17.0",
+		"@wordpress/icons": "^12.2.0",
+		"@wordpress/scripts": "^30.12.0",
+		"browser-sync": "^3.0.3",
+		"concurrently": "^9.1.2",
+		"glob": "^11.0.1",
+		"sass-embedded": "^1.83.0",
+		"vite": "^6.0.7"
+	},
+	"dependencies": {
+		"intl-tel-input": "^29.2.2",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"react-international-phone": "^4.8.0"
+	}
+}

@@ -1,0 +1,33 @@
+.az-wishlist-block-editor {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	min-height: 220px;
+	padding: 2rem;
+	border: 1px dashed var(--wp--preset--color--border, #e5e5e5);
+	border-radius: 12px;
+	background: var(--wp--preset--color--secondary, #f5f5f5);
+	color: var(--wp--preset--color--primary, #1a1a1a);
+	text-align: center;
+
+	strong {
+		margin-top: 0.75rem;
+		font-size: 1.25rem;
+	}
+
+	p {
+		margin: 0.5rem 0 0;
+		color: var(--wp--preset--color--muted, #777);
+	}
+}
+
+.az-wishlist-block-editor__icon {
+	display: grid;
+	width: 54px;
+	height: 54px;
+	border-radius: 50%;
+	place-items: center;
+	background: var(--wp--preset--color--white, #fff);
+	color: var(--wp--preset--color--accent, #c8a97e);
+}

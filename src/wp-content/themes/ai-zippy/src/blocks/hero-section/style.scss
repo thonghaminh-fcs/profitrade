@@ -1,0 +1,334 @@
+// Hero Section — Frontend + Editor styles
+
+$hero-green: #4a7c59;
+$hero-green-light: #6db66d;
+$hero-bg-start: #dce8d8;
+$hero-bg-end: #eef3ec;
+$hero-dark: #1a2e1a;
+$hero-radius-card: 24px;
+$hero-transition: 0.3s ease;
+
+.wp-block-ai-zippy-hero-section {
+	position: relative;
+	overflow: hidden;
+	min-height: 600px;
+	background: linear-gradient(135deg, $hero-bg-start 0%, $hero-bg-end 50%, #f5f7f4 100%);
+
+	// Background div (kept for frontend override flexibility)
+	.hero-section__bg {
+		display: none;
+	}
+
+	// Main container
+	.hero-section__container {
+		position: relative;
+		z-index: 1;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: center;
+		gap: 2rem;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 4rem 2rem;
+		min-height: 600px;
+	}
+
+	// ---- LEFT COLUMN: Content ----
+	.hero-section__content {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 1.5rem;
+		z-index: 3;
+	}
+
+	// Tagline
+	.hero-section__tagline {
+		display: inline-block;
+		font-size: 1rem;
+		font-weight: 600;
+		color: $hero-green-light;
+		text-decoration: underline;
+		text-decoration-color: $hero-green-light;
+		text-underline-offset: 4px;
+		text-decoration-thickness: 2px;
+	}
+
+	// Heading
+	.hero-section__heading {
+		font-size: clamp(2.5rem, 5vw, 3.75rem);
+		font-weight: 800;
+		line-height: 1.1;
+		letter-spacing: -1px;
+		color: $hero-dark;
+		margin: 0;
+	}
+
+	// CTA Button
+	.hero-section__cta {
+		margin-top: 0.5rem;
+	}
+
+	.hero-section__btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.85rem 1.75rem;
+		background: #fff;
+		color: $hero-dark;
+		border: 2px solid #e0e0e0;
+		border-radius: 100px;
+		font-size: 0.95rem;
+		font-weight: 600;
+		text-decoration: none;
+		cursor: pointer;
+		transition: transform $hero-transition, box-shadow $hero-transition, border-color $hero-transition;
+
+		&:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+			border-color: $hero-green;
+		}
+	}
+
+	.hero-section__btn-arrow {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		background: $hero-green-light;
+		color: #fff;
+		border-radius: 50%;
+		padding: 6px;
+		transition: background $hero-transition;
+	}
+
+	.hero-section__btn:hover .hero-section__btn-arrow {
+		background: $hero-green;
+	}
+
+	// Phone
+	.hero-section__phone {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	.hero-section__phone-icon {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		background: #fff;
+		border-radius: 50%;
+		color: $hero-green;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	}
+
+	.hero-section__phone-text {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	.hero-section__phone-label {
+		font-size: 0.75rem;
+		font-weight: 500;
+		color: #666;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+
+	.hero-section__phone-number {
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: $hero-dark;
+		text-decoration: none;
+
+		&:hover {
+			color: $hero-green;
+		}
+	}
+
+	// ---- RIGHT COLUMN: Media Card ----
+	.hero-section__media {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		z-index: 2;
+	}
+
+	.hero-section__card {
+		position: relative;
+		width: 100%;
+		max-width: 480px;
+		border-radius: $hero-radius-card;
+		overflow: hidden;
+		background: #2a3a2a;
+		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+	}
+
+	.hero-section__card-img {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+
+	.hero-section__card-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		background: linear-gradient(135deg, #2a3a2a, #1a2a1a);
+		color: rgba(255, 255, 255, 0.4);
+		font-size: 0.875rem;
+	}
+
+	// Play button
+	.hero-section__play-btn {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 56px;
+		height: 56px;
+		border: 2px solid $hero-green-light;
+		border-radius: 50%;
+		color: $hero-green-light;
+		background: rgba(0, 0, 0, 0.3);
+		backdrop-filter: blur(4px);
+		cursor: pointer;
+		text-decoration: none;
+		transition: transform $hero-transition, background $hero-transition;
+
+		svg {
+			margin-left: 3px; // Optical centering for play triangle
+		}
+
+		&:hover {
+			transform: translate(-50%, -50%) scale(1.1);
+			background: rgba(0, 0, 0, 0.5);
+		}
+	}
+
+	// Progress bar
+	.hero-section__progress {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1rem;
+		background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+	}
+
+	.hero-section__progress-track {
+		flex: 1;
+		height: 4px;
+		background: rgba(255, 255, 255, 0.3);
+		border-radius: 2px;
+		position: relative;
+	}
+
+	.hero-section__progress-thumb {
+		position: absolute;
+		left: 30%;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 12px;
+		height: 12px;
+		background: #fff;
+		border-radius: 50%;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	.hero-section__progress-sound {
+		color: rgba(255, 255, 255, 0.7);
+		display: flex;
+	}
+
+	// ---- PERSON IMAGE (foreground overlay) ----
+	.hero-section__person {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 4;
+		pointer-events: none;
+	}
+
+	.hero-section__person-img {
+		display: block;
+		max-height: 520px;
+		width: auto;
+		object-fit: contain;
+		filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.15));
+	}
+
+	// ---- RESPONSIVE ----
+	@media (max-width: 960px) {
+		min-height: auto;
+
+		.hero-section__container {
+			grid-template-columns: 1fr;
+			text-align: center;
+			padding: 3rem 1.5rem;
+			min-height: auto;
+		}
+
+		.hero-section__content {
+			align-items: center;
+			order: 1;
+		}
+
+		.hero-section__media {
+			justify-content: center;
+			order: 2;
+		}
+
+		.hero-section__card {
+			max-width: 400px;
+		}
+
+		.hero-section__phone {
+			justify-content: center;
+		}
+
+		.hero-section__person {
+			position: relative;
+			left: auto;
+			transform: none;
+			order: 3;
+			display: flex;
+			justify-content: center;
+		}
+
+		.hero-section__person-img {
+			max-height: 350px;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.hero-section__heading {
+			font-size: 2rem;
+		}
+
+		.hero-section__card {
+			max-width: 100%;
+		}
+
+		.hero-section__person-img {
+			max-height: 280px;
+		}
+	}
+}

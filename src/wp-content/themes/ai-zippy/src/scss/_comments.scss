@@ -1,0 +1,406 @@
+@use "variables" as *;
+
+// =============================================================================
+// Comments area — single.html
+//   • Comments list   (core/comments  → .wp-block-comments)
+//   • Reply form       (core/post-comments-form → .wp-block-post-comments-form)
+// =============================================================================
+// Both are scoped to their block wrappers so they only affect single posts.
+// Each comment sits in a hairline card, avatars are round, meta is muted, and
+// the reply/pagination controls reuse the accent-pill language from the blog
+// archive. The reply form mirrors the theme's field + button treatment: $c-
+// border fields, accent focus ring (as used on .sf__card-wish etc.) and a
+// primary → accent pill submit button matching the header CTA.
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Comments list
+// -----------------------------------------------------------------------------
+.wp-block-comments {
+	margin-top: 2.5rem;
+
+	// ---- "Comments" heading ----------------------------------------------
+	.wp-block-comments-title,
+	.comments-title {
+		margin: 0 0 1.5rem;
+		padding-bottom: 1rem;
+		border-bottom: 1px solid $c-border;
+		color: $c-primary;
+		font-family: $font-heading;
+		font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+		font-weight: 700;
+		line-height: 1.3;
+	}
+
+	// ---- List reset + threaded replies -----------------------------------
+	ol.wp-block-comment-template {
+		margin: 0 0 2rem;
+		padding: 0;
+		list-style: none;
+
+		> li {
+			margin: 0 0 1rem;
+		}
+
+		li > ol,
+		.children {
+			margin: 0;
+			padding: 1rem 0 0 1.25rem;
+			list-style: none;
+
+			li:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	// ---- Single comment card ---------------------------------------------
+	.wp-block-columns {
+		align-items: flex-start;
+		gap: 1rem;
+		margin: 0;
+		padding: 1.25rem;
+		border: 1px solid $c-border;
+		border-radius: $border-radius-lg;
+		background: $c-white;
+		box-shadow: $box-shadow;
+		@include transition((border-color, box-shadow));
+
+		&:hover {
+			border-color: rgba($c-accent, 0.55);
+			box-shadow: $box-shadow-lg;
+		}
+	}
+
+	.wp-block-column:first-child {
+		flex-grow: 0;
+	}
+
+	.wp-block-avatar {
+		img {
+			display: block;
+			width: 48px;
+			height: 48px;
+			border: 2px solid $c-white;
+			border-radius: 50%;
+			background: $c-secondary;
+			box-shadow: 0 0 0 1px $c-border;
+			object-fit: cover;
+		}
+	}
+
+	// ---- Comment meta ----------------------------------------------------
+	.wp-block-comment-author-name {
+		color: $c-primary;
+		font-size: 0.85rem !important;
+		font-weight: 700;
+
+		a {
+			color: $c-primary;
+			text-decoration: none;
+
+			&:hover {
+				color: $c-accent;
+			}
+		}
+	}
+
+	.wp-block-comment-date {
+		color: $c-muted;
+		font-size: 0.78rem !important;
+
+		a {
+			color: $c-muted;
+			text-decoration: none;
+		}
+	}
+
+	.wp-block-comment-edit-link {
+		font-size: 0.78rem !important;
+
+		a {
+			color: $c-accent;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	// ---- Comment body ----------------------------------------------------
+	.wp-block-comment-content {
+		margin: 0.75rem 0 0;
+		color: #333;
+		font-size: 0.95rem;
+		line-height: 1.7;
+
+		p {
+			margin: 0 0 0.75rem;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	// ---- Reply link ------------------------------------------------------
+	.wp-block-comment-reply-link {
+		margin-top: 0.85rem;
+		font-size: 0.75rem !important;
+		font-weight: 700;
+
+		a {
+			display: inline-flex;
+			align-items: center;
+			min-height: 30px;
+			padding: 0.2rem 0.8rem;
+			border: 1px solid rgba($c-accent, 0.45);
+			border-radius: 100px;
+			background: rgba($c-accent, 0.08);
+			color: $c-accent;
+			text-decoration: none;
+			@include transition((background, color, border-color));
+
+			&:hover {
+				border-color: $c-accent;
+				background: $c-accent;
+				color: $c-white;
+			}
+		}
+	}
+
+	@include until(sm) {
+		ol.wp-block-comment-template {
+			li > ol,
+			.children {
+				padding-left: 0.75rem;
+			}
+		}
+
+		.wp-block-columns {
+			gap: 0.75rem;
+			padding: 1rem;
+		}
+
+		.wp-block-avatar img {
+			width: 40px;
+			height: 40px;
+		}
+	}
+
+	// ---- Pagination (accent pill language) -------------------------------
+	.wp-block-comments-pagination {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.4rem;
+		margin: 0 0 2rem;
+
+		.wp-block-comments-pagination-previous,
+		.wp-block-comments-pagination-next,
+		.page-numbers {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 38px;
+			height: 38px;
+			padding: 0 0.75rem;
+			border: 1px solid $c-border;
+			border-radius: 100px;
+			background: $c-white;
+			color: $c-primary;
+			font-size: 0.85rem;
+			text-decoration: none;
+			@include transition((background, color, border-color));
+
+			&:hover {
+				border-color: $c-accent;
+				color: $c-accent;
+			}
+
+			&.current {
+				border-color: $c-primary;
+				background: $c-primary;
+				color: $c-white;
+			}
+		}
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Reply form
+// -----------------------------------------------------------------------------
+.wp-block-post-comments-form {
+	margin-top: 2.5rem;
+
+	// ---- "Leave a Reply" heading -----------------------------------------
+	.comment-reply-title {
+		margin: 0 0 1.25rem;
+		color: $c-primary;
+		font-size: 1.4rem;
+		font-weight: 700;
+		line-height: 1.3;
+
+		small {
+			margin-left: 0.5rem;
+			font-size: 0.8rem;
+			font-weight: 500;
+
+			a {
+				color: $c-muted;
+				text-decoration: none;
+
+				&:hover {
+					color: $c-accent;
+				}
+			}
+		}
+	}
+
+	// ---- Form layout ------------------------------------------------------
+	.comment-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.1rem;
+	}
+
+	// Guest name/email/url fields share a row on wider screens.
+	.comment-form-author,
+	.comment-form-email,
+	.comment-form-url,
+	.comment-form-comment {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		margin: 0;
+	}
+
+	@include from(md) {
+		.comment-form-author,
+		.comment-form-email {
+			display: inline-flex;
+			width: calc(50% - 0.55rem);
+		}
+	}
+
+	label {
+		color: $c-primary;
+		font-size: 0.8rem;
+		font-weight: 600;
+	}
+
+	.required {
+		color: $c-danger;
+	}
+
+	// ---- Notes / logged-in line ------------------------------------------
+	.comment-notes,
+	.logged-in-as {
+		margin: 0;
+		color: $c-muted;
+		font-size: 0.85rem;
+		line-height: 1.6;
+
+		a {
+			color: $c-accent;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	// ---- Inputs -----------------------------------------------------------
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	textarea {
+		width: 100%;
+		padding: 0.7rem 0.85rem;
+		border: 1px solid $c-border;
+		border-radius: $border-radius;
+		background: $c-white;
+		color: $c-primary;
+		font-family: inherit;
+		font-size: 0.9rem;
+		line-height: 1.5;
+		@include transition((border-color, box-shadow));
+
+		&::placeholder {
+			color: $c-muted;
+		}
+
+		&:focus {
+			outline: none;
+			border-color: $c-accent;
+			box-shadow: 0 0 0 3px rgba($c-accent, 0.15);
+		}
+	}
+
+	textarea {
+		min-height: 150px;
+		resize: vertical;
+	}
+
+	// ---- Cookies-consent checkbox row ------------------------------------
+	.comment-form-cookies-consent {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.5rem;
+		margin: 0;
+
+		input {
+			margin-top: 0.2rem;
+		}
+
+		label {
+			color: $c-muted;
+			font-size: 0.8rem;
+			font-weight: 400;
+		}
+	}
+
+	// ---- Submit button (primary → accent pill) ---------------------------
+	.form-submit {
+		margin: 0.4rem 0 0;
+	}
+
+	.submit,
+	input[type="submit"] {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.75rem 2rem;
+		border: 1px solid $c-primary;
+		border-radius: 100px;
+		background: $c-primary;
+		color: $c-white;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.5px;
+		text-transform: uppercase;
+		cursor: pointer;
+		@include transition((background, color, border-color, transform));
+
+		&:hover {
+			transform: translateY(-1px);
+			border-color: $c-accent;
+			background: $c-accent;
+			color: $c-white;
+		}
+	}
+
+	@include until(sm) {
+		.comment-form-author,
+		.comment-form-email {
+			width: 100%;
+		}
+
+		.submit,
+		input[type="submit"] {
+			width: 100%;
+		}
+	}
+}
