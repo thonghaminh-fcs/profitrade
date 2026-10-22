@@ -1,1 +1,107 @@
-// Late-Night CTA Banner block (ai-zippy/home-cta-banner) — slim.html:194-211; filled by its block step.
+// =============================================================================
+// Late-Night CTA Banner block (ai-zippy/home-cta-banner) — markup quoted from
+// .mockup/slim.html:194-211, values from docs/build/blocks/home-cta-banner.md.
+// Pure static banner; no JS. Text column and CTA are positioned after the
+// blobs in DOM order, so they paint above them; the panel's overflow:hidden
+// clips the decorative blobs at every width.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+
+.sm-cta-banner {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 16px 20px 64px;
+}
+
+.sm-cta-banner__panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--sm-ink);
+  color: #fff;
+  border-radius: var(--sm-radius-cta);
+  padding: 48px clamp(24px, 5vw, 64px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+// ---- Decorative blobs ----
+.sm-cta-banner__blob {
+  position: absolute;
+}
+
+.sm-cta-banner__blob--red {
+  right: -60px;
+  top: -80px;
+  width: 280px;
+  height: 280px;
+  background: var(--sm-red);
+  border-radius: var(--sm-blob-a);
+}
+
+.sm-cta-banner__blob--orange {
+  right: 120px;
+  bottom: -110px;
+  width: 200px;
+  height: 200px;
+  background: var(--sm-orange);
+  border-radius: var(--sm-blob-b);
+}
+
+.sm-cta-banner__dot {
+  position: absolute;
+  right: 60px;
+  top: 40px;
+  width: 26px;
+  height: 26px;
+  background: var(--sm-green);
+  border-radius: 50%;
+}
+
+// ---- Text column ----
+.sm-cta-banner__text {
+  position: relative;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sm-cta-banner__heading {
+  margin: 0;
+  font: 800 clamp(28px, 3.4vw, 40px) / 1.1 var(--sm-font);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.sm-cta-banner__lead {
+  margin: 0;
+  color: var(--sm-text-on-dark);
+  font: 400 16px/1.6 var(--sm-font);
+}
+
+// ---- CTA (mockup <button> rendered as a real link) ----
+.sm-cta-banner__cta {
+  position: relative;
+  display: inline-block;
+  border: 0;
+  background: var(--sm-green);
+  color: var(--sm-ink);
+  font: 800 16px var(--sm-font);
+  padding: 16px 30px;
+  border-radius: var(--sm-radius-pill);
+  cursor: pointer;
+  text-decoration: none;
+  transition: filter var(--sm-transition);
+
+  &:hover,
+  &:focus {
+    background: var(--sm-green);
+    color: var(--sm-ink);
+    filter: brightness(0.92);
+  }
+}
