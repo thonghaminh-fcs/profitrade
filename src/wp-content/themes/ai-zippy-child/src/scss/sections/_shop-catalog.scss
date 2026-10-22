@@ -1,1 +1,538 @@
-// Shop Catalog block (ai-zippy/shop-catalog) — slim.html:213-293, 470-531; filled by its block step.
+// =============================================================================
+// Shop Catalog block (ai-zippy/shop-catalog) — slim.html:213-293 (layout),
+// 470-531 (quickview modal), 795-800 (toast); values from
+// docs/build/blocks/shop-catalog.md + ui-spec. Reuses .sm-badge, .sm-price,
+// .sm-btn, .sm-toast and .sm-blob--* from _components.scss; everything
+// structural lives here. Filtering/sorting/quickview/cart adds are owned by
+// the block's view.js; the server-rendered grid is the no-JS/editor state.
+// =============================================================================
+
+@use "@parent-scss/variables" as parent;
+
+.sm-shop {
+  font-family: var(--sm-font);
+  color: var(--sm-ink);
+}
+
+// ---- Section layout: sidebar + main, fluid flex wrap (slim.html:214-215) ----
+.sm-shop__section {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.sm-shop__sidebar {
+  flex: 1 1 220px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: sticky;
+  top: 160px;
+
+  // Sticky sidebar only makes sense next to the grid (ui-spec §Breakpoints).
+  @include parent.until(899px) {
+    position: static;
+  }
+}
+
+.sm-shop__main {
+  flex: 4 1 520px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+// ---- Sidebar cards (white, hairline border, radius 24) ----
+.sm-shop__card-panel {
+  background: var(--sm-card-bg);
+  border: 1px solid var(--sm-card-border);
+  border-radius: var(--sm-radius-card);
+  padding: 18px;
+}
+
+.sm-shop__eyebrow {
+  font: 700 12px var(--sm-font);
+  color: var(--sm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sm-shop__eyebrow--pad {
+  margin: 0 0 10px 6px;
+}
+
+// ---- Category buttons (active = dark pill, slim.html:334-336) ----
+.sm-shop__cats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-shop__cat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: var(--sm-ink);
+  font: 600 14px var(--sm-font);
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--sm-transition), color var(--sm-transition);
+
+  &:hover {
+    background: var(--sm-page-bg);
+  }
+
+  &.is-active,
+  &.is-active:hover {
+    background: var(--sm-ink);
+    color: #fff;
+  }
+}
+
+.sm-shop__cat-count {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+// ---- Sort card (slim.html:340-347) ----
+.sm-shop__sort-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sm-shop__sort {
+  border: 1px solid var(--sm-input-border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font: 600 14px var(--sm-font);
+  color: var(--sm-ink);
+  background: var(--sm-page-bg);
+  cursor: pointer;
+  width: 100%;
+}
+
+// ---- Header row (slim.html:350-353) ----
+.sm-shop__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sm-shop__title {
+  margin: 0;
+  font: 800 32px/1.1 var(--sm-font);
+  letter-spacing: -0.02em;
+}
+
+.sm-shop__count {
+  color: var(--sm-text-muted);
+  font-size: 14px;
+}
+
+// ---- No-results dashed panel (slim.html:354-358) ----
+.sm-shop__empty {
+  background: var(--sm-card-bg);
+  border: 1px dashed #d1d5db; // mockup dashed border (ui-spec input-border family)
+  border-radius: var(--sm-radius-card);
+  padding: 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+
+  &[hidden] {
+    display: none;
+  }
+
+  .sm-btn {
+    padding: 10px 20px;
+  }
+}
+
+.sm-shop__empty-text {
+  font: 700 18px var(--sm-font);
+}
+
+// ---- Product grid (slim.html:360) ----
+.sm-shop__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 16px;
+}
+
+// ---- Product card (slim.html:362-376) ----
+.sm-shop__product {
+  background: var(--sm-card-bg);
+  border-radius: var(--sm-radius-product);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sm-card-border);
+  transition: transform var(--sm-transition), box-shadow var(--sm-transition);
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--sm-shadow-card);
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.sm-shop__product-media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--sm-surface);
+
+  .sm-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-weight: 800;
+    padding: 5px 10px;
+  }
+}
+
+.sm-shop__product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sm-shop__product-body {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.sm-shop__product-cat {
+  font: 600 11px var(--sm-font);
+  color: var(--sm-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sm-shop__product-name {
+  border: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: 600 15px/1.3 var(--sm-font);
+  color: var(--sm-ink);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--sm-red);
+  }
+}
+
+.sm-shop__product-unit {
+  font: 400 13px var(--sm-font);
+  color: var(--sm-text-muted);
+}
+
+.sm-shop__product-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  gap: 8px;
+}
+
+.sm-shop__product-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sm-shop__product-was {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.sm-shop__quick-add {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--sm-red);
+  color: #fff;
+  font: 600 24px/1 var(--sm-font);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--sm-transition);
+
+  &:hover {
+    background: var(--sm-ink);
+  }
+
+  &.is-loading {
+    opacity: 0.6;
+  }
+}
+
+// ---- Quickview modal (slim.html:470-538) ----
+.sm-shop__modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--sm-z-quickview);
+  background: var(--sm-overlay-quickview);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+}
+
+.sm-shop__modal-panel {
+  position: relative;
+  background: var(--sm-card-bg);
+  border-radius: var(--sm-radius-banner);
+  width: min(920px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+}
+
+.sm-shop__modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--sm-card-bg);
+  box-shadow: var(--sm-shadow-close);
+  font: 500 22px/1 var(--sm-font);
+  color: var(--sm-ink);
+  cursor: pointer;
+}
+
+.sm-shop__modal-media {
+  position: relative;
+  background: var(--sm-page-bg);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.sm-shop__modal-blob {
+  position: absolute;
+  inset: 12% 10%;
+  background: var(--sm-orange);
+}
+
+.sm-shop__modal-disc {
+  position: relative;
+  width: 86%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: var(--sm-surface);
+  box-shadow: var(--sm-shadow-modal-img);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.sm-shop__modal-info {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sm-shop__modal-cat {
+  font: 700 12px var(--sm-font);
+  color: var(--sm-red);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sm-shop__modal-name {
+  margin: -8px 0 0;
+  font: 800 28px/1.15 var(--sm-font);
+  letter-spacing: -0.02em;
+}
+
+.sm-shop__modal-desc {
+  margin: 0;
+  color: var(--sm-text-body);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.sm-shop__modal-variants {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sm-shop__variant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sm-shop__variant {
+  border: 2px solid var(--sm-input-border);
+  background: var(--sm-card-bg);
+  color: var(--sm-ink);
+  font: 600 14px var(--sm-font);
+  padding: 10px 14px;
+  border-radius: var(--sm-radius-input);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  transition: border-color var(--sm-transition), background var(--sm-transition);
+
+  &.is-selected {
+    border-color: var(--sm-red);
+    background: var(--sm-variant-selected-bg);
+  }
+}
+
+.sm-shop__variant-price {
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--sm-text-muted);
+}
+
+// ---- Specs grid (slim.html:521-525) ----
+.sm-shop__specs {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 18px;
+  font-size: 14px;
+  background: var(--sm-page-bg);
+  border-radius: var(--sm-radius-panel);
+  padding: 14px 16px;
+
+  > span:nth-child(odd) {
+    color: var(--sm-text-muted);
+  }
+}
+
+.sm-shop__spec-v {
+  font-weight: 600;
+}
+
+// ---- Qty stepper + Add to Cart (slim.html:526-533) ----
+.sm-shop__modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.sm-shop__stepper {
+  display: flex;
+  align-items: center;
+  border: 2px solid var(--sm-input-border);
+  border-radius: var(--sm-radius-pill);
+  height: 52px;
+  overflow: hidden;
+
+  button {
+    width: 48px;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--sm-ink);
+    font: 600 20px var(--sm-font);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--sm-red);
+    }
+  }
+
+  span {
+    min-width: 28px;
+    text-align: center;
+    font: 700 16px var(--sm-font);
+  }
+}
+
+.sm-shop__add {
+  flex: 1;
+  min-width: 200px;
+  height: 52px;
+  border: 0;
+  background: var(--sm-red);
+  color: #fff;
+  font: 700 16px var(--sm-font);
+  border-radius: var(--sm-radius-pill);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  transition: background var(--sm-transition);
+
+  &:hover {
+    background: var(--sm-red-hover);
+  }
+
+  &.is-loading {
+    opacity: 0.6;
+  }
+}
+
+.sm-shop__stock {
+  font-size: 12px;
+  color: var(--sm-stock-green);
+  font-weight: 600;
+}
+
+// ---- Body scroll lock while the quickview is open ----
+body.sm-shop-lock {
+  overflow: hidden;
+}
