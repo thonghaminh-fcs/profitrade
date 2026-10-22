@@ -30,7 +30,9 @@ const errors = [];
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text().slice(0, 200)));
 page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
 if (a.includes('--auth')) {
-  const env = Object.fromEntries(fs.readFileSync('.env', 'utf8').split('\n').map((l) => l.match(/^([A-Z_]+)='?(.*?)'?$/)).filter(Boolean).map((m) => [m[1], m[2]]));
+  const job = (fs.readFileSync('zippy.yaml', 'utf8').match(/^job:\s*"?([\w.-]+)/m) || [])[1] || 'site';
+  const envFile = process.env.WPA_SITE ? path.join(process.env.WPA_SITE, '.env') : path.join(os.homedir(), '.wpa-sites', job, '.env');
+  const env = Object.fromEntries(fs.readFileSync(envFile, 'utf8').split('\n').map((l) => l.match(/^([A-Z_]+)='?(.*?)'?$/)).filter(Boolean).map((m) => [m[1], m[2]]));
   await page.goto(`${env.PROJECT_HOST}/wp-login.php`);
   await page.fill('#user_login', env.WP_ADMIN_USER || 'admin');
   await page.fill('#user_pass', env.WP_ADMIN_PASSWORD);
