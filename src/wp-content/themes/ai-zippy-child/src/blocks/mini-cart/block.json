@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/sm-mini-cart",
+	"version": "1.0.0",
+	"title": "Mini Cart (S.Mart drawer)",
+	"category": "sm-sections",
+	"icon": "cart",
+	"description": "S.Mart cart button with live total and green count badge, opening a slide-in drawer: item rows with qty steppers, the slot vs express delivery picker, totals and Checkout.",
+	"keywords": ["cart", "mini cart", "drawer", "woocommerce", "s.mart"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"expressFee": {
+			"type": "number",
+			"default": 20
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}
