@@ -1,4 +1,4 @@
-job: "69676821"
+job: profitrade
 build:
   install: npm install --no-audit --no-fund
   build: npm run build:child

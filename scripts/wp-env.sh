@@ -35,8 +35,9 @@ for _ in $(seq 1 40); do
   [ "$code" != "000" ] && break; sleep 3
 done
 # bind-mounted dirs are host-owned; the container runs as www-data
+git config core.fileMode false   # container chmods must not show up as git changes
 docker compose exec -T -u root wordpress sh -c \
-  'chown -R www-data:www-data /var/www/html/wp-content/uploads && chmod -R 777 /var/www/html/wp-content/uploads /var/www/html/wp-content/plugins'
+  'chown -R www-data:www-data /var/www/html/wp-content/uploads && chmod -R 777 /var/www/html/wp-content/uploads'
 
 WP=(docker exec -u root "${PROJECT_ID}" wp --allow-root)
 if ! "${WP[@]}" core is-installed 2>/dev/null; then
@@ -50,7 +51,6 @@ fi
 "${WP[@]}" theme activate "$CHILD"
 "${WP[@]}" rewrite structure '/%postname%/' --hard
 "${WP[@]}" option update woocommerce_cod_settings '{"enabled":"yes"}' --format=json >/dev/null
-chmod -R a+rwX src/wp-content/plugins 2>/dev/null || true
 
 echo "---- evidence ----"
 printf '{"url":"http://localhost:%s","container":"%s","db":"%s","http":"%s","theme":"%s","woocommerce":"%s"}\n' \
