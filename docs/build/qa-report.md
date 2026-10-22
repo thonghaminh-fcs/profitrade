@@ -230,3 +230,101 @@ and the hidden `sm_fulfilment` input. No white gaps, images unchanged.
   surfaces a "could not be sent" error — the transport, not the code, is what fails.
 - Accepted diffs from the earlier passes remain accepted (mobile drawer nav, 2-col categories at
   375, sidebar term order, two fulfilment cards).
+
+---
+
+# QA report — independent re-verification (2026-10-22, task c83ce55e)
+
+Re-verified the two previously open behaviours from scratch (real browser + real HTTP + wpcli,
+no reuse of the earlier evidence), then one full functional pass. Site `http://localhost:16921`.
+Harness: Playwright scripts in `/tmp` (throwaway), external hosts route-blocked because the
+sandbox has no internet (`openstreetmap.org` embed on `/contact/` and `s.w.org` emoji otherwise
+never finish loading — an environment limit, not a site defect).
+
+## 1. Contact form → real mail — PASS
+
+- Browser fill + submit on `/contact/` (marker `QAFUNC-1792664833426`): `POST /wp-admin/admin-ajax.php`
+  → **HTTP 200 `{"success":true}`**, success pane visible, form hidden, console clean.
+- `/tmp/mail.log` after clearing it held **exactly one** entry:
+  `to=dev@zippy.sg | subject=[S.Mart] Contact inquiry from QA Func |
+  headers=["Reply-To: QA Func <qa.func@example.com>"] | message=Name: … QAFUNC-1792664833426 …`.
+- Negative paths: invalid email → no request leaves the browser (HTML5 validation), form stays up,
+  **no false success pane**; honeypot `company` filled → HTTP 200 and **no mail logged**;
+  forged nonce → **HTTP 403** with the session-expired error.
+
+## 2. Checkout fulfilment → order meta — PASS
+
+- Fresh anonymous session, real UI flow: quick-add on `/shop/` (toast `Added 1 × Classic Salted
+  Potato Chips`) → `/checkout/` → click **1-Hour Express** on the delivery bar (drawer totals
+  `Subtotal $2.50 / Delivery $20.00 / Total $22.50`, hidden inputs flip to `sm_express=1`,
+  card title becomes `1-Hour Express`) → click the **Delivery** fulfilment card
+  (`border-color: rgb(255, 26, 26)` = `#FF1A1A`, class `is-selected`, `aria-checked=true`,
+  `sm_fulfilment=delivery`, `sm_slot=2:00 – 5:00 PM`, cookies incl. `sm_express_fee=20`)
+  → fill the `zk` React billing wizard → **Place order**.
+- `POST /wp-json/wc/store/v1/checkout` → **200, `order_id: 58`, `status: processing`**.
+  wpcli: `order 58: status=processing total=22.50 payment=cod`, fee line `Express delivery=20`,
+  meta **`_sm_fulfilment='delivery'`, `_sm_express='1'`, `_sm_slot='2:00 – 5:00 PM'`**,
+  billing `QA Func, Singapore 018956`.
+- Both branches covered: pickup via **#55** (`_sm_fulfilment=pickup`, no fee) and express via
+  **#56/#57/#58** (fee in the Store-API total). Note `wp post meta get/list` returns empty for
+  these orders in this container (mysql client TLS error) — read the meta through
+  `wp eval 'wc_get_order(58)->get_meta(…)'`, which is authoritative.
+
+## 3. Defect found and fixed this pass
+
+**Express fee charged on an empty cart.** The `sm_*` cookies outlive the cart, so with
+`sm_express=1` and zero items the mini-cart showed `Subtotal $0.00 / Delivery $20.00 /
+Total $20.00` and the header showed `$20.00` with `0` items. Fixed in
+`inc/checkout-fulfilment.php` → `ai_zippy_child_sm_express_fee()` now returns early when
+`WC()->cart->is_empty()`. After the fix, with the same express cookies and an empty cart:
+header `$0.00 / 0`, drawer `Subtotal $0.00 / Delivery Free / Total $0.00`. Fee still applies
+normally with items (order #58 above).
+
+## 4. Links — PASS
+
+12 unique internal URLs discovered by crawling `/`, `/shop/`, `/cart/`, `/checkout/`,
+`/my-account/`, `/contact/`, `/about/`, `/wishlist/`: all resolve 2xx/3xx, none 4xx/5xx.
+The only redirect is `/checkout/` → `/cart/` on an empty cart (standard WooCommerce).
+Raw data: `/tmp/qa-links.json`.
+
+## 5. Console — PASS
+
+Zero console errors, zero page errors, zero ≥400 same-origin responses on all 12 pages:
+`/`, `/shop/`, `/cart/`, `/checkout/`, `/my-account/`, `/contact/`, `/about/`, `/wishlist/`,
+`/shop/?cat=snacks`, `/shop/?q=chips`, `/product/butter-croissants/`, `/my-account/orders/`.
+The `/my-account/` SyntaxError reported in the first attempt no longer reproduces.
+
+## 6. Behaviours (docs/build/block-map.json) — all 15 PASS
+
+| Trigger → target | Result |
+| --- | --- |
+| header search submit → `/shop/?q=<term>` | PASS — `q=milk` → `/shop/?q=milk` |
+| wordmark click → `/` | PASS |
+| cart button click → drawer opens | PASS — `drawer open=true` |
+| slot select change → note + state, express off | PASS — `{"slot":4,"express":false}`, note `2:00 – 5:00 pm` → `8:00 – 11:00 pm` |
+| express toggle → fee `$20.00` + state | PASS — `{"slot":4,"express":true}`, `+$20.00` (home and checkout) |
+| category tile → `/shop/?cat=<id>` | PASS — `?cat=snacks` |
+| promo card / CTA → `/shop/` or `/about/` | PASS — `sm-promotions__card--1/2/3`, `sm-hero__cta--primary`, `sm-cta-banner__cta` → `/shop/`; `sm-hero__cta--secondary` → `/about/` |
+| every 1s → countdown | PASS — `Ends in 13:40:49` → `13:40:48` |
+| product card click → quickview modal | PASS — modal visible, title `Classic Salted Potato Chips` |
+| quick-add / modal add → cart + toast | PASS — toast `Added 1 × Classic Salted Potato Chips`, `items_count=1` |
+| drawer qty +/−/Remove → qty + totals | PASS — `+`: `$2.50/$20.00/$22.50` → `$5.00/$20.00/$25.00`; `−`: back to `$22.50` |
+| drawer Checkout → `/checkout/` | PASS |
+| fulfilment card → `#FF1A1A` border, hidden inputs, order meta | PASS — see §2 |
+| img load error → `product-fallback.jpg` | PASS — `product-chips.jpg` → `product-fallback.jpg` |
+| contact form submit → AJAX → wp_mail → success pane | PASS — see §1 |
+
+## 7. Shop / cart / checkout / account
+
+- Shop archive: 14 product cards on `/shop/`; single product `/product/butter-croissants/` → 200.
+- Cart: quick-add, drawer totals, qty +/−, express fee row all correct (§6).
+- COD checkout: order **#58** created with the fulfilment meta and the $20 express fee (§2).
+- My Account: logged-out visitor sees the login form (console clean); `admin` login lands on the
+  account dashboard (`.woocommerce-MyAccount-navigation` present); `/my-account/orders/` → 200.
+
+## Verdict
+
+`functional: pass`. Both previously open behaviours now work with hard evidence (mail log entry;
+order #58 meta read through `wc_get_order`). One new defect found (express fee on an empty cart)
+and fixed in this pass. No open issues.
+

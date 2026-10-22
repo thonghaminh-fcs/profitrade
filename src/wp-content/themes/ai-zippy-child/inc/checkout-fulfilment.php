@@ -214,6 +214,12 @@ function ai_zippy_child_sm_express_fee(): void
         return;
     }
 
+    // The sm_* cookies outlive the cart, so an emptied cart would otherwise
+    // keep charging the fee and show a $20.00 total with nothing in it.
+    if (WC()->cart->is_empty()) {
+        return;
+    }
+
     $fulfilment = isset($_COOKIE['sm_fulfilment']) && 'pickup' === $_COOKIE['sm_fulfilment'] ? 'pickup' : 'delivery';
     $express    = isset($_COOKIE['sm_express']) && '1' === $_COOKIE['sm_express'];
     if ('delivery' !== $fulfilment || !$express) {
