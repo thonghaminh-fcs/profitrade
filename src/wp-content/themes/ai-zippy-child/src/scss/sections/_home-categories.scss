@@ -1,1 +1,129 @@
-// Shop by Category block (ai-zippy/home-categories) — slim.html:133-154; filled by its block step.
+// =============================================================================
+// Shop by Category block (ai-zippy/home-categories) — markup quoted from
+// .mockup/slim.html:133-154, values from docs/build/blocks/home-categories.md.
+// Static section: head row (heading + "View all products →" link) and an
+// intrinsic auto-fill grid of category tiles (tinted blob + image disc + name).
+// Per-tile data arrives inline from render.php: the tint as --sm-cat-tint
+// (term meta sm_tint, mockup default) and the disc image as background-image
+// (Woo term image, else ai_zippy_child_img()). No JS behaviour — tiles are
+// plain links to /shop/?cat=<slug>.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+@use "@parent-scss/variables" as parent;
+
+.sm-home-categories {
+  // Body ink on the frontend; the editor's wrapper does not inherit body, so
+  // the colour is set once here for parity (tiles/links override as needed).
+  color: var(--sm-ink);
+}
+
+// The block-gap reset in _base.scss forbids own margins on the wrapper, so the
+// mockup's `max-width:1280px;margin:0 auto;padding:40px 20px` lives on the inner.
+.sm-home-categories__inner {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 40px var(--sm-container-pad);
+}
+
+// ---- Head row: heading left, "View all products →" right ----
+.sm-home-categories__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.sm-home-categories__title {
+  margin: 0;
+  font: 800 30px/1.1 var(--sm-font);
+  letter-spacing: -0.02em;
+}
+
+// _base.scss paints every <a> red and ink-on-hover; the mockup button is red
+// in both states, and tiles must keep the inherited ink — hence the overrides.
+.sm-home-categories__all {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--sm-red);
+  font: 700 14px var(--sm-font);
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--sm-red);
+  }
+}
+
+// ---- Category grid: intrinsic auto-fill, 6 across at 1280px ----
+.sm-home-categories__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
+}
+
+.sm-home-categories__tile {
+  background: var(--sm-card-bg);
+  border: 1px solid var(--sm-card-border);
+  border-radius: var(--sm-radius-card);
+  padding: 18px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform var(--sm-transition), box-shadow var(--sm-transition);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: inherit;
+    transform: translateY(-4px);
+    box-shadow: var(--sm-shadow-card);
+  }
+}
+
+// ---- Image disc: tinted blob (radius A) behind the photo disc (radius C) ----
+.sm-home-categories__disc {
+  position: relative;
+  width: 118px;
+  height: 118px;
+  flex: none;
+}
+
+.sm-home-categories__blob {
+  position: absolute;
+  inset: 0;
+  background: var(--sm-cat-tint, var(--sm-orange));
+  border-radius: var(--sm-blob-a);
+  transform: rotate(-8deg) scale(1.06);
+}
+
+.sm-home-categories__img {
+  position: absolute;
+  inset: 6px;
+  width: 106px;
+  height: 106px;
+  border-radius: var(--sm-blob-c);
+  background-color: var(--sm-surface);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.sm-home-categories__name {
+  font: 700 15px/1.25 var(--sm-font);
+  text-align: center;
+}
+
+// ---- Phones: pin the grid to 2 columns ("2 columns at 375px" per the block
+// doc) — the 170px minimum track only fits a single column below ~396px ----
+@include parent.until(sm) {
+  .sm-home-categories__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
