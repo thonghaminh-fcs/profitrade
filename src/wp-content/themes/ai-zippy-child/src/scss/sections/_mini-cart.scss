@@ -1,14 +1,15 @@
 // =============================================================================
-// Mini Cart block (ai-zippy/mini-cart, adapt parent) — markup quoted from
-// .mockup/slim.html:51-64 (header button) and 532-624 (drawer); values from
-// docs/build/blocks/mini-cart.md.
+// Mini Cart block (ai-zippy/sm-mini-cart, adapts the parent ai-zippy/mini-cart)
+// — markup quoted from .mockup/slim.html:51-64 (header button) and 532-624
+// (drawer); values from docs/build/blocks/mini-cart.md.
 // Drawer mechanics (.sm-drawer / .sm-drawer-overlay open-close, body lock) live
 // in _components.scss + src/js/child.js; the delivery {slot, express} state is
 // owned by child.js and shared with delivery-bar / checkout-fulfilment. This
 // file skins the button and the drawer contents.
-// Part B re-skins the parent block's .az-mc markup: the parent theme registers
-// ai-zippy/mini-cart first (its init callback is queued before the child's),
-// so until that ordering is resolved the parent markup is what renders live.
+// Part B re-skins the parent block's .az-mc markup: parts/header.html places
+// the parent's wp:ai-zippy/mini-cart, so that markup is what renders live in
+// the header; the child block registers under its own name to avoid colliding
+// with the parent registration.
 // =============================================================================
 
 // Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
@@ -398,13 +399,14 @@
 }
 
 // -----------------------------------------------------------------------------
-// Part B — parent block re-skin (.az-mc): while the parent registration wins
-// the ai-zippy/mini-cart name, the header renders the parent's structural
-// markup and these overrides present it as S.Mart. Doubled .az-mc keeps every
-// rule above the parent block stylesheet's single-class selectors regardless
-// of enqueue order. Parts the parent markup does not carry at all (live total
+// Part B — parent block re-skin (.az-mc): parts/header.html places the parent's
+// wp:ai-zippy/mini-cart, so the header renders the parent's structural markup
+// and these overrides present it as S.Mart. Doubled .az-mc keeps every rule
+// above the parent block stylesheet's single-class selectors regardless of
+// enqueue order. Parts the parent markup does not carry at all (live total
 // in the button, "(n)" in the drawer title, variant · unit meta, line total,
-// delivery picker, Delivery/Total rows) need the child render.php above.
+// delivery picker, Delivery/Total rows) are served by the child block
+// (ai-zippy/sm-mini-cart, Part A above) where it is placed.
 // -----------------------------------------------------------------------------
 
 .az-mc.az-mc {

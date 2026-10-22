@@ -38,7 +38,7 @@ export default function Edit({ attributes, setAttributes }) {
 			</InspectorControls>
 
 			<div {...blockProps}>
-				<ServerSideRender block="ai-zippy/mini-cart" attributes={attributes} />
+				<ServerSideRender block="ai-zippy/sm-mini-cart" attributes={attributes} />
 			</div>
 		</>
 	);
