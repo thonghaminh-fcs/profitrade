@@ -1,1 +1,100 @@
-// Checkout fulfilment picker (ai-zippy/checkout-fulfilment) — slim.html:653-686; filled by its block step.
+// =============================================================================
+// Checkout Fulfilment Picker (ai-zippy/checkout-fulfilment) — checkout step
+// "1 · Fulfilment"; values from docs/build/blocks/checkout-fulfilment.md
+// (.mockup/slim.html:653-686). Selection state (.is-selected on the option
+// cards, .is-pickup on the root, body.sm-fulfilment-pickup) is owned by the
+// block's view.js; PHP renders the same classes for the no-JS/editor state.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+
+.sm-fulfilment {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 24px var(--sm-container-pad) 8px;
+}
+
+// ---- Step eyebrow: "1 · Fulfilment" ----
+.sm-fulfilment__eyebrow {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sm-text-muted);
+}
+
+// ---- Option cards (delivery / pickup) ----
+.sm-fulfilment__options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+
+.sm-fulfilment__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px;
+  background: var(--sm-card-bg);
+  border: 2px solid var(--sm-input-border);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    border-color: var(--sm-text-faint);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--sm-red);
+    outline-offset: 2px;
+  }
+
+  &.is-selected {
+    border-color: var(--sm-red);
+  }
+}
+
+.sm-fulfilment__option-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sm-ink);
+}
+
+.sm-fulfilment__option-sub {
+  font-size: 12.5px;
+  color: var(--sm-text-muted);
+}
+
+// ---- Pickup note panel (shown instead of the shipping address fields) ----
+.sm-fulfilment__pickup-note {
+  display: none;
+  margin: 12px 0 0;
+  padding: 14px;
+  background: var(--sm-page-bg);
+  border-radius: var(--sm-radius-input); // 14px
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--sm-text-body);
+
+  strong {
+    font-weight: 700;
+    color: var(--sm-ink);
+  }
+
+  .sm-fulfilment.is-pickup & {
+    display: block;
+  }
+}
+
+// ---- Pickup mode: hide the Woo shipping address fields (billing stays) ----
+body.sm-fulfilment-pickup {
+  .sm-page-checkout .woocommerce-shipping-fields,
+  .sm-page-checkout .shipping_address,
+  .sm-page-checkout .wc-block-checkout__shipping-fields,
+  .sm-page-checkout [data-sm-shipping-fields] {
+    display: none !important;
+  }
+}
