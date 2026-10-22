@@ -1,1 +1,144 @@
-// Contact form block (ai-zippy/contact-form) — slim.html:377-408; filled by its block step.
+// =============================================================================
+// Contact Inquiry Form block (ai-zippy/contact-form) — markup quoted from
+// .mockup/slim.html:377-408, values from docs/build/blocks/contact-form.md.
+// The block wrapper IS the white card; it sits in column 2 of the contact page
+// grid (repeat(auto-fit, minmax(min(100%, 380px), 1fr)), gap 24px) owned by the
+// page composition, so the card takes the full column and stacks under the map
+// card on narrow screens without its own container width.
+// view.js toggles the `hidden` attribute between the form and the success pane.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+
+.sm-contact-form {
+  position: relative;
+  min-width: 0;
+  background: var(--sm-card-bg);
+  border: 1px solid var(--sm-card-border);
+  border-radius: var(--sm-radius-promo);
+  padding: 28px;
+}
+
+// The panes are flex containers, which beats the UA `[hidden] { display: none }`.
+.sm-contact-form__form[hidden],
+.sm-contact-form__success[hidden] {
+  display: none;
+}
+
+// ---- Form ----
+.sm-contact-form__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sm-contact-form__title {
+  margin: 0;
+  font: 800 22px/1.2 var(--sm-font);
+  text-wrap: balance;
+}
+
+.sm-contact-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 13px var(--sm-font);
+}
+
+.sm-contact-form__input,
+.sm-contact-form__textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--sm-input-border);
+  background: var(--sm-page-bg);
+  border-radius: var(--sm-radius-input);
+  padding: 13px 14px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--sm-ink);
+  outline-color: var(--sm-ink);
+}
+
+.sm-contact-form__textarea {
+  resize: vertical;
+}
+
+// Honeypot — out of flow so it never adds a gap to the flex column.
+.sm-contact-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.sm-contact-form__submit {
+  align-self: flex-start;
+  max-width: 100%;
+  border: 0;
+  background: var(--sm-red);
+  color: #fff;
+  font: 700 15px var(--sm-font);
+  padding: 14px 28px;
+  border-radius: var(--sm-radius-pill);
+  cursor: pointer;
+  transition: background var(--sm-transition);
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+// Server-side validation errors (view.js inserts one per field + form-level).
+.sm-contact-form__error {
+  color: var(--sm-red);
+  font: 600 13px var(--sm-font);
+}
+
+// ---- Success pane (replaces the form after send) ----
+.sm-contact-form__success {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 24px 0;
+}
+
+.sm-contact-form__check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  background: var(--sm-green);
+  border-radius: var(--sm-blob-a);
+  font: 800 26px var(--sm-font);
+}
+
+.sm-contact-form__success-title {
+  margin: 0;
+  font: 800 24px/1.2 var(--sm-font);
+}
+
+.sm-contact-form__success-body {
+  margin: 0;
+  color: var(--sm-text-body);
+  line-height: 1.6;
+}
+
+.sm-contact-form__reset {
+  border: 0;
+  background: var(--sm-surface);
+  color: var(--sm-ink);
+  font: 600 14px var(--sm-font);
+  padding: 10px 18px;
+  border-radius: var(--sm-radius-pill);
+  cursor: pointer;
+}

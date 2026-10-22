@@ -1,0 +1,48 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/about-story",
+	"version": "1.0.0",
+	"title": "About Story",
+	"category": "sm-sections",
+	"icon": "admin-page",
+	"description": "S.Mart about page story section: eyebrow pill, headline, two paragraphs and the blob image composition.",
+	"keywords": ["about", "story", "brand"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"eyebrow": {
+			"type": "string",
+			"default": "Our story"
+		},
+		"heading": {
+			"type": "string",
+			"default": "Your neighbourhood mini-mart, now on your phone."
+		},
+		"paragraphs": {
+			"type": "array",
+			"default": [
+				"S.Mart is a convenience store brand operated by Profitrade. We stock the everyday items people run out for: snacks, chilled and alcoholic drinks, frozen food, bakery and household essentials.",
+				"Our online shop is connected to the same POS system as our counter, so what you see in stock is what's on the shelf. Order for a delivery slot, go express, or walk in and collect."
+			]
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

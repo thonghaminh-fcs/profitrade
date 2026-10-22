@@ -1,0 +1,34 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/shop-catalog",
+	"version": "1.0.0",
+	"title": "Shop Catalog",
+	"category": "sm-sections",
+	"icon": "grid-view",
+	"description": "S.Mart shop catalog: category filter sidebar with counts, sort select, product grid with badges and quick-add, plus a quickview modal wired to the Woo Store API. Reads ?q= and ?cat= from the URL.",
+	"keywords": ["shop", "catalog", "products", "woocommerce", "quickview", "filters"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"perPage": {
+			"type": "number",
+			"default": 14
+		},
+		"columns": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}

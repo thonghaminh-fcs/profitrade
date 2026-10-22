@@ -1,1 +1,65 @@
-// Why S.Mart block (ai-zippy/about-advantages) — slim.html:315-330; filled by its block step.
+// =============================================================================
+// Why S.Mart by Profitrade block (ai-zippy/about-advantages) — markup quoted
+// from .mockup/slim.html:315-330, values from
+// docs/build/blocks/about-advantages.md. Pure static section; no JS. The
+// auto-fit minmax(240px,1fr) grid gives 4 cards at 1280px, 2 at ~768px and 1
+// at 375px with no extra breakpoints. Per-item blob colours arrive as inline
+// custom properties (--sm-adv-blob-bg / --sm-adv-blob-fg) from render.php.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+
+.sm-advantages {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 40px 20px 72px;
+}
+
+.sm-advantages__heading {
+  margin: 0 0 24px;
+  font: 800 30px/1.1 var(--sm-font);
+  letter-spacing: -0.02em;
+  color: var(--sm-ink);
+  text-wrap: balance;
+}
+
+.sm-advantages__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.sm-advantages__card {
+  background: var(--sm-card-bg);
+  border: 1px solid var(--sm-card-border);
+  border-radius: var(--sm-radius-promo);
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sm-advantages__blob {
+  width: 54px;
+  height: 54px;
+  flex: none;
+  background: var(--sm-adv-blob-bg, var(--sm-red));
+  border-radius: var(--sm-blob-a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 800 18px var(--sm-font);
+  color: var(--sm-adv-blob-fg, #fff);
+}
+
+.sm-advantages__title {
+  font: 700 19px/1.25 var(--sm-font);
+  color: var(--sm-ink);
+}
+
+.sm-advantages__body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--sm-text-body);
+}

@@ -1,1 +1,92 @@
-// About Story block (ai-zippy/about-story) — slim.html:296-314; filled by its block step.
+// =============================================================================
+// About Story block (ai-zippy/about-story) — markup quoted from
+// .mockup/slim.html:296-314, values from docs/build/blocks/about-story.md.
+// Static section: text column (orange eyebrow pill, balanced clamp headline,
+// two body paragraphs) beside the red/green blob image composition with the
+// store-aisle photo. No JS behaviour.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+@use "@parent-scss/variables" as parent;
+
+.sm-about-story {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 48px 20px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+  gap: 48px;
+  align-items: center;
+
+  // Body ink on the frontend; the editor's wrapper does not inherit body, so
+  // the colour is set once here for parity.
+  color: var(--sm-ink);
+}
+
+// ---- Text column ----
+.sm-about-story__text {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sm-about-story__eyebrow {
+  align-self: flex-start;
+  background: var(--sm-orange);
+  color: var(--sm-ink);
+  font: 700 12px var(--sm-font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: var(--sm-radius-pill);
+}
+
+.sm-about-story__title {
+  margin: 0;
+  font: 800 clamp(34px, 4.6vw, 54px) / 1.06 var(--sm-font);
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.sm-about-story__para {
+  margin: 0;
+  font: 400 17px/1.7 var(--sm-font);
+  color: var(--sm-text-body);
+  text-wrap: pretty;
+}
+
+// ---- Blob image composition ----
+.sm-about-story__media {
+  position: relative;
+  aspect-ratio: 1 / 0.85;
+  width: 100%;
+  max-width: 580px;
+  justify-self: center;
+}
+
+.sm-about-story__blob {
+  position: absolute;
+}
+
+.sm-about-story__blob--red {
+  inset: 0 10% 14% 0;
+  background: var(--sm-red);
+  border-radius: var(--sm-blob-b);
+}
+
+.sm-about-story__blob--green {
+  inset: 18% 0 0 26%;
+  background: var(--sm-green);
+  border-radius: var(--sm-blob-a);
+}
+
+.sm-about-story__img {
+  position: absolute;
+  inset: 7%;
+  width: 86%;
+  height: 86%;
+  object-fit: cover;
+  border-radius: var(--sm-blob-c);
+  box-shadow: var(--sm-shadow-hero-img);
+}

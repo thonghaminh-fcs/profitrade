@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/home-cta-banner",
+	"version": "1.0.0",
+	"title": "Late-Night CTA Banner",
+	"category": "sm-sections",
+	"icon": "megaphone",
+	"description": "Dark banner closing the home page: late-night headline, delivery-or-pickup line, decorative blobs and a green Start shopping CTA.",
+	"keywords": ["cta", "banner", "home", "late-night"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Out of milk at 11 PM? We're still open."
+		},
+		"paragraph": {
+			"type": "string",
+			"default": "Order now and choose a delivery slot, or pick up at the counter."
+		},
+		"ctaLabel": {
+			"type": "string",
+			"default": "Start shopping"
+		},
+		"ctaUrl": {
+			"type": "string",
+			"default": "/shop/"
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

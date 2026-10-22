@@ -1,0 +1,62 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/about-advantages",
+	"version": "1.0.0",
+	"title": "Why S.Mart by Profitrade",
+	"category": "sm-sections",
+	"icon": "awards",
+	"description": "About page section: four numbered advantage cards (opening hours, delivery slots, POS-synced stock, walk-in pickup) in a responsive auto-fit grid.",
+	"keywords": ["about", "advantages", "why", "cards"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"heading": {
+			"type": "string",
+			"default": "Why S.Mart by Profitrade"
+		},
+		"items": {
+			"type": "array",
+			"default": [
+				{
+					"number": "01",
+					"title": "Open 8:00 AM to 12:00 AM",
+					"body": "Every day, including public holidays, for late-night and early-morning top-ups.",
+					"color": "#FF1A1A",
+					"foreground": "#FFFFFF"
+				},
+				{
+					"number": "02",
+					"title": "Fast delivery slots",
+					"body": "Choose a free 3-hour slot or 1-hour express delivery to your door.",
+					"color": "#39FF14",
+					"foreground": "#111827"
+				},
+				{
+					"number": "03",
+					"title": "POS-integrated real-time stock",
+					"body": "Online stock comes straight from our store POS, so items you order are on the shelf.",
+					"color": "#FF9900",
+					"foreground": "#111827"
+				},
+				{
+					"number": "04",
+					"title": "Walk-in pickup",
+					"body": "Order ahead and collect at the counter with no delivery fee.",
+					"color": "#111827",
+					"foreground": "#FFFFFF"
+				}
+			]
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}
