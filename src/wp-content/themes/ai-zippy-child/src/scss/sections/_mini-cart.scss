@@ -1,1 +1,704 @@
-// Mini Cart block (ai-zippy/mini-cart, adapt parent) — slim.html:51-64, 532-624; filled by its block step.
+// =============================================================================
+// Mini Cart block (ai-zippy/mini-cart, adapt parent) — markup quoted from
+// .mockup/slim.html:51-64 (header button) and 532-624 (drawer); values from
+// docs/build/blocks/mini-cart.md.
+// Drawer mechanics (.sm-drawer / .sm-drawer-overlay open-close, body lock) live
+// in _components.scss + src/js/child.js; the delivery {slot, express} state is
+// owned by child.js and shared with delivery-bar / checkout-fulfilment. This
+// file skins the button and the drawer contents.
+// Part B re-skins the parent block's .az-mc markup: the parent theme registers
+// ai-zippy/mini-cart first (its init callback is queued before the child's),
+// so until that ordering is resolved the parent markup is what renders live.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+
+// -----------------------------------------------------------------------------
+// Part A — child block markup (src/blocks/mini-cart/render.php)
+// -----------------------------------------------------------------------------
+
+// ---- Header button: red pill, live total, green count badge (slim.html:51) ----
+.sm-cart-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 10px;
+  height: 46px;
+  padding: 0 18px 0 14px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--sm-red-hover);
+  }
+
+  svg {
+    flex: none;
+  }
+}
+
+.sm-cart-button__count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 2px solid #fff;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-green);
+  color: var(--sm-ink);
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+}
+
+// ---- Drawer panel (slim.html:534) — position/transition from .sm-drawer ----
+.sm-cart-drawer {
+  width: min(430px, 100vw);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--sm-shadow-drawer);
+  color: var(--sm-ink);
+}
+
+.sm-cart-drawer__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex: none;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--sm-card-border);
+}
+
+.sm-cart-drawer__title {
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.sm-cart-drawer__title-count {
+  color: var(--sm-text-muted);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.sm-cart-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sm-surface);
+  color: var(--sm-ink);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+// ---- Empty state (slim.html:544) ----
+.sm-cart-drawer__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px;
+  text-align: center;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.sm-cart-drawer__empty-logo {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  opacity: 0.9;
+}
+
+.sm-cart-drawer__empty-text {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.sm-cart-drawer__empty-link {
+  padding: 12px 24px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+}
+
+// ---- Item rows (slim.html:555) ----
+.sm-cart-drawer__items {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 8px 22px;
+  list-style: none;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.sm-cart-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--sm-surface);
+  list-style: none;
+}
+
+.sm-cart-item__image {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--sm-radius-panel);
+  object-fit: cover;
+  background: var(--sm-surface);
+}
+
+.sm-cart-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-cart-item__name {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--sm-ink);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--sm-red);
+  }
+}
+
+.sm-cart-item__meta {
+  font-size: 12px;
+  color: var(--sm-text-muted);
+}
+
+.sm-cart-item__controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.sm-cart-item__qty {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-surface);
+}
+
+.sm-cart-item__qty-down,
+.sm-cart-item__qty-up {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sm-ink);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sm-cart-item__qty-value {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.sm-cart-item__remove {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sm-text-muted);
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.sm-cart-item__line {
+  flex: none;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+// ---- Footer: delivery picker, totals, checkout (slim.html:582) ----
+.sm-cart-drawer__footer {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 22px 22px;
+  border-top: 1px solid var(--sm-card-border);
+  background: var(--sm-page-bg);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.sm-cart-drawer__eyebrow {
+  color: var(--sm-text-muted);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sm-cart-drawer__picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.sm-cart-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  border: 2px solid var(--sm-input-border);
+  border-radius: var(--sm-radius-panel);
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+
+  &.is-selected {
+    border-color: var(--sm-red);
+  }
+}
+
+.sm-cart-picker__title {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--sm-ink);
+}
+
+.sm-cart-picker__sub {
+  font-size: 12px;
+  color: var(--sm-text-muted);
+}
+
+.sm-cart-drawer__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.sm-cart-drawer__row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sm-cart-drawer__row-label {
+  color: var(--sm-text-body);
+}
+
+.sm-cart-drawer__row-value {
+  font-weight: 600;
+}
+
+.sm-cart-drawer__row--total {
+  margin-top: 4px;
+  font-size: 18px;
+
+  .sm-cart-drawer__row-label,
+  .sm-cart-drawer__row-value {
+    font-weight: 800;
+  }
+}
+
+.sm-cart-drawer__checkout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+}
+
+// While a Store API write is in flight the drawer must not accept further input.
+.sm-mini-cart.is-busy {
+  .sm-cart-drawer__items,
+  .sm-cart-drawer__footer {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+// The drawer is fixed-position and would cover the editor canvas; only the
+// button is previewed there (edit.js).
+.editor-styles-wrapper {
+  .sm-cart-drawer,
+  .sm-cart-drawer-overlay {
+    display: none !important;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Part B — parent block re-skin (.az-mc): while the parent registration wins
+// the ai-zippy/mini-cart name, the header renders the parent's structural
+// markup and these overrides present it as S.Mart. Doubled .az-mc keeps every
+// rule above the parent block stylesheet's single-class selectors regardless
+// of enqueue order. Parts the parent markup does not carry at all (live total
+// in the button, "(n)" in the drawer title, variant · unit meta, line total,
+// delivery picker, Delivery/Total rows) need the child render.php above.
+// -----------------------------------------------------------------------------
+
+.az-mc.az-mc {
+  color: var(--sm-ink);
+}
+
+// Toggle → red pill (slim.html:51).
+.az-mc.az-mc .az-mc__toggle {
+  gap: 10px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 18px 0 14px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+
+  &:hover,
+  &:focus-visible {
+    border-color: transparent;
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+}
+
+// White cart icon (stroke 2.2, 22px): the parent inlines its own SVG (bag by
+// default) — hide it and paint the mockup's cart through a mask so it follows
+// the button colour.
+.az-mc.az-mc .az-mc__toggle svg {
+  display: none;
+}
+
+.az-mc.az-mc .az-mc__toggle::before {
+  content: "";
+  flex: none;
+  width: 22px;
+  height: 22px;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 3h3l2.6 12.2a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6'/%3E%3Ccircle cx='9' cy='20' r='1.4'/%3E%3Ccircle cx='18' cy='20' r='1.4'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+// Count badge → green pill (slim.html:61).
+.az-mc.az-mc .az-mc__toggle .az-mc__count {
+  top: -6px;
+  right: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border: 2px solid #fff;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-green);
+  color: var(--sm-ink);
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+}
+
+// The mockup shows the badge at every count, including zero.
+.az-mc.az-mc .az-mc__toggle .az-mc__count[data-empty="true"] {
+  display: flex;
+}
+
+.az-mc.az-mc .az-mc__subtotal {
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+// Drawer → 430px right panel, S.Mart overlay and shadow (slim.html:533-534).
+.az-mc.az-mc .az-mc__drawer {
+  z-index: var(--sm-z-drawer);
+}
+
+.az-mc.az-mc .az-mc__backdrop {
+  background-color: var(--sm-overlay-cart);
+}
+
+.az-mc.az-mc .az-mc__panel {
+  width: min(430px, 100vw);
+  background-color: var(--sm-card-bg);
+  box-shadow: var(--sm-shadow-drawer);
+  color: var(--sm-ink);
+}
+
+// Header row (slim.html:535).
+.az-mc.az-mc .az-mc__header {
+  gap: 12px;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--sm-card-border);
+}
+
+.az-mc.az-mc .az-mc__title {
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.az-mc.az-mc .az-mc__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--sm-surface);
+  color: var(--sm-ink);
+  cursor: pointer;
+}
+
+// Empty state (slim.html:544): logo painted as a background because the parent
+// markup carries no <img>; runtime path resolves to assets/images/ from
+// assets/dist/css/ (same trick as the @font-face urls in _base.scss).
+.az-mc.az-mc .az-mc__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 32px;
+  color: var(--sm-ink);
+  font-weight: 700;
+  font-size: 18px;
+  text-align: center;
+
+  &::before {
+    content: "";
+    width: 110px;
+    height: 110px;
+    background: url("../../images/logo-smart.jpg") center / contain no-repeat;
+    opacity: 0.9;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.az-mc.az-mc .az-mc__keep-shopping {
+  padding: 12px 24px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+}
+
+// Item rows (slim.html:555). The parent row has no variant · unit meta and no
+// right-hand line total; its price element is re-skinned as the muted meta line.
+.az-mc.az-mc .az-mc__items {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 22px;
+}
+
+.az-mc.az-mc .az-mc__item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--sm-surface);
+}
+
+.az-mc.az-mc .az-mc__item-image {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--sm-radius-panel);
+  object-fit: cover;
+  background: var(--sm-surface);
+}
+
+.az-mc.az-mc .az-mc__item-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.az-mc.az-mc .az-mc__item-name {
+  color: var(--sm-ink);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+.az-mc.az-mc .az-mc__item-price {
+  color: var(--sm-text-muted);
+  font-size: 12px;
+
+  .woocommerce-Price-amount {
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+  }
+}
+
+.az-mc.az-mc .az-mc__qty {
+  width: fit-content;
+  height: 32px;
+  margin-top: 6px;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-surface);
+}
+
+.az-mc.az-mc .az-mc__qty-down,
+.az-mc.az-mc .az-mc__qty-up {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--sm-ink);
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.az-mc.az-mc .az-mc__qty-input {
+  width: 28px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--sm-ink);
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.az-mc.az-mc .az-mc__remove {
+  border: 0;
+  background: transparent;
+  color: var(--sm-text-muted);
+  font-weight: 500;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+// Footer (slim.html:582): S.Mart keeps a single full-width Checkout button.
+.az-mc.az-mc .az-mc__footer {
+  padding: 18px 22px 22px;
+  border-top: 1px solid var(--sm-card-border);
+  background: var(--sm-page-bg);
+}
+
+.az-mc.az-mc .az-mc__totals {
+  margin-bottom: 14px;
+}
+
+.az-mc.az-mc .az-mc__totals-label {
+  color: var(--sm-text-body);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.az-mc.az-mc .az-mc__totals-value {
+  color: var(--sm-ink);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.az-mc.az-mc .az-mc__button--cart {
+  display: none;
+}
+
+.az-mc.az-mc .az-mc__button--checkout {
+  height: 54px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+    opacity: 1;
+  }
+}
