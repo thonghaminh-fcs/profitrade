@@ -1,1 +1,135 @@
-// Delivery Bar block (ai-zippy/delivery-bar) — slim.html:66-94; filled by its block step.
+// =============================================================================
+// Delivery Bar block (ai-zippy/delivery-bar) — markup quoted from
+// .mockup/slim.html:66-94, values from docs/build/blocks/delivery-bar.md.
+// State ({slot, express}, sessionStorage) is owned by src/js/child.js, which
+// toggles .is-on on [data-sm-express], inlines the dim opacity on
+// [data-sm-slot-wrap] and rewrites [data-sm-note]. No-JS/editor state = the
+// server-rendered default: express off, track grey, knob left.
+// =============================================================================
+
+// Tokens arrive as runtime custom properties (--sm-*) from src/scss/_tokens.scss;
+// `@use "tokens"` would not resolve from sections/ and nothing here needs its members.
+@use "@parent-scss/variables" as parent;
+
+.sm-delivery-bar {
+  // The block-gap reset in _base.scss only reaches post content, so the header
+  // group's own gap is cancelled here to keep the bar flush under the brand row.
+  margin: 0 !important;
+  background: var(--sm-ink);
+  color: #fff;
+  font-size: 13px;
+}
+
+.sm-delivery-bar__inner {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 8px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  font-size: 13px;
+}
+
+// ---- Opening status: green dot + hours ----
+.sm-delivery-bar__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.sm-delivery-bar__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sm-green);
+  flex: none;
+}
+
+// ---- 3-hour slot picker ----
+.sm-delivery-bar__slot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sm-delivery-bar__slot-label {
+  color: var(--sm-text-on-dark);
+}
+
+.sm-delivery-bar__select {
+  background: var(--sm-dark-panel);
+  color: #fff;
+  border: 1px solid var(--sm-dark-border);
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+// ---- 1-Hour Express toggle ----
+.sm-delivery-bar__express {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: 600 13px var(--sm-font);
+  cursor: pointer;
+  padding: 0;
+  white-space: nowrap;
+
+  &.is-on {
+    .sm-delivery-bar__track {
+      background: var(--sm-red);
+    }
+
+    .sm-delivery-bar__knob {
+      left: 19px;
+    }
+  }
+}
+
+.sm-delivery-bar__track {
+  position: relative;
+  width: 38px;
+  height: 22px;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-track-off);
+  transition: background 0.2s;
+  flex: none;
+}
+
+.sm-delivery-bar__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.2s;
+}
+
+.sm-delivery-bar__fee {
+  color: var(--sm-orange);
+}
+
+// ---- Right-hand delivery note ----
+.sm-delivery-bar__note {
+  margin-left: auto;
+  color: var(--sm-text-on-dark);
+}
+
+// ---- Responsive: one row ≥1024px; below that the bar wraps and the note
+// drops to a full-width last line (toggle text stays on one line) ----
+@include parent.until(1023px) {
+  .sm-delivery-bar__note {
+    order: 10;
+    flex: 0 0 100%;
+    margin-left: 0;
+  }
+}

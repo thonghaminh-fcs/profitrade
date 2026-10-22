@@ -1,0 +1,37 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/delivery-bar",
+	"version": "1.0.0",
+	"title": "Delivery Bar",
+	"category": "sm-sections",
+	"icon": "clock",
+	"description": "Dark bar under the header brand row: opening status, the 3-hour delivery slot picker and the 1-Hour Express toggle.",
+	"keywords": ["delivery", "slot", "express", "header"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"expressFee": {
+			"type": "number",
+			"default": 20
+		},
+		"openHoursText": {
+			"type": "string",
+			"default": "Open today 8:00 AM – 12:00 AM"
+		},
+		"defaultSlot": {
+			"type": "number",
+			"default": 2
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}
