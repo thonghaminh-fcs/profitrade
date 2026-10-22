@@ -1,0 +1,6 @@
+job: "69676821"
+build:
+  install: npm install --no-audit --no-fund
+  build: npm run build:child
+  timeout: 12m
+breakpoints: [1440, 768, 375]
