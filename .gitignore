@@ -44,3 +44,4 @@ Thumbs.db
 .mockup/
 src/wp-content/plugins/woocommerce/
 .zippy/
+.claude/skills/
