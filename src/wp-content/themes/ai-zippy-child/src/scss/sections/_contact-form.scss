@@ -89,6 +89,17 @@
     background: var(--sm-red-hover);
     color: #fff;
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+}
+
+// Server-side validation errors (view.js inserts one per field + form-level).
+.sm-contact-form__error {
+  color: var(--sm-red);
+  font: 600 13px var(--sm-font);
 }
 
 // ---- Success pane (replaces the form after send) ----

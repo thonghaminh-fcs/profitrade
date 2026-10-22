@@ -7,7 +7,10 @@
  * docs/build/blocks/contact-form.md. The block wrapper is the white card; it is
  * column 2 of the contact page grid, which the page composition owns. The
  * success pane ships hidden — view.js swaps it in on submit and swaps the form
- * back on "Send another" (logic.js:139-140).
+ * back on "Send another" (logic.js:139-140). Submission is real: view.js posts
+ * the form to admin-ajax (action sm_contact_submit, handler in the theme's
+ * inc/contact-form.php) with the nonce printed on the wrapper below, and only
+ * shows the success pane when the server confirms the mail was sent.
  *
  * This file ships structural markup only; colours, spacing and typography live
  * in src/scss/sections/_contact-form.scss.
@@ -23,7 +26,11 @@ $title         = isset($attributes['title']) ? trim((string) $attributes['title'
 $success_title = isset($attributes['successTitle']) ? trim((string) $attributes['successTitle']) : '';
 $success_body  = isset($attributes['successBody']) ? trim((string) $attributes['successBody']) : '';
 ?>
-<div <?php echo get_block_wrapper_attributes(['class' => 'sm-contact-form']); ?>>
+<div <?php echo get_block_wrapper_attributes([
+	'class'           => 'sm-contact-form',
+	'data-ajax-url'   => admin_url('admin-ajax.php'),
+	'data-nonce'      => wp_create_nonce('sm_contact_submit'),
+]); ?>>
 
 	<div class="sm-contact-form__success" hidden>
 		<div class="sm-contact-form__check" aria-hidden="true">✓</div>
