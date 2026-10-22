@@ -56,8 +56,95 @@ toggles false→true→false with nav visibility at 375 on home/shop/about/conta
   exactly two entries and switches the delivery label to "1-Hour Express" when the bar toggle
   is on — a third express card would diverge from the mockup.
 
-## Open issues
+## Open issues (qa_visual)
 
-- Intermittent uncaught `SyntaxError: Unexpected token '<'` on `/my-account/` only. Not
-  reproducible on demand; `/wp-json/wc/store/v1/cart` returns 200 JSON and the child mini-cart
-  fetch paths guard `res.ok`. Suspected third-party script; non-blocking, recorded here.
+- Intermittent uncaught `SyntaxError: Unexpected token '<'` on `/my-account/` only. Root cause
+  confirmed in qa_func below (wpautop-mangled parent login script). Non-blocking; login works.
+
+---
+
+# QA report — qa_func
+
+Drove the live site (`http://localhost:16921`) with Playwright (throwaway scripts in `/tmp`) plus
+HTTP status checks and `wpcli`. Evidence: HTTP codes, cart/order totals, `wc shop_order list`,
+DOM state assertions. No production files changed (one attempted fix reverted — see Defects).
+
+## Links & HTTP status
+
+| URL | Code | Note |
+| --- | --- | --- |
+| `/`, `/shop/`, `/about/`, `/contact/`, `/cart/`, `/my-account/` | 200 | — |
+| `/checkout/` (empty cart) | 302 → `/cart/` | Standard Woo empty-cart redirect, not a defect |
+| `/checkout/` (cart filled) | 200 | React `[ai_zippy_checkout]` renders |
+| `/product/<slug>/` (×3 sampled) | 200 | single product renders |
+| `/shop/?q=cola` | 200 | filters to 2 ("Cola…", "Ch**ocola**te Chip Cookies" substring) |
+| `/shop/?cat=<slug>` | 200 | tiles use slugs (`?cat=snacks`), filters correctly |
+
+## Console
+
+Clean on `/`, `/shop/`, `/about/`, `/contact/`, `/cart/`, single products, and shop query args.
+`/my-account/` throws one `SyntaxError: Unexpected token '<'` — see Defect 3 (parent-theme
+wpautop, non-blocking).
+
+## Behaviors (docs/build/block-map.json) — all PASS
+
+- header search submit → `/shop/?q=<term>`, grid filtered (native `<form action=/shop/ name=q>`)
+- wordmark click → `/`
+- slot `<select>` change → delivery note updates, express reset, select stays enabled
+- express toggle → note "Express: arrives within 60 minutes", slot wrap dims (`opacity .45`),
+  `+$20.00` fee applied to cart total
+- promo countdown `[data-sm-countdown]` ticks every second (HH:MM:SS to midnight)
+- home category tile → `/shop/?cat=<slug>` filtered
+- promo card / CTA buttons → `/shop/` or `/about/`
+- product card click → quickview modal (`is-open`); qty `+` updates live total ($2.50→$5.00); close works
+- quick-add `+` → Store API add + toast "Added 1 × Classic Salted Potato Chips" + cart count 0→1
+- drawer qty stepper → item qty updates, fragments/totals refresh
+- drawer Checkout → `/checkout/`
+- checkout fulfilment card click → hidden `sm_fulfilment` toggles delivery↔pickup, `is-selected`
+  + pickup note (order-meta persistence is Defect 2)
+- img load error → swaps to `/wp-content/uploads/2026/10/product-fallback.jpg`
+- contact form submit → success pane + "Send another" reset (but no email is sent — Defect 1)
+
+## Shop / cart / checkout / account
+
+- Shop archive renders 14 product cards; sort + category + search filters work.
+- Mini-cart drawer: correct subtotal/total; express fee ($20) reflected in total ($2.50 → $22.50).
+- **COD checkout created order id 53** — `wc shop_order list`: `status=processing, total=2.50,
+  payment_method=cod`. Contact + billing captured (`_billing_address_index`). (HPOS stores orders
+  in `wp_wc_orders`, so `post list --post_type=shop_order` is empty by design.)
+- My Account: classic Woo login form (`#username`/`#password` + `woocommerce-login-nonce`);
+  admin login succeeds → logged-in account (logout present).
+
+## Defects (open — not fixed within the time box)
+
+1. **Contact form never sends (medium).** Spec (block-map) = "AJAX → admin-ajax → wp_mail → success
+   pane". `contact-form/view.js` only `preventDefault()`s and swaps to the success pane;
+   `render.php` ships `<form method="post">` with **no action, no nonce, no admin-ajax handler, no
+   wp_mail**. Verified: no network request fires on submit — the success message is cosmetic and
+   the inquiry is discarded. Fix: add a nonce'd admin-ajax/REST handler in the child theme that
+   calls `wp_mail`, and a `fetch` in `view.js` (keep the success pane gated on a real response).
+2. **Checkout fulfilment choice not saved to order meta (medium).** Order 53 has empty
+   `_sm_fulfilment`/`_sm_slot`/`_sm_express`. Root cause: the order-meta + express-fee hooks are
+   registered inside `checkout-fulfilment/render.php`, which runs **only when the checkout page
+   renders the block**. The custom `[ai_zippy_checkout]` is a **Store-API React checkout** — its
+   order-creation request never renders the block, and `woocommerce_checkout_create_order` (classic
+   hook) does not fire for Store-API orders. `render.php`'s own comment flags this. Fix: register
+   the hooks from an always-loaded file (`functions.php`) and hook the Store-API order-processed
+   action (`woocommerce_store_api_checkout_order_processed`), reading the `sm_*` cookies the block
+   already sets. The express **fee** is applied to the cart total (cookie-driven `cart_calculate_fees`),
+   but the **order-meta** persistence needs the always-on registration.
+3. **`/my-account/` console `SyntaxError: Unexpected token '<'` (low, non-blocking).** Root cause:
+   WP `wpautop` wraps the blank-line-separated statements of the inline login-card `<script>` in
+   the parent's `woocommerce/myaccount/form-login.php` with `<p>`/`<br>` (confirmed:
+   `wpautop("<script>\nvar a=1;\n\nvar b=2;\n</script>")` → `<p><script>…</p>`). The parent theme
+   is read-only/out of scope. Impact is limited: login itself works (classic form POST) and the
+   rendered card has no login/register tabs to break. Attempted a child `functions.php`
+   `the_content` cleanup filter — ineffective (this FSE shortcode path doesn't run `the_content`),
+   so it was **reverted** to avoid shipping a no-op global filter. A proper fix would need a child
+   WooCommerce template override of `myaccount/form-login.php` (move the JS to an enqueued file).
+
+## Verdict
+
+Core commerce (shop → cart → COD order → login) works end to end. `functional: fail` because two
+specified behaviors do not work (contact-form email, checkout fulfilment order-meta). Both are
+documented above with root cause and the exact fix path.
