@@ -1,1 +1,135 @@
-// Today's Promotions block (ai-zippy/home-promotions) — slim.html:155-193; filled by its block step.
+// =============================================================================
+// Today's Promotions block (ai-zippy/home-promotions) — markup quoted from
+// .mockup/slim.html:155-193, values from docs/build/blocks/home-promotions.md.
+// Per-card background/foreground/badge colours are block attributes printed as
+// inline styles by render.php; everything structural lives here. The countdown
+// card's live tick is owned by the block's view.js ([data-sm-countdown]); the
+// server-rendered value is the no-JS/editor state.
+// =============================================================================
+
+.sm-promotions {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+}
+
+.sm-promotions__heading {
+  margin: 0 0 22px;
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+// ---- Snap scroller ----
+.sm-promotions__scroller {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 10px;
+
+  // Scrollbar per mockup global (styles.css:168): 8px, #D1D5DB thumb.
+  scrollbar-width: thin;
+  scrollbar-color: var(--sm-scrollbar-thumb) transparent;
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--sm-scrollbar-thumb);
+    border-radius: 8px;
+  }
+}
+
+// ---- Card ----
+.sm-promotions__card {
+  flex: 0 0 min(86vw, 400px);
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--sm-radius-promo);
+  padding: 26px;
+  min-height: 240px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-decoration: none;
+
+  // Global `a:hover { color: #111827 }` must not repaint the card text.
+  &:hover,
+  &:focus-visible {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+// Blob image mask + contrasting border; variants B / A / C per card position
+// (docs/build/blocks/home-promotions.md), default = A for any extra cards.
+.sm-promotions__card-img {
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  border: 6px solid var(--sm-orange);
+  border-radius: var(--sm-blob-a);
+  pointer-events: none;
+}
+
+.sm-promotions__card--1 .sm-promotions__card-img {
+  border-radius: var(--sm-blob-b);
+}
+
+.sm-promotions__card--2 .sm-promotions__card-img {
+  border-color: var(--sm-red);
+}
+
+.sm-promotions__card--3 .sm-promotions__card-img {
+  border-radius: var(--sm-blob-c);
+}
+
+// ---- Badge pill ----
+.sm-promotions__badge {
+  position: relative;
+  align-self: flex-start;
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: var(--sm-radius-pill);
+}
+
+// ---- Text block ----
+.sm-promotions__text {
+  position: relative;
+  display: block;
+  max-width: 55%;
+}
+
+.sm-promotions__card--2 .sm-promotions__text {
+  max-width: 58%;
+}
+
+.sm-promotions__title {
+  display: block;
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.sm-promotions__sub {
+  display: block;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+.sm-promotions__sub--countdown {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
