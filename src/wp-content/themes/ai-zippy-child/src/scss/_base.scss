@@ -104,11 +104,13 @@ button {
 }
 
 // Sections own no top/bottom margin; block-gap is reset so stacked section
-// wrappers butt together exactly like the mockup.
+// wrappers butt together exactly like the mockup. Only the block (vertical)
+// margins are reset: zeroing inline margins here would also cancel the
+// `margin: 0 auto` that centers each max-width section wrapper.
 .wp-block-post-content > *,
 .wp-block-post-content .wp-block-group > *,
 .wp-site-blocks > * {
-  margin: 0 !important;
+  margin-block: 0 !important;
 }
 
 .editor-styles-wrapper .wp-block {
@@ -124,4 +126,58 @@ button {
 
 .sm-main {
   flex: 1;
+}
+
+// ---- Cart page overrides ----
+// The parent's `.zc-sidebar__promo-form` flex row lets the coupon input keep
+// its intrinsic width, which pushes the Apply button outside the promo card.
+// A two-column grid pins the button inside the card at every width.
+.zc-sidebar__promo-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+
+  input {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+// ---- Contact page composition (mockup slim.html:333) ----
+// The contact blocks are intentionally container-less (their SCSS defers outer
+// layout to the page), so the page supplies the centered section, the H1 and
+// the auto-fit grid that pairs the map card with the inquiry card.
+.sm-page-contact__title {
+  max-width: var(--sm-container);
+  margin: 0 auto 28px;
+  padding: 48px var(--sm-container-pad) 0;
+  font: 800 clamp(34px, 4.6vw, 52px) / 1.06 var(--sm-font);
+  letter-spacing: -0.025em;
+}
+
+.sm-page-contact .wp-block-post-content {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 0 var(--sm-container-pad) 72px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+
+  // The full-width banner spans every track, which stops auto-fit from
+  // collapsing empty tracks, so the map/form pair uses explicit columns.
+  @media (min-width: 820px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+// The banner already ships its own container + side padding for standalone
+// use; inside the page grid it must span the row and drop both to stay flush
+// with the cards below.
+.sm-page-contact .sm-contact-banner {
+  grid-column: 1 / -1;
+  max-width: none;
+  margin: 0;
+  padding: 0;
 }

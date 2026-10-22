@@ -1,0 +1,9 @@
+// ---- My account (parent template + WooCommerce blocks) ----
+// The customer-account block renders its icon as a bare <svg class="icon"> with no
+// width/height attributes; WooCommerce's stylesheet only sizes
+// .wc-block-customer-account__account-icon, so the silhouette fills the row.
+.wp-block-woocommerce-customer-account a svg {
+  width: 1.5em;
+  height: 1.5em;
+  flex: 0 0 auto;
+}
