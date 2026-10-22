@@ -2,7 +2,71 @@
 	"$schema": "https://schemas.wp.org/trunk/theme.json",
 	"version": 3,
 	"settings": {
-		"appearanceTools": true
+		"appearanceTools": true,
+		"color": {
+			"palette": [
+				{ "slug": "primary", "color": "#111827", "name": "Primary (ink)" },
+				{ "slug": "secondary", "color": "#F9FAFB", "name": "Secondary (page bg)" },
+				{ "slug": "accent", "color": "#FF1A1A", "name": "Accent (brand red)" },
+				{ "slug": "white", "color": "#ffffff", "name": "White" },
+				{ "slug": "black", "color": "#000000", "name": "Black" },
+				{ "slug": "navy", "color": "#1A1F71", "name": "Navy (Visa)" },
+				{ "slug": "orange", "color": "#FF9900", "name": "Orange (brand)" },
+				{ "slug": "danger", "color": "#E00F0F", "name": "Danger (red hover)" },
+				{ "slug": "success", "color": "#16A34A", "name": "Success (stock green)" },
+				{ "slug": "info", "color": "#2196f3", "name": "Info" },
+				{ "slug": "border", "color": "#EEF0F3", "name": "Border (card)" },
+				{ "slug": "muted", "color": "#6B7280", "name": "Muted text" },
+				{ "slug": "brand-green", "color": "#39FF14", "name": "Brand green" },
+				{ "slug": "surface", "color": "#F3F4F6", "name": "Surface gray" },
+				{ "slug": "on-dark", "color": "#D1D5DB", "name": "Text on dark" }
+			]
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"fontFamily": "Poppins, system-ui, sans-serif",
+					"slug": "poppins",
+					"name": "Poppins"
+				},
+				{
+					"fontFamily": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif",
+					"slug": "system",
+					"name": "System"
+				}
+			]
+		},
+		"layout": {
+			"contentSize": "1280px",
+			"wideSize": "1280px"
+		}
 	},
-	"styles": {}
+	"styles": {
+		"color": {
+			"background": "#F9FAFB",
+			"text": "#111827"
+		},
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--poppins)"
+		},
+		"elements": {
+			"link": {
+				"color": {
+					"text": "#FF1A1A"
+				}
+			}
+		}
+	},
+	"templateParts": [
+		{ "name": "header", "title": "Header", "area": "header" },
+		{ "name": "footer", "title": "Footer", "area": "footer" }
+	],
+	"customTemplates": [
+		{ "name": "blank", "title": "Blank", "postTypes": ["page", "post"] },
+		{ "name": "page-home", "title": "Home", "postTypes": ["page"] },
+		{ "name": "page-about", "title": "About", "postTypes": ["page"] },
+		{ "name": "page-contact", "title": "Contact", "postTypes": ["page"] },
+		{ "name": "page-cart", "title": "Cart", "postTypes": ["page"] },
+		{ "name": "page-checkout", "title": "Checkout", "postTypes": ["page"] }
+	]
 }

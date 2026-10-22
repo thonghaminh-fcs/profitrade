@@ -1,0 +1,270 @@
+// =============================================================================
+// S.Mart shared components — buttons, cards, pills, badges, eyebrows, steppers.
+// Reused across sections; per-section styles live in sections/_<slug>.scss.
+// =============================================================================
+
+@use "tokens";
+
+// ---- Buttons ----
+.sm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 0;
+  border-radius: var(--sm-radius-pill);
+  background: var(--sm-surface);
+  color: var(--sm-ink);
+  font: 600 14px var(--sm-font);
+  padding: 12px 20px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--sm-transition), color var(--sm-transition),
+    box-shadow var(--sm-transition), transform var(--sm-transition);
+
+  &:hover {
+    color: var(--sm-ink);
+  }
+}
+
+.sm-btn--primary {
+  background: var(--sm-red);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: var(--sm-shadow-cta);
+
+  &:hover {
+    background: var(--sm-red-hover);
+    color: #fff;
+  }
+}
+
+.sm-btn--dark {
+  background: var(--sm-ink);
+  color: #fff;
+
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+}
+
+.sm-btn--ghost {
+  background: transparent;
+  border: 2px solid var(--sm-input-border);
+
+  &:hover {
+    border-color: var(--sm-ink);
+  }
+}
+
+.sm-btn--block {
+  width: 100%;
+}
+
+// ---- Cards ----
+.sm-card {
+  background: var(--sm-card-bg);
+  border: 1px solid var(--sm-card-border);
+  border-radius: var(--sm-radius-card);
+  transition: box-shadow var(--sm-transition), transform var(--sm-transition);
+}
+
+.sm-card--hover:hover {
+  box-shadow: var(--sm-shadow-card);
+  transform: translateY(-3px);
+}
+
+// ---- Pills ----
+.sm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: var(--sm-radius-pill);
+  padding: 10px 12px;
+  font: 600 14px var(--sm-font);
+  white-space: nowrap;
+}
+
+// ---- Badges (logic.js:36) ----
+.sm-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--sm-radius-pill);
+  padding: 4px 10px;
+  font: 700 11px var(--sm-font);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.sm-badge--1-for-1 {
+  background: #FF1A1A;
+  color: #fff;
+}
+
+.sm-badge--flash-sale {
+  background: #FF9900;
+  color: #111827;
+}
+
+.sm-badge--daily-discount {
+  background: #39FF14;
+  color: #111827;
+}
+
+.sm-badge--chilled {
+  background: #111827;
+  color: #fff;
+}
+
+// ---- Eyebrow / labels ----
+.sm-eyebrow {
+  font: 700 12px var(--sm-font);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sm-text-muted);
+}
+
+// ---- Prices ----
+.sm-price {
+  font: 700 18px var(--sm-font);
+  color: var(--sm-ink);
+}
+
+.sm-price--was {
+  font-weight: 500;
+  color: var(--sm-text-faint);
+  text-decoration: line-through;
+}
+
+// ---- Quantity stepper (pill, surface bg, h32) ----
+.sm-qty {
+  display: inline-flex;
+  align-items: center;
+  background: var(--sm-surface);
+  border-radius: var(--sm-radius-pill);
+  height: 32px;
+  overflow: hidden;
+}
+
+.sm-qty__btn {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--sm-ink);
+  font: 700 16px var(--sm-font);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--sm-red);
+  }
+}
+
+.sm-qty__val {
+  min-width: 28px;
+  text-align: center;
+  font: 700 13px var(--sm-font);
+}
+
+// ---- Toast (behaviour 9) ----
+.sm-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translate(-50%, 20px);
+  z-index: var(--sm-z-checkout);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--sm-ink);
+  color: #fff;
+  border-radius: var(--sm-radius-pill);
+  padding: 12px 20px;
+  font: 600 14px var(--sm-font);
+  box-shadow: var(--sm-shadow-toast);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+
+  &.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.sm-toast__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sm-green);
+  flex: none;
+}
+
+// ---- Decorative blobs ----
+.sm-blob--a { border-radius: var(--sm-blob-a); }
+.sm-blob--b { border-radius: var(--sm-blob-b); }
+.sm-blob--c { border-radius: var(--sm-blob-c); }
+
+// ---- Scroll reveal (child.js adds .is-visible; hidden only when JS ran,
+// so the no-JS/editor state stays fully visible) ----
+.sm-js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+
+  &.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+// ---- Drawer mechanics (child.js toggles .is-open / .is-visible; the
+// mini-cart block step skins the drawer contents) ----
+.sm-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  max-height: 100vh;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+  z-index: var(--sm-z-drawer);
+  background: var(--sm-card-bg);
+
+  &.is-open {
+    transform: none;
+  }
+}
+
+.sm-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--sm-overlay-cart);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: var(--sm-z-overlay);
+
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+body.sm-drawer-lock {
+  overflow: hidden;
+}
+
+// ---- Top/bottom colour strip (behaviour 1; header + footer) ----
+.sm-strip {
+  display: grid;
+  grid-template-rows: 4px 4px 4px;
+
+  span:nth-child(1) { background: var(--sm-green); }
+  span:nth-child(2) { background: var(--sm-red); }
+  span:nth-child(3) { background: var(--sm-orange); }
+}

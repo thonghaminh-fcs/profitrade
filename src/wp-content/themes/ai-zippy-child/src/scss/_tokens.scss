@@ -1,0 +1,78 @@
+// =============================================================================
+// S.Mart design tokens — every value quoted from .mockup (see docs/build/ui-spec.md).
+// Exposed as CSS custom properties so blocks and the editor share one source.
+// =============================================================================
+
+:root {
+  // ---- Palette ----
+  --sm-red: #FF1A1A;              // primary CTA, links, accents
+  --sm-red-hover: #E00F0F;        // hover on red CTAs
+  --sm-green: #39FF14;            // badge pill, cart count, status dot, blobs
+  --sm-orange: #FF9900;           // flash-sale badge, express fee, blobs
+  --sm-ink: #111827;              // body text, dark bar/footer/overlays
+  --sm-page-bg: #F9FAFB;          // body background, inputs, spec panels
+  --sm-card-bg: #FFFFFF;          // cards, header, drawer
+  --sm-card-border: #EEF0F3;      // card/header borders
+  --sm-input-border: #E5E7EB;     // inputs, variant buttons, dividers
+  --sm-surface: #F3F4F6;          // search field, image placeholders, qty steppers
+  --sm-text-muted: #6B7280;       // secondary labels, category eyebrow
+  --sm-text-body: #4B5563;        // paragraph text
+  --sm-text-faint: #9CA3AF;       // strikethrough price, footer legal
+  --sm-text-on-dark: #D1D5DB;     // footer text, delivery note
+  --sm-dark-panel: #1F2937;       // slot <select> bg, footer divider
+  --sm-dark-border: #374151;      // slot <select> border
+  --sm-track-off: #4B5563;        // express toggle track (off)
+  --sm-variant-selected-bg: #FFF1F1; // selected variant button bg
+  --sm-stock-green: #16A34A;      // "in stock at store · synced with POS"
+  --sm-paynow: #7C1A8E;           // PayNow text/QR frame
+  --sm-visa: #1A1F71;             // VISA wordmark
+  --sm-mc-red: #EB001B;           // Mastercard circle 1
+  --sm-mc-amber: #F79E1B;         // Mastercard circle 2
+  --sm-scrollbar-thumb: #D1D5DB;
+
+  // ---- Overlays ----
+  --sm-overlay-quickview: rgba(17, 24, 39, 0.55);
+  --sm-overlay-cart: rgba(17, 24, 39, 0.45);
+  --sm-overlay-checkout: rgba(17, 24, 39, 0.6);
+
+  // ---- Typography ----
+  --sm-font: Poppins, system-ui, sans-serif;
+
+  // ---- Layout ----
+  --sm-container: 1280px;
+  --sm-container-pad: 20px;
+
+  // ---- Radii ----
+  --sm-radius-pill: 999px;
+  --sm-radius-product: 22px;
+  --sm-radius-card: 24px;         // category / sidebar / dashed-empty
+  --sm-radius-promo: 28px;        // promo / advantage cards
+  --sm-radius-banner: 32px;       // banners / checkout / modal panel
+  --sm-radius-cta: 36px;          // late-CTA banner
+  --sm-radius-input: 14px;
+  --sm-radius-panel: 16px;        // inner panels, cart item image
+  --sm-radius-panel-lg: 20px;
+  --sm-blob-a: 58% 42% 63% 37% / 45% 55% 45% 55%;
+  --sm-blob-b: 42% 58% 35% 65% / 60% 40% 60% 40%;
+  --sm-blob-c: 50% 50% 38% 62% / 55% 62% 38% 45%;
+
+  // ---- Shadows ----
+  --sm-shadow-cta: 0 10px 24px rgba(255, 26, 26, 0.28);
+  --sm-shadow-card: 0 14px 30px rgba(17, 24, 39, 0.1);
+  --sm-shadow-hero-card: 0 12px 30px rgba(17, 24, 39, 0.15);
+  --sm-shadow-hero-img: 0 30px 60px rgba(17, 24, 39, 0.18);
+  --sm-shadow-modal-img: 0 20px 40px rgba(17, 24, 39, 0.18);
+  --sm-shadow-drawer: -20px 0 50px rgba(17, 24, 39, 0.18);
+  --sm-shadow-toast: 0 10px 30px rgba(17, 24, 39, 0.3);
+  --sm-shadow-close: 0 2px 10px rgba(0, 0, 0, 0.12);
+
+  // ---- Z-index scale ----
+  --sm-z-header: 30;
+  --sm-z-overlay: 50;
+  --sm-z-drawer: 51;
+  --sm-z-quickview: 60;
+  --sm-z-checkout: 70;
+
+  // ---- Motion ----
+  --sm-transition: 0.15s;
+}

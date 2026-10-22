@@ -1,0 +1,153 @@
+// =============================================================================
+// S.Mart site footer — parts/footer.html (root .az-footer.sm-footer).
+// Markup quoted from .mockup/slim.html:413-469.
+// =============================================================================
+
+@use "tokens";
+
+.az-footer.sm-footer {
+  background: var(--sm-ink);
+  color: var(--sm-text-on-dark);
+  font-size: 14px;
+
+  p {
+    margin: 0;
+  }
+}
+
+.sm-footer__main {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 44px 20px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px 56px;
+  justify-content: space-between;
+}
+
+// ---- Brand column ----
+.sm-footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 300px;
+  flex: 1 1 240px;
+}
+
+.sm-footer__brand-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sm-footer__logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  background: #fff;
+  border-radius: 14px;
+  padding: 3px;
+}
+
+.sm-footer__wordmark {
+  font: 900 24px/1 var(--sm-font);
+  color: #fff;
+  -webkit-text-stroke: 3px var(--sm-red);
+  paint-order: stroke fill;
+}
+
+.sm-footer__brand-note {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+// ---- Columns ----
+.sm-footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 0 1 auto;
+}
+
+.sm-footer__heading {
+  font: 700 12px var(--sm-font);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.sm-footer__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  a {
+    border: 0;
+    background: transparent;
+    color: var(--sm-text-on-dark);
+    font: 500 14px var(--sm-font);
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--sm-green);
+    }
+  }
+}
+
+.sm-footer__store {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+
+// ---- We accept chips ----
+.sm-footer__pay {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sm-footer__pay-chip {
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sm-footer__pay-chip--paynow {
+  color: var(--sm-paynow);
+  font: 800 12px var(--sm-font);
+}
+
+.sm-footer__pay-chip--visa {
+  color: var(--sm-visa);
+  font: italic 900 13px var(--sm-font);
+}
+
+.sm-footer__mc-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+
+  &--red { background: var(--sm-mc-red); }
+  &--amber { background: var(--sm-mc-amber); margin-left: -6px; opacity: 0.9; }
+}
+
+// ---- Legal ----
+.az-footer.sm-footer .sm-footer__legal {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 16px 20px 24px;
+  border-top: 1px solid var(--sm-dark-panel);
+  font-size: 12px;
+  color: var(--sm-text-faint);
+}

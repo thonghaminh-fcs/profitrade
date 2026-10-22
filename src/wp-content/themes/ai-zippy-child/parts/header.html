@@ -1,0 +1,50 @@
+<!-- wp:group {"tagName":"header","metadata":{"name":"Site Header"},"className":"az-header sm-header","layout":{"type":"default"}} -->
+<header class="wp-block-group az-header sm-header">
+
+	<!-- wp:html -->
+	<div class="sm-strip" aria-hidden="true"><span></span><span></span><span></span></div>
+	<!-- /wp:html -->
+
+	<!-- wp:group {"className":"sm-header__bar","layout":{"type":"default"}} -->
+	<div class="wp-block-group sm-header__bar">
+
+		<!-- wp:group {"className":"sm-header__row","layout":{"type":"default"}} -->
+		<div class="wp-block-group sm-header__row">
+
+			<!-- wp:shortcode -->
+			<a class="sm-header__brand" href="/"><span class="sm-header__logo-wrap">[sm_img name="logo-smart.jpg" alt="S.Mart" class="sm-header__logo" width="52" height="52"]</span><span class="sm-header__wordmark-wrap"><span class="sm-header__wordmark">S.MART</span><span class="sm-header__tagline">At Your Convenience</span></span></a>
+			<!-- /wp:shortcode -->
+
+			<!-- wp:html -->
+			<form class="sm-header__search" role="search" action="/shop/" method="get">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+				<label class="screen-reader-text" for="sm-header-search">Search products</label>
+				<input id="sm-header-search" type="search" name="q" value="" placeholder="Search chips, drinks, ice cream…">
+			</form>
+			<!-- /wp:html -->
+
+			<!-- wp:html -->
+			<button class="sm-header__burger" type="button" aria-expanded="false" aria-controls="sm-header-nav" aria-label="Menu"><span></span><span></span><span></span></button>
+			<!-- /wp:html -->
+
+			<!-- wp:html -->
+			<nav id="sm-header-nav" class="sm-header__nav" aria-label="Primary">
+				<a href="/">Home</a>
+				<a href="/shop/">Shop</a>
+				<a href="/about/">About Us</a>
+				<a href="/contact/">Contact</a>
+			</nav>
+			<!-- /wp:html -->
+
+			<!-- wp:ai-zippy/mini-cart /-->
+
+		</div>
+		<!-- /wp:group -->
+
+		<!-- wp:ai-zippy/delivery-bar /-->
+
+	</div>
+	<!-- /wp:group -->
+
+</header>
+<!-- /wp:group -->

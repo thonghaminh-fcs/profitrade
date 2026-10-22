@@ -1,19 +1,26 @@
 // =============================================================================
-// Child theme styles — client-specific overrides.
-//
-// Parent tokens (colors, breakpoints, mixins) are available via:
-//   @use "@parent-scss/variables" as *;
-//
-// Example:
-//   @use "@parent-scss/variables" as *;
-//   .client-hero { color: $c-accent; @include from(md) { ... } }
+// S.Mart child theme styles — foundation + one partial per planned block.
+// Later (block) steps ONLY fill their own sections/_<slug>.scss partial.
+// Parent tokens/mixins available via: @use "@parent-scss/variables" as *;
 // =============================================================================
 
-@use "@parent-scss/variables" as *;
+@use "tokens";
+@use "base";
+@use "components";
+@use "header";
+@use "footer";
 
-// Add client-specific styles below.
-// body { /* custom styles */ }
-
-// The mini cart ships a neutral default skin in the parent block's style.scss.
-// Override any `az-mc__*` rule here to reskin it for this client.
-
+// ---- One partial per block in docs/build/block-map.json ----
+@use "sections/delivery-bar";
+@use "sections/mini-cart";
+@use "sections/home-hero";
+@use "sections/home-categories";
+@use "sections/home-promotions";
+@use "sections/home-cta-banner";
+@use "sections/shop-catalog";
+@use "sections/about-story";
+@use "sections/about-advantages";
+@use "sections/contact-banner";
+@use "sections/contact-location";
+@use "sections/contact-form";
+@use "sections/checkout-fulfilment";

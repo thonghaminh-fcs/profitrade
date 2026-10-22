@@ -1,0 +1,229 @@
+// =============================================================================
+// S.Mart site header — parts/header.html (root .az-header.sm-header).
+// Markup quoted from .mockup/slim.html:17-64; sticky bar + colour strip.
+// The delivery bar and mini-cart button are blocks; their internals live in
+// sections/_delivery-bar.scss and sections/_mini-cart.scss.
+// =============================================================================
+
+@use "tokens";
+@use "@parent-scss/variables" as parent;
+
+.az-header.sm-header {
+  background: var(--sm-card-bg);
+  position: relative;
+  z-index: var(--sm-z-header);
+
+  .sm-strip {
+    // strip scrolls away above the sticky bar (slim.html:17-24)
+  }
+}
+
+.sm-header__bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--sm-z-header);
+  background: #fff;
+  border-bottom: 1px solid var(--sm-card-border);
+}
+
+.sm-header__row {
+  max-width: var(--sm-container);
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+
+// ---- Brand (logo + wordmark), slim.html:27-34 ----
+.sm-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    color: inherit;
+  }
+}
+
+.sm-header__logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.sm-header__wordmark-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sm-header__wordmark {
+  font: 900 28px/1 var(--sm-font);
+  color: var(--sm-ink);
+  -webkit-text-stroke: 3px var(--sm-red);
+  paint-order: stroke fill;
+  letter-spacing: 0.01em;
+}
+
+.sm-header__tagline {
+  font: 700 9.5px/1 var(--sm-font);
+  color: var(--sm-ink);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+// ---- Search pill, slim.html:35-44 ----
+.sm-header__search {
+  flex: 1 1 180px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--sm-surface);
+  border-radius: var(--sm-radius-pill);
+  padding: 0 16px;
+  height: 46px;
+  border: 2px solid transparent;
+  margin: 0;
+
+  &:focus-within {
+    border-color: var(--sm-ink);
+  }
+
+  svg {
+    flex: none;
+  }
+
+  input {
+    flex: 1;
+    border: 0;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: var(--sm-ink);
+    min-width: 0;
+
+    &::placeholder {
+      color: var(--sm-text-muted);
+    }
+  }
+}
+
+// ---- Nav pills, slim.html:45-50 + logic.js:76-78 ----
+.sm-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+
+  a {
+    border: 0;
+    background: transparent;
+    color: var(--sm-ink);
+    font: 600 14px var(--sm-font);
+    padding: 10px 12px;
+    border-radius: var(--sm-radius-pill);
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--sm-surface);
+      color: var(--sm-ink);
+    }
+
+    &.is-active {
+      background: var(--sm-ink);
+      color: #fff;
+    }
+  }
+}
+
+// ---- Hamburger (before the nav; child.js toggles .is-open) ----
+.sm-header__burger {
+  display: none;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--sm-input-border);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--sm-ink);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  &[aria-expanded="true"] {
+    span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    span:nth-child(2) { opacity: 0; }
+    span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+}
+
+// ---- Responsive (breakpoints 1440/1100/900/767; fluid-first like the mockup) ----
+.sm-header__row .sm-cart-button {
+  margin-left: auto;
+}
+
+@include parent.until(900px) {
+  .sm-header__burger {
+    display: inline-flex;
+    order: 2;
+  }
+
+  .sm-header__nav {
+    order: 5;
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    padding: 8px 0 4px;
+
+    a {
+      text-align: center;
+    }
+
+    &.is-open {
+      display: flex;
+    }
+  }
+
+  .sm-header__search {
+    order: 4;
+    flex-basis: 100%;
+  }
+
+  .sm-header__row .sm-cart-button {
+    order: 3;
+  }
+
+  .sm-header__wordmark {
+    font-size: 22px;
+    -webkit-text-stroke-width: 2px;
+  }
+
+  .sm-header__logo {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 400px) {
+  .sm-header__tagline {
+    display: none;
+  }
+}
