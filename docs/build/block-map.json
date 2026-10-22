@@ -1,0 +1,174 @@
+{
+  "pages": [
+    { "slug": "home", "title": "Home", "template": "page-home", "blocks": ["home-hero", "home-categories", "home-promotions", "home-cta-banner"] },
+    { "slug": "shop", "title": "Shop", "template": "archive-product", "blocks": ["shop-catalog"] },
+    { "slug": "about", "title": "About Us", "template": "page-about", "blocks": ["about-story", "about-advantages"] },
+    { "slug": "contact", "title": "Contact", "template": "page-contact", "blocks": ["contact-banner", "contact-location", "contact-form"] },
+    { "slug": "cart", "title": "Cart", "template": "page-cart", "blocks": [] },
+    { "slug": "checkout", "title": "Checkout", "template": "page-checkout", "blocks": ["checkout-fulfilment"] },
+    { "slug": "my-account", "title": "My account", "template": "page-account", "blocks": [] }
+  ],
+  "shared": ["site-header (template part, child override of parts/header.html)", "site-footer (template part, child override of parts/footer.html)", "delivery-bar", "mini-cart"],
+  "blocks": [
+    {
+      "slug": "delivery-bar",
+      "title": "Delivery Bar",
+      "page": "shared (site-header part)",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:66-94",
+      "editable": ["openHoursText", "expressFee", "slots"],
+      "behavior": "Slot <select> (5 slots, default index 2) + 1-Hour Express toggle (+$20.00); writes delivery state consumed by mini-cart and checkout-fulfilment; right-side delivery note updates live; child.js",
+      "data": "static"
+    },
+    {
+      "slug": "mini-cart",
+      "title": "Mini Cart (S.Mart drawer)",
+      "page": "shared (site-header part)",
+      "classification": "adapt",
+      "parent_block": null,
+      "source": "slim.html:51-64 (header button), 532-624 (drawer)",
+      "editable": [],
+      "behavior": "Parent ai-zippy/mini-cart toggle+drawer re-skinned to S.Mart; red pill button with live total + green count badge; drawer item rows with qty stepper/remove; slot vs express picker; Checkout button navigates to /checkout/",
+      "data": "woo-cart"
+    },
+    {
+      "slug": "home-hero",
+      "title": "Home Hero",
+      "page": "home",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:98-132",
+      "editable": ["eyebrow", "heading", "highlightText", "paragraph", "primaryCtaLabel", "secondaryCtaLabel", "image"],
+      "behavior": "Static; 'Next slot' floating card text filled from delivery state by child.js; CTAs link /shop/ and /about/",
+      "data": "static"
+    },
+    {
+      "slug": "home-categories",
+      "title": "Shop by Category",
+      "page": "home",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:133-154",
+      "editable": ["heading", "viewAllLabel", "columns"],
+      "behavior": "Renders the 6 home-flagged product categories (logic.js CATS home:true) with tint blob + image tile; click → /shop/ filtered by category; 'View all products →' → /shop/",
+      "data": "woo-products (product_cat terms + term image)"
+    },
+    {
+      "slug": "home-promotions",
+      "title": "Today's Promotions",
+      "page": "home",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:155-193",
+      "editable": ["heading", "cards (badge/title/sub/bg/image per card)"],
+      "behavior": "Horizontal scroll-snap scroller of 3 promo cards; middle card shows live HH:MM:SS countdown to midnight (child.js); all cards → /shop/",
+      "data": "static"
+    },
+    {
+      "slug": "home-cta-banner",
+      "title": "Late-Night CTA Banner",
+      "page": "home",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:194-211",
+      "editable": ["heading", "paragraph", "ctaLabel"],
+      "behavior": "None (static banner, CTA → /shop/)",
+      "data": "static"
+    },
+    {
+      "slug": "shop-catalog",
+      "title": "Shop Catalog (filters + grid + quickview)",
+      "page": "shop",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:213-293 (layout), 470-531 (quickview modal)",
+      "editable": ["columns", "productsPerPage"],
+      "behavior": "Sidebar: category list with counts (All products + 7 cats, active = dark pill) and Sort by select (Most popular / Price low-high / high-low); grid: product cards with badge, category eyebrow, name, unit label ('from $X.XX' / 'N options'), strikethrough was-price, quick-add + button; card click opens quickview modal (variant buttons, specs, qty, Add to Cart with live total, POS stock line); no-results dashed panel with 'Clear filters'; reads ?q= and ?cat= query args; filtering/sorting/cart adds via child.js + Woo Store API; toast on add",
+      "data": "woo-products"
+    },
+    {
+      "slug": "about-story",
+      "title": "About Story",
+      "page": "about",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:296-314",
+      "editable": ["eyebrow", "heading", "paragraphs", "image"],
+      "behavior": "None (static two-column with blob image composition)",
+      "data": "static"
+    },
+    {
+      "slug": "about-advantages",
+      "title": "Why S.Mart by Profitrade",
+      "page": "about",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:315-330",
+      "editable": ["heading", "items (title/body/color)"],
+      "behavior": "None (4 static cards, numbered 01-04, content from logic.js ADV)",
+      "data": "static"
+    },
+    {
+      "slug": "contact-banner",
+      "title": "WhatsApp Bulk-Pricing Banner",
+      "page": "contact",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:336-350",
+      "editable": ["title", "body", "ctaLabel", "whatsappNumber"],
+      "behavior": "CTA opens wa.me link with prefilled text (logic.js:138)",
+      "data": "static"
+    },
+    {
+      "slug": "contact-location",
+      "title": "Store Map & Hours",
+      "page": "contact",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:351-376",
+      "editable": ["mapEmbedUrl", "address", "hours", "pickupNote"],
+      "behavior": "None (OpenStreetMap iframe + address/hours cards)",
+      "data": "static"
+    },
+    {
+      "slug": "contact-form",
+      "title": "Contact Inquiry Form",
+      "page": "contact",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:377-408",
+      "editable": ["title", "successTitle", "successBody"],
+      "behavior": "Name/Email/Message form; submit via child.js AJAX (admin-ajax) → wp_mail; success pane with green ✓ blob, 'Message sent', 'Send another' reset",
+      "data": "static"
+    },
+    {
+      "slug": "checkout-fulfilment",
+      "title": "Checkout Fulfilment Picker",
+      "page": "checkout",
+      "classification": "new",
+      "parent_block": null,
+      "source": "slim.html:653-686 (fulfilment step + pickup note), 583-598 (drawer variant)",
+      "editable": ["expressFee"],
+      "behavior": "Radio cards: Delivery (3-Hour Slot, label from delivery state, Free) / 1-Hour Express (+$20.00) / Walk-in Pickup (Free, shows collect-at note); preselected from delivery-bar state; stores choice as hidden fields → saved to Woo order meta; toggles visibility of address vs pickup note alongside Woo checkout",
+      "data": "woo-cart"
+    }
+  ],
+  "behaviors": [
+    { "trigger": "header search input submit/enter", "target": "/shop/?q=<term>", "owner": "child.js" },
+    { "trigger": "wordmark click", "target": "/", "owner": "parts/header.html (link)" },
+    { "trigger": "cart button click", "target": "open mini-cart drawer", "owner": "mini-cart" },
+    { "trigger": "slot select change", "target": "delivery state {slot}, express=false, note text, dim select when express", "owner": "child.js (delivery-bar)" },
+    { "trigger": "express toggle click", "target": "delivery state {express}, fee $20.00, note text", "owner": "child.js (delivery-bar)" },
+    { "trigger": "home category tile click", "target": "/shop/?cat=<id>", "owner": "home-categories" },
+    { "trigger": "promo card / CTA buttons click", "target": "/shop/ or /about/", "owner": "home-promotions, home-cta-banner, home-hero" },
+    { "trigger": "every 1s", "target": "promo countdown HH:MM:SS to midnight", "owner": "child.js (home-promotions)" },
+    { "trigger": "product card click", "target": "open quickview modal for product", "owner": "shop-catalog" },
+    { "trigger": "quick-add + / modal Add to Cart", "target": "Woo Store API cart add + toast 'Added N × <name>' (1800ms)", "owner": "child.js (shop-catalog)" },
+    { "trigger": "drawer qty +/−/Remove", "target": "cart item qty, fragments refresh, totals", "owner": "mini-cart" },
+    { "trigger": "drawer Checkout click", "target": "navigate /checkout/", "owner": "mini-cart" },
+    { "trigger": "checkout fulfilment card click", "target": "selected border #FF1A1A, hidden inputs, order meta on place-order", "owner": "checkout-fulfilment" },
+    { "trigger": "img load error", "target": "swap src to product-fallback.jpg", "owner": "child.js" },
+    { "trigger": "contact form submit", "target": "AJAX → wp_mail → success pane", "owner": "contact-form" }
+  ]
+}

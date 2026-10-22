@@ -1,0 +1,71 @@
+{
+  "front": "home",
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "home",
+      "template": "page-home",
+      "blocks": [
+        { "name": "home-hero", "attrs": {} },
+        { "name": "home-categories", "attrs": {} },
+        { "name": "home-promotions", "attrs": {} },
+        { "name": "home-cta-banner", "attrs": {} }
+      ]
+    },
+    {
+      "title": "Shop",
+      "slug": "shop",
+      "template": "archive-product",
+      "blocks": [
+        { "name": "shop-catalog", "attrs": {} }
+      ]
+    },
+    {
+      "title": "About Us",
+      "slug": "about",
+      "template": "page-about",
+      "blocks": [
+        { "name": "about-story", "attrs": {} },
+        { "name": "about-advantages", "attrs": {} }
+      ]
+    },
+    {
+      "title": "Contact",
+      "slug": "contact",
+      "template": "page-contact",
+      "blocks": [
+        { "name": "contact-banner", "attrs": {} },
+        { "name": "contact-location", "attrs": {} },
+        { "name": "contact-form", "attrs": {} }
+      ]
+    },
+    {
+      "title": "Cart",
+      "slug": "cart",
+      "template": "page-cart",
+      "blocks": []
+    },
+    {
+      "title": "Checkout",
+      "slug": "checkout",
+      "template": "page-checkout",
+      "blocks": []
+    },
+    {
+      "title": "My account",
+      "slug": "my-account",
+      "template": "page-account",
+      "blocks": []
+    }
+  ],
+  "notes": {
+    "seeder_namespace": "scripts/seed-pages.php emits <!-- wp:ai-zippy/{name} /-->, so ALL child blocks must register under the ai-zippy/ namespace (e.g. ai-zippy/home-hero) even though their source lives in src/wp-content/themes/ai-zippy-child/src/blocks/.",
+    "shop": "Woo resolves /shop/ to the product archive; the child override of templates/archive-product.html (and taxonomy-product_cat.html) renders ai-zippy/shop-catalog directly, so the page's post_content is not used.",
+    "cart": "Reuses the parent page-cart template (mounts the parent #ai-zippy-cart app); the child only re-skins it. Mockup has no standalone cart view — the drawer is the cart.",
+    "checkout": "The parent page-checkout template wraps [woocommerce_checkout]; the child must override templates/page-checkout.html to add the S.Mart heading and ai-zippy/checkout-fulfilment above the checkout form, and re-skin Woo checkout (zk__/wc-block classes) to match slim.html:648-791. The checkout-fulfilment block is placed by the template, not by page content.",
+    "my_account": "Reuses the parent page-account template; child re-skins only.",
+    "templates_to_create_in_child": ["templates/page-home.html (+ customTemplates entry in child theme.json)", "templates/page-about.html (override)", "templates/page-contact.html (override)", "templates/archive-product.html (override)", "templates/taxonomy-product_cat.html (override)", "templates/page-checkout.html (override)", "parts/header.html (override)", "parts/footer.html (override)"],
+    "header_part": "parts/header.html: colour strip (slim.html:17-24) + brand row (logo logo-smart.jpg 52px, S.MART wordmark with red text-stroke, tagline 'At Your Convenience', search pill, nav pills Home/Shop/About Us/Contact, ai-zippy/mini-cart button) + ai-zippy/delivery-bar. Sticky, z-30.",
+    "footer_part": "parts/footer.html: dark #111827 (slim.html:413-469) — brand column ('At your convenience. Operated by Profitrade.'), Explore nav links, Store column ('Daily 8:00 AM – 12:00 AM', '10 Example Road, #01-01', 'Singapore 000000'), 'We accept' PayNow/VISA/Mastercard chips, legal line '© 2026 Profitrade. S.Mart is a Profitrade brand.', bottom colour strip."
+  }
+}
