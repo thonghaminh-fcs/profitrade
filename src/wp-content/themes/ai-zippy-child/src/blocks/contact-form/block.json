@@ -1,0 +1,42 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ai-zippy/contact-form",
+	"version": "1.0.0",
+	"title": "Contact Inquiry Form",
+	"category": "sm-sections",
+	"icon": "email",
+	"description": "White inquiry card for the contact page: name, email and message fields with a red pill submit, plus the success pane shown after sending.",
+	"keywords": ["contact", "form", "inquiry", "message"],
+	"textdomain": "ai-zippy-child",
+	"supports": {
+		"html": false,
+		"multiple": false,
+		"align": false,
+		"spacing": { "margin": false, "padding": false },
+		"color": { "text": false, "background": false, "link": false }
+	},
+	"attributes": {
+		"title": {
+			"type": "string",
+			"default": "Send an inquiry"
+		},
+		"successTitle": {
+			"type": "string",
+			"default": "Message sent"
+		},
+		"successBody": {
+			"type": "string",
+			"default": "Thanks for reaching out. We'll reply by email within one working day."
+		},
+		"recipient": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js",
+	"render": "file:./render.php"
+}
